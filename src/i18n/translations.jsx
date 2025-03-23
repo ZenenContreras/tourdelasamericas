@@ -40,7 +40,45 @@ export const translations = {
       categories: 'Categories',
       contact: 'Contact',
       rights: 'All rights reserved.'
-    }
+    },
+    storeTagline: {
+      peru: 'Discover Ancestral Treasures',
+      mexico: 'Experience Vibrant Flavors',
+      brazil: 'Feel the Exotic Rhythm',
+      chile: 'Explore Natural Wonders'
+    },
+    storeDescription: 'Our exclusive store is coming soon, bringing you the most authentic products from all across the Americas. Prepare your senses for an unforgettable experience.',
+    storeComingSoon: 'Register for Exclusive Early Access',
+    productSection: {
+      description: 'Explore our curated selection of authentic products from across the Americas. Each item tells a story of tradition and craftsmanship.',
+      featured: 'Featured',
+      viewDetails: 'View Details',
+      comingSoon: 'Coming Soon',
+      viewAll: 'View All Products'
+    },
+    foodSection: {
+      description: 'Savor the authentic flavors of traditional dishes from the Americas. Each recipe carries centuries of history and culture.',
+      spicyLevel: 'Spicy Level',
+      comingSoon: 'Coming Soon to Your Table',
+      viewAll: 'Explore All Foods'
+    },
+    boutiqueSection: {
+      description: 'Discover our exclusive collection of handcrafted items that blend tradition with contemporary style.',
+      allCategories: 'All Categories',
+      clothing: 'Clothing',
+      jewelry: 'Jewelry',
+      accessories: 'Accessories',
+      featured: 'Featured',
+      comingSoon: 'Coming Soon',
+      exclusiveCollection: 'Be the first to discover our exclusive collection',
+      notifyMe: 'Notify Me',
+      viewMore: 'Browse Collection'
+    },
+    regionSection: {
+      description: 'Discover the diverse regions of the Americas, each with its unique traditions, flavors, and handcrafted treasures waiting to be explored.',
+      exploreAll: 'Explore All Regions'
+    },
+    scrollDown: 'Scroll Down'
   },
   es: {
     nav: {
@@ -83,7 +121,45 @@ export const translations = {
       categories: 'Categorías',
       contact: 'Contacto',
       rights: 'Todos los derechos reservados.'
-    }
+    },
+    storeTagline: {
+      peru: 'Descubre Tesoros Ancestrales',
+      mexico: 'Experimenta Sabores Vibrantes',
+      brazil: 'Siente el Ritmo Exótico',
+      chile: 'Explora Maravillas Naturales'
+    },
+    storeDescription: 'Nuestra tienda exclusiva estará disponible muy pronto, trayendo los productos más auténticos de todas las Américas. Prepara tus sentidos para una experiencia inolvidable.',
+    storeComingSoon: 'Regístrate para Acceso Anticipado Exclusivo',
+    productSection: {
+      description: 'Explora nuestra selección cuidadosamente elegida de productos auténticos de todas las Américas. Cada artículo cuenta una historia de tradición y artesanía.',
+      featured: 'Destacado',
+      viewDetails: 'Ver Detalles',
+      comingSoon: 'Próximamente',
+      viewAll: 'Ver Todos los Productos'
+    },
+    foodSection: {
+      description: 'Saborea los auténticos sabores de platos tradicionales de las Américas. Cada receta lleva siglos de historia y cultura.',
+      spicyLevel: 'Nivel de Picante',
+      comingSoon: 'Próximamente en Tu Mesa',
+      viewAll: 'Explorar Todas las Comidas'
+    },
+    boutiqueSection: {
+      description: 'Descubre nuestra colección exclusiva de artículos hechos a mano que combinan la tradición con el estilo contemporáneo.',
+      allCategories: 'Todas las Categorías',
+      clothing: 'Ropa',
+      jewelry: 'Joyería',
+      accessories: 'Accesorios',
+      featured: 'Destacado',
+      comingSoon: 'Próximamente',
+      exclusiveCollection: 'Sé el primero en descubrir nuestra colección exclusiva',
+      notifyMe: 'Notificarme',
+      viewMore: 'Explorar Colección'
+    },
+    regionSection: {
+      description: 'Descubre las diversas regiones de las Américas, cada una con sus tradiciones únicas, sabores y tesoros artesanales esperando ser explorados.',
+      exploreAll: 'Explorar Todas las Regiones'
+    },
+    scrollDown: 'Desliza Abajo'
   },
   fr: {
     nav: {
@@ -126,6 +202,44 @@ export const translations = {
       categories: 'Catégories',
       contact: 'Contact',
       rights: 'Tous droits réservés.'
-    }
+    },
+    storeTagline: {
+      peru: 'Découvrez des Trésors Ancestraux',
+      mexico: 'Vivez des Saveurs Vibrantes',
+      brazil: 'Ressentez le Rythme Exotique',
+      chile: 'Explorez des Merveilles Naturelles'
+    },
+    storeDescription: 'Notre boutique exclusive ouvrira bientôt, vous apportant les produits les plus authentiques de toutes les Amériques. Préparez vos sens pour une expérience inoubliable.',
+    storeComingSoon: 'Inscrivez-vous pour un Accès Anticipé Exclusif',
+    productSection: {
+      description: 'Explorez notre sélection soignée de produits authentiques des Amériques. Chaque article raconte une histoire de tradition et d\'artisanat.',
+      featured: 'En Vedette',
+      viewDetails: 'Voir Détails',
+      comingSoon: 'Bientôt Disponible',
+      viewAll: 'Voir Tous les Produits'
+    },
+    foodSection: {
+      description: 'Savourez les saveurs authentiques des plats traditionnels des Amériques. Chaque recette porte des siècles d\'histoire et de culture.',
+      spicyLevel: 'Niveau d\'Épice',
+      comingSoon: 'Bientôt à Votre Table',
+      viewAll: 'Explorer Toutes les Cuisines'
+    },
+    boutiqueSection: {
+      description: 'Découvrez notre collection exclusive d\'articles faits à la main qui allient tradition et style contemporain.',
+      allCategories: 'Toutes les Catégories',
+      clothing: 'Vêtements',
+      jewelry: 'Bijoux',
+      accessories: 'Accessoires',
+      featured: 'En Vedette',
+      comingSoon: 'Bientôt Disponible',
+      exclusiveCollection: 'Soyez le premier à découvrir notre collection exclusive',
+      notifyMe: 'Me Notifier',
+      viewMore: 'Parcourir la Collection'
+    },
+    regionSection: {
+      description: 'Découvrez les diverses régions des Amériques, chacune avec ses traditions uniques, ses saveurs et ses trésors artisanaux qui attendent d\'être explorés.',
+      exploreAll: 'Explorer Toutes les Régions'
+    },
+    scrollDown: 'Défiler vers le Bas'
   }
 };

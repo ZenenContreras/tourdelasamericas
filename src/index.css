@@ -1,3 +1,81 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Optimizaciones de rendimiento y responsividad */
+
+/* Mejora el rendimiento al reducir la necesidad de recalcular los estilos durante las animaciones */
+* {
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Evita desbordamientos horizontales en dispositivos móviles */
+html, body {
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  width: 100%;
+  height: 100%;
+  max-width: 100vw;
+}
+
+/* Mejor manejo de texto para dispositivos móviles */
+@media (max-width: 640px) {
+  h1, h2, h3 {
+    word-break: break-word;
+    hyphens: auto;
+  }
+  
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* Mejora la visibilidad del contenido en dispositivos móviles */
+@media (max-width: 768px) {
+  .container {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
+
+/* Mejora el rendimiento de las animaciones al usar la GPU */
+.animate-gpu {
+  transform: translateZ(0);
+  will-change: transform, opacity;
+}
+
+/* Ajusta scrollbar para mejor experiencia de usuario */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Clases de utilidad para transiciones más rápidas */
+.fast-transition {
+  transition-duration: 150ms !important;
+}
+
+.swift-transition {
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Evita desplazamientos de altura en cargas de imágenes */
+img {
+  height: auto;
+  max-width: 100%;
+}
