@@ -79,7 +79,7 @@ const CarouselSlide = memo(({ image, t, isActive }) => {
     <div ref={ref} className="relative h-full">
       {/* Div con color de fondo mientras carga la imagen */}
       <div 
-        className={`absolute inset-0 bg-gradient-to-b from-gray-900 to-black transition-opacity duration-500 ${isImageLoaded ? 'opacity-0' : 'opacity-100'}`} 
+        className={`absolute inset-0 bg-gradient-to-b from-gray-900 to-black transition-opacity duration-300 ${isImageLoaded ? 'opacity-0' : 'opacity-100'}`} 
       />
       
       {/* Imagen principal con picture para responsividad */}
