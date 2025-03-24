@@ -196,7 +196,7 @@ const Navbar = ({ scrollToRef, homeRef }) => {
         className={getNavbarClasses()}
         initial={{ y: -50 }}
         animate={{ y: 0 }}
-        transition={{ duration: 0.3, type: "spring", stiffness: 200 }}
+        transition={{ duration: 0.1, type: "spring", stiffness: 200 }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16 md:h-16">
@@ -267,7 +267,7 @@ const Navbar = ({ scrollToRef, homeRef }) => {
         <AnimatePresence>
           {isMobileMenuOpen && (
             <motion.div 
-              className="fixed inset-0 bg-black z-40 md:hidden"
+              className="fixed inset-0 z-40 md:hidden"
               initial="closed"
               animate="open"
               exit="closed"
