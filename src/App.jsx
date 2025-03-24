@@ -50,11 +50,34 @@ function App() {
     }
   };
 
+  // Usar effect para navegar a la sección correcta cuando se carga la página o cambia la URL
+  useEffect(() => {
+    // Extraer el ID de la ubicación actual
+    const path = location.pathname;
+    let sectionId = path.replace('/', '');
+    
+    if (path === '/' || path === '/home' || !sectionId) {
+      // Si estamos en la página de inicio, desplazarse a la parte superior
+      window.scrollTo({ top: 0, behavior: 'auto' });
+      return;
+    }
+
+    // Intentar encontrar y desplazarse al elemento correspondiente
+    const timer = setTimeout(() => {
+      const element = document.getElementById(sectionId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, [location.pathname]);
+
   // Observer para detectar secciones visibles y actualizar URL
   useEffect(() => {
     const options = {
       root: null,
-      rootMargin: '-20% 0px -70% 0px',
+      rootMargin: '-100px 0px -70% 0px',
       threshold: 0.1
     };
 
@@ -96,6 +119,7 @@ function App() {
         ref={homeRef} 
         id="home" 
         className="relative h-screen w-full section-container"
+        style={{ scrollMarginTop: '80px' }}
       >
         <ImageCarousel />
         
@@ -117,7 +141,12 @@ function App() {
                 className="bg-indigo-600 text-white px-6 sm:px-8 py-2 sm:py-3 rounded-lg text-base sm:text-lg font-semibold hover:bg-indigo-700 transition-colors flex items-center"
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
-                onClick={() => scrollToRef(productsRef)}
+                onClick={() => {
+                  const element = document.getElementById('products');
+                  if (element) {
+                    element.scrollIntoView({ behavior: 'smooth' });
+                  }
+                }}
               >
                 {t('hero.explore')}
                 <svg xmlns="http://www.w3.org/2000/svg" className="ml-2 h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -148,7 +177,12 @@ function App() {
             className="w-6 h-10 border-2 border-white rounded-full flex justify-center pt-2 cursor-pointer"
             animate={{ y: [0, 8, 0] }}
             transition={{ duration: 1.2, repeat: Infinity }}
-            onClick={() => scrollToRef(productsRef)}
+            onClick={() => {
+              const element = document.getElementById('products');
+              if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+              }
+            }}
           >
             <motion.div className="w-1.5 h-1.5 bg-white rounded-full" />
           </motion.div>
@@ -162,6 +196,7 @@ function App() {
           ref={productsRef} 
           id="products" 
           className="section-container"
+          style={{ scrollMarginTop: '80px' }}
         >
           <ProductsSection />
         </div>
@@ -171,6 +206,7 @@ function App() {
           ref={foodsRef} 
           id="foods" 
           className="section-container"
+          style={{ scrollMarginTop: '80px' }}
         >
           <FoodsSection />
         </div>
@@ -180,6 +216,7 @@ function App() {
           ref={boutiqueRef} 
           id="boutique" 
           className="section-container"
+          style={{ scrollMarginTop: '80px' }}
         >
           <BoutiqueSection />
         </div>
@@ -189,6 +226,7 @@ function App() {
           ref={regionsRef} 
           id="regions" 
           className="section-container"
+          style={{ scrollMarginTop: '80px' }}
         >
           <RegionsSection />
         </div>
