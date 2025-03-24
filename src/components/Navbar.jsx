@@ -46,58 +46,39 @@ const Navbar = ({ scrollToRef, homeRef }) => {
     };
   }, [isMobileMenuOpen]);
 
-  // Obtener referencia según el ID de la sección
-  const getRefForId = (id) => {
-    if (id === 'home') return homeRef;
-    
-    const element = document.getElementById(id);
-    return element ? { current: element } : null;
-  };
-
-  // Función mejorada para navegar y hacer scroll
-  const handleNavClick = (id, path) => {
+  // Función simplificada para scroll directo a secciones
+  const handleNavClick = (id) => {
     // Cerrar el menú móvil si está abierto
     setIsMobileMenuOpen(false);
     
-    // Primero actualizamos la ruta
-    if (location.pathname !== path) {
-      navigate(path);
-    }
+    // Actualizar la URL sin usar router (para no causar recargas)
+    const newPath = id === 'home' ? '/' : `/${id}`;
+    window.history.pushState({}, '', newPath);
     
-    // Luego buscamos la referencia y hacemos scroll
-    setTimeout(() => {
-      const targetRef = getRefForId(id);
-      
-      if (scrollToRef && targetRef) {
-        scrollToRef(targetRef);
-      } else {
-        // Fallback directo si scrollToRef no está disponible
-        const element = document.getElementById(id);
-        if (element) {
-          const yOffset = -80; // Ajuste para el navbar
-          const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
-          window.scrollTo({
-            top: y,
-            behavior: 'smooth'
-          });
-        } else if (id === 'home' && homeRef && homeRef.current) {
-          const yOffset = -80;
-          const y = homeRef.current.getBoundingClientRect().top + window.pageYOffset + yOffset;
-          window.scrollTo({
-            top: y,
-            behavior: 'smooth'
-          });
-        }
+    // Manejar el scroll según la sección
+    if (id === 'home') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      const element = document.getElementById(id);
+      if (element) {
+        const headerOffset = 80;
+        const elementPosition = element.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+        
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        });
       }
-    }, 200); // Mayor tiempo de espera para asegurarnos de que todo esté cargado
+    }
   };
 
   const navLinks = [
-    { id: 'home', path: '/', name: t('nav.home') },
-    { id: 'products', path: '/products', name: t('nav.products') },
-    { id: 'foods', path: '/foods', name: t('nav.foods') },
-    { id: 'boutique', path: '/boutique', name: t('nav.boutique') },
-    { id: 'regions', path: '/regions', name: t('nav.regions') }
+    { id: 'home', name: t('nav.home') },
+    { id: 'products', name: t('nav.products') },
+    { id: 'foods', name: t('nav.foods') },
+    { id: 'boutique', name: t('nav.boutique') },
+    { id: 'regions', name: t('nav.regions') }
   ];
 
   const activeNavLinkClass = "text-indigo-600 font-medium";
@@ -173,6 +154,15 @@ const Navbar = ({ scrollToRef, homeRef }) => {
     }
   };
 
+  // Determinar la ruta actual para resaltar el enlace activo
+  const getActiveLink = () => {
+    const path = location.pathname;
+    if (path === '/' || path === '/home') return 'home';
+    return path.replace('/', '');
+  };
+
+  const activeLink = getActiveLink();
+
   return (
     <>
       <motion.nav 
@@ -193,7 +183,7 @@ const Navbar = ({ scrollToRef, homeRef }) => {
               whileTap={{ scale: 0.97 }}
             >
               <button 
-                onClick={() => handleNavClick('home', '/')} 
+                onClick={() => handleNavClick('home')} 
                 className="flex items-center"
                 aria-label="Ir al inicio"
               >
@@ -209,9 +199,9 @@ const Navbar = ({ scrollToRef, homeRef }) => {
               {navLinks.map((link) => (
                 <motion.button
                   key={link.id}
-                  onClick={() => handleNavClick(link.id, link.path)}
+                  onClick={() => handleNavClick(link.id)}
                   className={`
-                    ${location.pathname === link.path ? activeNavLinkClass : normalNavLinkClass}
+                    ${activeLink === link.id ? activeNavLinkClass : normalNavLinkClass}
                     ${!isScrolled && isHomePage ? 'text-white hover:text-indigo-100' : ''}
                   `}
                   whileHover={{ scale: 1.03 }}
@@ -284,14 +274,14 @@ const Navbar = ({ scrollToRef, homeRef }) => {
                   >
                     <button
                       className={`flex w-full items-center justify-between px-3 py-3 rounded-lg text-base font-medium ${
-                        location.pathname === link.path 
+                        activeLink === link.id
                           ? 'bg-indigo-50 text-indigo-600' 
                           : 'text-gray-700 hover:bg-gray-50'
                       } transition-colors fast-transition animate-gpu`}
-                      onClick={() => handleNavClick(link.id, link.path)}
+                      onClick={() => handleNavClick(link.id)}
                     >
                       <span>{link.name}</span>
-                      <ChevronRight className={`h-4 w-4 ${location.pathname === link.path ? 'text-indigo-500' : 'text-gray-400'}`} />
+                      <ChevronRight className={`h-4 w-4 ${activeLink === link.id ? 'text-indigo-500' : 'text-gray-400'}`} />
                     </button>
                   </motion.div>
                 ))}

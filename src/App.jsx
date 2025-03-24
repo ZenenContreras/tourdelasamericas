@@ -24,8 +24,8 @@ function App() {
   const location = useLocation();
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
-    stiffness: 200, // Aumentado para respuesta más rápida
-    damping: 15,    // Reducido para menos "rebote"
+    stiffness: 200,
+    damping: 15,
     restDelta: 0.0005
   });
 
@@ -36,10 +36,10 @@ function App() {
   const boutiqueRef = useRef(null);
   const regionsRef = useRef(null);
 
-  // Función para desplazamiento suave optimizado
+  // Función para desplazamiento suave
   const scrollToRef = (ref) => {
     if (ref && ref.current) {
-      const yOffset = -80; // Ajuste para el navbar
+      const yOffset = -80;
       const element = ref.current;
       const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
       
@@ -50,52 +50,11 @@ function App() {
     }
   };
 
-  // Manejar la navegación por rutas con transición más rápida
-  useEffect(() => {
-    // Función para desplazarse a la sección correspondiente según la ruta
-    const scrollToSection = () => {
-      let targetRef = null;
-
-      switch (location.pathname) {
-        case '/products':
-          targetRef = productsRef;
-          break;
-        case '/foods':
-          targetRef = foodsRef;
-          break;
-        case '/boutique':
-          targetRef = boutiqueRef;
-          break;
-        case '/regions':
-          targetRef = regionsRef;
-          break;
-        case '/':
-        case '/home':
-          targetRef = homeRef;
-          break;
-        default:
-          // Si la ruta no existe, redirigimos a home
-          window.history.replaceState(null, '', '/');
-          targetRef = homeRef;
-          break;
-      }
-
-      if (targetRef && targetRef.current) {
-        // Pequeño retraso para asegurar que la página se ha renderizado completamente
-        setTimeout(() => {
-          scrollToRef(targetRef);
-        }, 100);
-      }
-    };
-
-    scrollToSection();
-  }, [location.pathname]);
-
-  // Observer para detectar secciones visibles y actualizar URL sin navegación
+  // Observer para detectar secciones visibles y actualizar URL
   useEffect(() => {
     const options = {
       root: null,
-      rootMargin: '-30% 0px -70% 0px', // Ajustado para mejor detección
+      rootMargin: '-20% 0px -70% 0px',
       threshold: 0.1
     };
 
@@ -106,7 +65,6 @@ function App() {
           const path = id === 'home' ? '/' : `/${id}`;
           
           if (location.pathname !== path) {
-            // Actualiza la URL sin causar navegación
             window.history.replaceState(null, '', path);
           }
         }
@@ -114,25 +72,13 @@ function App() {
     };
 
     const observer = new IntersectionObserver(handleIntersect, options);
-
-    // Observar todas las secciones
-    const sections = [
-      { ref: homeRef, id: 'home' },
-      { ref: productsRef, id: 'products' },
-      { ref: foodsRef, id: 'foods' },
-      { ref: boutiqueRef, id: 'boutique' },
-      { ref: regionsRef, id: 'regions' }
-    ];
-
-    sections.forEach(section => {
-      if (section.ref && section.ref.current) {
-        observer.observe(section.ref.current);
-      }
+    
+    // Observar cada sección
+    document.querySelectorAll('.section-container').forEach(section => {
+      observer.observe(section);
     });
 
-    return () => {
-      observer.disconnect();
-    };
+    return () => observer.disconnect();
   }, [location.pathname]);
 
   return (
@@ -146,7 +92,11 @@ function App() {
       <Navbar scrollToRef={scrollToRef} homeRef={homeRef} />
       
       {/* Sección de inicio */}
-      <div ref={homeRef} id="home" className="relative h-screen w-full section-container">
+      <div 
+        ref={homeRef} 
+        id="home" 
+        className="relative h-screen w-full section-container"
+      >
         <ImageCarousel />
         
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
@@ -154,7 +104,7 @@ function App() {
             className="flex flex-col justify-center h-full pt-20"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }} // Más rápido
+            transition={{ duration: 0.3 }}
           >
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white max-w-3xl">
               {t('hero.title')}
@@ -165,7 +115,7 @@ function App() {
             <div className="mt-6 md:mt-10 flex flex-wrap gap-4">
               <motion.button 
                 className="bg-indigo-600 text-white px-6 sm:px-8 py-2 sm:py-3 rounded-lg text-base sm:text-lg font-semibold hover:bg-indigo-700 transition-colors flex items-center"
-                whileHover={{ scale: 1.03 }} // Menos exagerado
+                whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
                 onClick={() => scrollToRef(productsRef)}
               >
@@ -191,13 +141,13 @@ function App() {
           className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center text-white"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5, duration: 0.3 }} // Más rápido
+          transition={{ delay: 0.5, duration: 0.3 }}
         >
           <span className="text-sm uppercase tracking-widest mb-2">{t('scrollDown')}</span>
           <motion.div 
             className="w-6 h-10 border-2 border-white rounded-full flex justify-center pt-2 cursor-pointer"
-            animate={{ y: [0, 8, 0] }} // Menos movimiento
-            transition={{ duration: 1.2, repeat: Infinity }} // Más rápido
+            animate={{ y: [0, 8, 0] }}
+            transition={{ duration: 1.2, repeat: Infinity }}
             onClick={() => scrollToRef(productsRef)}
           >
             <motion.div className="w-1.5 h-1.5 bg-white rounded-full" />
@@ -207,30 +157,46 @@ function App() {
       
       {/* Secciones con Suspense para carga lenta */}
       <Suspense fallback={<Loading />}>
-        {/* Sección de productos */}
-        <div ref={productsRef} id="products" className="section-container">
+        {/* Productos */}
+        <div 
+          ref={productsRef} 
+          id="products" 
+          className="section-container"
+        >
           <ProductsSection />
         </div>
         
-        {/* Sección de comidas */}
-        <div ref={foodsRef} id="foods" className="section-container">
+        {/* Comidas */}
+        <div 
+          ref={foodsRef} 
+          id="foods" 
+          className="section-container"
+        >
           <FoodsSection />
         </div>
         
-        {/* Sección de boutique */}
-        <div ref={boutiqueRef} id="boutique" className="section-container">
+        {/* Boutique */}
+        <div 
+          ref={boutiqueRef} 
+          id="boutique" 
+          className="section-container"
+        >
           <BoutiqueSection />
         </div>
         
-        {/* Sección de regiones */}
-        <div ref={regionsRef} id="regions" className="section-container">
+        {/* Regiones */}
+        <div 
+          ref={regionsRef} 
+          id="regions" 
+          className="section-container"
+        >
           <RegionsSection />
         </div>
       </Suspense>
       
       <Footer />
       
-      {/* Rutas para mantener la navegación por URL */}
+      {/* Rutas */}
       <Routes>
         <Route path="/" element={<></>} />
         <Route path="/home" element={<Navigate to="/" replace />} />
