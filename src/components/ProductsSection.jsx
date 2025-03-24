@@ -70,26 +70,26 @@ const ProductsSection = () => {
   };
 
   return (
-    <section className="py-20 bg-white">
+    <section className="py-12 sm:py-16 md:py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="text-center mb-16"
+          className="text-center mb-12 sm:mb-16"
         >
-          <div className="inline-flex items-center justify-center mb-4">
-            <ShoppingBag className="h-8 w-8 text-indigo-600 mr-3" />
-            <h2 className="text-3xl font-bold text-gray-900">{t('sections.products')}</h2>
+          <div className="inline-flex items-center justify-center mb-4 sm:mb-6">
+            <ShoppingBag className="h-6 w-6 sm:h-8 sm:w-8 text-indigo-600 mr-2 sm:mr-3" />
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900">{t('sections.products')}</h2>
           </div>
-          <p className="mt-4 text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="mt-3 sm:mt-4 text-lg sm:text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
             {t('productSection.description')}
           </p>
         </motion.div>
 
         <motion.div
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8"
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
@@ -98,11 +98,11 @@ const ProductsSection = () => {
           {products.map((product) => (
             <motion.div
               key={product.id}
-              className="bg-white rounded-xl overflow-hidden shadow-md border border-gray-100"
+              className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 border border-gray-100"
               variants={itemVariants}
               whileHover="hover"
             >
-              <div className="relative h-64 overflow-hidden">
+              <div className="relative h-56 sm:h-64 overflow-hidden">
                 <motion.img
                   src={product.image}
                   alt={product.name}
@@ -110,33 +110,30 @@ const ProductsSection = () => {
                   whileHover={{ scale: 1.05 }}
                   transition={{ duration: 0.3, ease: "easeOut" }}
                 />
-                <div className="absolute top-4 right-4 bg-white px-2 py-1 rounded-lg shadow-sm">
+                <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-sm">
                   <div className="flex items-center space-x-1">
                     <Star className="h-4 w-4 text-yellow-400 fill-current" />
                     <span className="text-sm font-medium">{product.rating}</span>
                   </div>
                 </div>
-                <div className="absolute top-4 left-4 bg-indigo-600 text-white text-xs uppercase tracking-wider font-bold px-2 py-1 rounded-lg">
+                <div className="absolute top-4 left-4 bg-indigo-600 text-white text-xs uppercase tracking-wider font-bold px-3 py-1.5 rounded-lg">
                   {t('productSection.featured')}
                 </div>
               </div>
-              <div className="p-5">
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-sm text-indigo-600 font-medium">{product.country}</span>
-                  <span className="text-lg font-bold text-gray-900">{product.price}</span>
+              
+              <div className="p-5 sm:p-6">
+                <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2">{product.name}</h3>
+                <p className="text-sm sm:text-base text-gray-600 mb-4 line-clamp-2">{product.description}</p>
+                <div className="flex justify-between items-center">
+                  <span className="text-lg sm:text-xl font-bold text-indigo-600">{product.price}</span>
+                  <motion.button
+                    className="bg-indigo-100 hover:bg-indigo-200 text-indigo-700 p-2.5 sm:p-3 rounded-full"
+                    whileHover={{ scale: 1.1, rotate: 5 }}
+                    whileTap={{ scale: 0.9 }}
+                  >
+                    <ArrowRight className="h-5 w-5" />
+                  </motion.button>
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">{product.name}</h3>
-                <motion.button
-                  className="w-full mt-4 bg-indigo-50 text-indigo-600 px-4 py-2 rounded-lg font-medium hover:bg-indigo-100 transition-colors flex items-center justify-center"
-                  whileHover={{ x: 5 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <span>{t('productSection.viewDetails')}</span>
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </motion.button>
-              </div>
-              <div className="absolute inset-0 bg-indigo-600/80 flex items-center justify-center opacity-0 hover:opacity-100 transition-all duration-300 pointer-events-none">
-                <span className="text-white font-medium text-lg">{t('productSection.comingSoon')}</span>
               </div>
             </motion.div>
           ))}

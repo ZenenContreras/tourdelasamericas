@@ -70,27 +70,27 @@ const FoodsSection = () => {
   };
 
   return (
-    <section className="py-20 bg-gradient-to-br from-amber-50 to-orange-50">
+    <section className="py-12 sm:py-16 md:py-20 bg-gradient-to-br from-amber-50 to-orange-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="text-center mb-16"
+          className="text-center mb-12 sm:mb-16"
         >
-          <div className="inline-flex items-center justify-center mb-4">
-            <Utensils className="h-8 w-8 text-amber-600 mr-3" />
-            <h2 className="text-3xl font-bold text-gray-900">{t('sections.foods')}</h2>
+          <div className="inline-flex items-center justify-center mb-4 sm:mb-6">
+            <Utensils className="h-6 w-6 sm:h-8 sm:w-8 text-amber-600 mr-2 sm:mr-3" />
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900">{t('sections.foods')}</h2>
           </div>
-          <p className="mt-4 text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="mt-3 sm:mt-4 text-lg sm:text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
             {t('foodSection.description')}
           </p>
         </motion.div>
 
         <div className="relative">
           <motion.div
-            className="grid grid-cols-1 md:grid-cols-3 gap-8"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8"
             variants={containerVariants}
             initial="hidden"
             whileInView="visible"
@@ -99,11 +99,11 @@ const FoodsSection = () => {
             {foods.map((food) => (
               <motion.div
                 key={food.id}
-                className="bg-white rounded-2xl overflow-hidden shadow-xl"
+                className="bg-white rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-shadow duration-300"
                 variants={cardVariants}
                 whileHover={{ y: -10 }}
               >
-                <div className="relative h-72 overflow-hidden">
+                <div className="relative h-64 sm:h-72 overflow-hidden">
                   <motion.img
                     src={food.image}
                     alt={food.name}
@@ -111,22 +111,22 @@ const FoodsSection = () => {
                     whileHover={{ scale: 1.05 }}
                     transition={{ duration: 0.3 }}
                   />
-                  <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-medium text-amber-700">
+                  <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-full text-sm font-medium text-amber-700">
                     {food.country}
                   </div>
                 </div>
                 
-                <div className="p-6">
+                <div className="p-5 sm:p-6">
                   <div className="flex justify-between items-start mb-4">
                     <div>
-                      <span className="text-xs uppercase tracking-wider text-amber-600 font-semibold bg-amber-100 px-2 py-1 rounded-full">
+                      <span className="text-xs uppercase tracking-wider text-amber-600 font-semibold bg-amber-100 px-2.5 py-1 rounded-full">
                         {food.category}
                       </span>
-                      <h3 className="mt-2 text-xl font-bold text-gray-900">{food.name}</h3>
+                      <h3 className="mt-2 text-lg sm:text-xl font-bold text-gray-900">{food.name}</h3>
                     </div>
                     <motion.div 
                       whileHover={{ rotate: 15 }}
-                      className="text-2xl"
+                      className="text-2xl sm:text-3xl"
                     >
                       {food.id === 1 ? '🇻🇪' : food.id === 2 ? '🇲🇽' : '🇵🇪'}
                     </motion.div>
@@ -138,7 +138,7 @@ const FoodsSection = () => {
                       <SpicyLevel level={food.spicyLevel} />
                     </div>
                     <motion.button
-                      className="bg-amber-100 hover:bg-amber-200 text-amber-700 p-3 rounded-full"
+                      className="bg-amber-100 hover:bg-amber-200 text-amber-700 p-2.5 sm:p-3 rounded-full"
                       whileHover={{ scale: 1.1, rotate: 5 }}
                       whileTap={{ scale: 0.9 }}
                     >
@@ -149,7 +149,7 @@ const FoodsSection = () => {
 
                 {/* Overlay con mensaje de proximamente */}
                 <div className="absolute inset-0 bg-amber-600/90 backdrop-blur-sm flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
-                  <span className="text-white text-xl font-bold">{t('foodSection.comingSoon')}</span>
+                  <span className="text-white text-lg sm:text-xl font-bold">{t('foodSection.comingSoon')}</span>
                 </div>
               </motion.div>
             ))}

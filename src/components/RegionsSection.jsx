@@ -52,10 +52,10 @@ const RegionsSection = () => {
   };
 
   return (
-    <section className="py-20 bg-gradient-to-br from-gray-50 to-indigo-50 relative overflow-hidden">
+    <section className="py-12 sm:py-16 md:py-20 bg-gradient-to-br from-gray-50 to-indigo-50 relative overflow-hidden">
       {/* Decorative Elements */}
       <motion.div 
-        className="absolute -top-20 -left-20 w-80 h-80 bg-indigo-300 rounded-full mix-blend-multiply opacity-20 blur-3xl"
+        className="absolute -top-20 -left-20 w-60 sm:w-80 h-60 sm:h-80 bg-indigo-300 rounded-full mix-blend-multiply opacity-20 blur-3xl"
         animate={{ 
           x: [0, 20, 0],
           y: [0, 20, 0],
@@ -63,7 +63,7 @@ const RegionsSection = () => {
         transition={{ duration: 15, repeat: Infinity, repeatType: "reverse" }}
       />
       <motion.div 
-        className="absolute -bottom-20 -right-20 w-80 h-80 bg-blue-300 rounded-full mix-blend-multiply opacity-20 blur-3xl"
+        className="absolute -bottom-20 -right-20 w-60 sm:w-80 h-60 sm:h-80 bg-blue-300 rounded-full mix-blend-multiply opacity-20 blur-3xl"
         animate={{ 
           x: [0, -20, 0],
           y: [0, -20, 0],
@@ -73,26 +73,26 @@ const RegionsSection = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <motion.div 
-          className="text-center mb-16"
+          className="text-center mb-12 sm:mb-16"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7 }}
         >
           <motion.div 
-            className="inline-flex items-center justify-center mb-4"
+            className="inline-flex items-center justify-center mb-4 sm:mb-6"
             whileHover={{ scale: 1.05 }}
           >
-            <Globe2 className="h-8 w-8 text-indigo-600 mr-3" />
-            <h2 className="text-3xl font-bold text-gray-900">{t('sections.regions')}</h2>
+            <Globe2 className="h-6 w-6 sm:h-8 sm:w-8 text-indigo-600 mr-2 sm:mr-3" />
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900">{t('sections.regions')}</h2>
           </motion.div>
-          <p className="mt-4 text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="mt-3 sm:mt-4 text-lg sm:text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
             {t('regionSection.description')}
           </p>
         </motion.div>
 
         <motion.div 
-          className="grid grid-cols-1 md:grid-cols-3 gap-10"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-10"
           variants={sectionVariants}
           initial="hidden"
           whileInView="visible"
@@ -106,7 +106,7 @@ const RegionsSection = () => {
               onHoverStart={() => setHoveredRegion(region.key)}
               onHoverEnd={() => setHoveredRegion(null)}
             >
-              <div className="relative h-[450px] overflow-hidden rounded-2xl shadow-xl">
+              <div className="relative h-[350px] sm:h-[400px] lg:h-[450px] overflow-hidden rounded-2xl shadow-xl">
                 <motion.div
                   className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/10 z-10"
                   initial={{ opacity: 0.7 }}
@@ -123,51 +123,32 @@ const RegionsSection = () => {
                   transition={{ duration: 1 }}
                 />
                 
-                <div className="absolute inset-0 z-20 flex flex-col justify-between p-8">
+                <div className="absolute inset-0 z-20 p-6 sm:p-8 flex flex-col justify-end">
                   <motion.div
-                    initial={{ x: -20, opacity: 0 }}
-                    whileInView={{ x: 0, opacity: 1 }}
-                    transition={{ delay: 0.2 + index * 0.1 }}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                      hoveredRegion === region.key ? 'bg-white' : 'bg-white/20'
-                    }`}
+                    transition={{ delay: 0.2 + index * 0.1 }}
                   >
-                    <MapPin className={`h-6 w-6 ${region.iconColor}`} />
-                  </motion.div>
-                  
-                  <div>
-                    <motion.h3 
-                      className="text-3xl font-bold text-white mb-3"
-                      initial={{ y: 20, opacity: 0 }}
-                      whileInView={{ y: 0, opacity: 1 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: 0.3 + index * 0.1 }}
-                    >
+                    <h3 className="text-2xl sm:text-3xl font-bold text-white mb-3 sm:mb-4">
                       {t(`regions.${region.key}.title`)}
-                    </motion.h3>
+                    </h3>
                     
-                    <motion.p 
-                      className="text-gray-200 mb-6"
-                      initial={{ y: 20, opacity: 0 }}
-                      whileInView={{ y: 0, opacity: 1 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: 0.4 + index * 0.1 }}
-                    >
+                    <p className="text-sm sm:text-base text-gray-200 mb-4 sm:mb-6 line-clamp-2">
                       {t(`regions.${region.key}.description`)}
-                    </motion.p>
+                    </p>
                     
-                    <motion.div
-                      className="flex flex-wrap gap-2 mb-6"
+                    <motion.div 
+                      className="flex flex-wrap gap-2 sm:gap-3 mb-4 sm:mb-6"
                       initial={{ opacity: 0 }}
                       whileInView={{ opacity: 1 }}
                       viewport={{ once: true }}
-                      transition={{ delay: 0.5 + index * 0.1 }}
+                      transition={{ delay: 0.4 + index * 0.1 }}
                     >
                       {region.countries.map((country, idx) => (
                         <motion.span 
                           key={idx}
-                          className="bg-white/10 backdrop-blur-sm text-white text-xs uppercase tracking-wider font-medium px-3 py-1 rounded-full"
+                          className="bg-white/10 backdrop-blur-sm text-white text-xs sm:text-sm uppercase tracking-wider font-medium px-3 py-1.5 rounded-full"
                           whileHover={{ 
                             backgroundColor: "rgba(255, 255, 255, 0.2)",
                             scale: 1.05 
@@ -179,14 +160,14 @@ const RegionsSection = () => {
                     </motion.div>
                     
                     <motion.button 
-                      className="flex items-center text-white hover:text-indigo-200 transition-colors gap-1 group"
+                      className="flex items-center text-white hover:text-indigo-200 transition-colors gap-2 group"
                       whileHover={{ x: 5 }}
                       initial={{ opacity: 0 }}
                       whileInView={{ opacity: 1 }}
                       viewport={{ once: true }}
                       transition={{ delay: 0.6 + index * 0.1 }}
                     >
-                      <span className="font-medium">{t('hero.explore')}</span>
+                      <span className="font-medium text-sm sm:text-base">{t('hero.explore')}</span>
                       <motion.div
                         animate={{ 
                           x: hoveredRegion === region.key ? 5 : 0
@@ -196,7 +177,7 @@ const RegionsSection = () => {
                         <ChevronRight className="h-5 w-5" />
                       </motion.div>
                     </motion.button>
-                  </div>
+                  </motion.div>
                 </div>
               </div>
               

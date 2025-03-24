@@ -109,26 +109,26 @@ const CarouselSlide = memo(({ image, t, isActive }) => {
             transition={{ duration: 0.3 }}
           >
             <motion.div
-              className="mb-2 sm:mb-4 md:mb-6 inline-block"
+              className="mb-3 sm:mb-4 md:mb-6 inline-block"
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ type: "spring", stiffness: 300, damping: 15 }}
             >
-              <div className="bg-indigo-600/90 backdrop-blur-sm text-white px-3 py-1 sm:px-4 sm:py-1.5 md:px-6 md:py-2 rounded-lg inline-block">
-                <span className="text-xs sm:text-sm uppercase tracking-wider font-semibold">Próximamente</span>
+              <div className="bg-indigo-600/90 backdrop-blur-sm text-white px-4 py-2 sm:px-6 sm:py-2.5 md:px-8 md:py-3 rounded-lg inline-block">
+                <span className="text-sm sm:text-base uppercase tracking-wider font-semibold">{t('comingSoon')}</span>
               </div>
             </motion.div>
             
             <motion.h2 
-              className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-2 sm:mb-4 leading-tight"
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white mb-3 sm:mb-4 md:mb-6 leading-tight"
               variants={textAnimation}
             >
-              <span className="text-indigo-500 block">Tour de las Americas</span>
-              <span className="block mt-2 sm:mt-2">{t(image.tagline)}</span>
+              <span className="text-indigo-400 block text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl">Tour de las Americas</span>
+              <span className="block mt-2 sm:mt-3 md:mt-4 text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl">{t(image.tagline)}</span>
             </motion.h2>
             
             <motion.p 
-              className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-200 mb-4 sm:mb-6 md:mb-8 max-w-2xl mx-auto"
+              className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-200 mb-6 sm:mb-8 md:mb-10 max-w-2xl mx-auto leading-relaxed"
               variants={{
                 initial: { opacity: 0, y: 10 },
                 animate: { opacity: 1, y: 0 }

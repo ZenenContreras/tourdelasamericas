@@ -59,20 +59,20 @@ const BoutiqueSection = () => {
     : boutique.filter(item => item.category === activeCategory);
 
   return (
-    <section className="py-20 bg-gradient-to-bl from-purple-50 to-indigo-50">
+    <section className="py-12 sm:py-16 md:py-20 bg-gradient-to-br from-purple-50 to-indigo-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="text-center mb-16"
+          className="text-center mb-12 sm:mb-16"
         >
-          <div className="inline-flex items-center justify-center mb-4">
-            <ShoppingBag className="h-8 w-8 text-purple-600 mr-3" />
-            <h2 className="text-3xl font-bold text-gray-900">{t('sections.boutique')}</h2>
+          <div className="inline-flex items-center justify-center mb-4 sm:mb-6">
+            <ShoppingBag className="h-6 w-6 sm:h-8 sm:w-8 text-purple-600 mr-2 sm:mr-3" />
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900">{t('sections.boutique')}</h2>
           </div>
-          <p className="mt-4 text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="mt-3 sm:mt-4 text-lg sm:text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
             {t('boutiqueSection.description')}
           </p>
         </motion.div>
@@ -113,157 +113,159 @@ const BoutiqueSection = () => {
           ))}
         </motion.div>
 
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeCategory}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.5 }}
-          >
-            {filteredBoutique.map((item) => (
-              <motion.div
-                key={item.id}
-                className="relative bg-white rounded-xl overflow-hidden shadow-lg"
-                whileHover={{ y: -10 }}
-                onHoverStart={() => setHoveredItem(item.id)}
-                onHoverEnd={() => setHoveredItem(null)}
-                layout
-              >
-                <div className="relative h-72 overflow-hidden">
-                  <motion.img
-                    src={item.image}
-                    alt={item.name}
-                    className="w-full h-full object-cover"
-                    initial={{ scale: 1 }}
-                    whileHover={{ scale: 1.1 }}
-                    transition={{ duration: 0.4 }}
-                  />
+        <div className="relative">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeCategory}
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.5 }}
+            >
+              {filteredBoutique.map((item) => (
+                <motion.div
+                  key={item.id}
+                  className="relative bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300"
+                  whileHover={{ y: -10 }}
+                  onHoverStart={() => setHoveredItem(item.id)}
+                  onHoverEnd={() => setHoveredItem(null)}
+                  layout
+                >
+                  <div className="relative h-64 sm:h-72 overflow-hidden">
+                    <motion.img
+                      src={item.image}
+                      alt={item.name}
+                      className="w-full h-full object-cover"
+                      initial={{ scale: 1 }}
+                      whileHover={{ scale: 1.1 }}
+                      transition={{ duration: 0.4 }}
+                    />
+                    
+                    <div className="absolute top-4 left-4">
+                      {item.isFeatured && (
+                        <motion.div
+                          className="bg-purple-600 text-white py-1.5 px-3 rounded-full text-xs uppercase tracking-wider font-semibold"
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: 0.2 }}
+                        >
+                          {t('boutiqueSection.featured')}
+                        </motion.div>
+                      )}
+                    </div>
+                    
+                    <motion.div
+                      className="absolute top-4 right-4 bg-white/80 backdrop-blur-sm p-2.5 rounded-full"
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                    >
+                      <Heart className={`h-5 w-5 ${hoveredItem === item.id ? 'text-red-500 fill-current' : 'text-gray-600'}`} />
+                    </motion.div>
+                  </div>
                   
-                  <div className="absolute top-4 left-4">
-                    {item.isFeatured && (
-                      <motion.div
-                        className="bg-purple-600 text-white py-1 px-3 rounded-full text-xs uppercase tracking-wider font-semibold"
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.2 }}
+                  <div className="p-5 sm:p-6">
+                    <div className="flex justify-between items-start mb-3">
+                      <h3 className="text-lg sm:text-xl font-bold text-gray-900">{item.name}</h3>
+                      <span className="text-lg sm:text-xl font-semibold text-purple-600">{item.price}</span>
+                    </div>
+                    
+                    <div className="mb-4">
+                      <span className="text-sm sm:text-base text-gray-600">{item.origin}</span>
+                    </div>
+                    
+                    <div className="flex gap-2 sm:gap-3">
+                      <motion.button
+                        className="flex-1 bg-purple-600 text-white py-2.5 px-4 rounded-lg font-medium hover:bg-purple-700 transition-colors"
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
                       >
-                        {t('boutiqueSection.featured')}
-                      </motion.div>
-                    )}
+                        {t('boutiqueSection.notifyMe')}
+                      </motion.button>
+                      <motion.button
+                        className="bg-gray-100 text-gray-700 p-2.5 rounded-lg hover:bg-gray-200 transition-colors"
+                        whileHover={{ scale: 1.1, rotate: 5 }}
+                        whileTap={{ scale: 0.9 }}
+                      >
+                        <ArrowRight className="h-5 w-5" />
+                      </motion.button>
+                    </div>
                   </div>
                   
+                  {/* Coming Soon Overlay */}
                   <motion.div
-                    className="absolute top-4 right-4 bg-white/80 backdrop-blur-sm p-2 rounded-full"
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
+                    className="absolute inset-0 bg-purple-800/80 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center"
+                    initial={{ opacity: 0 }}
+                    whileHover={{ opacity: 1 }}
+                    transition={{ duration: 0.3 }}
                   >
-                    <Heart className={`h-5 w-5 ${hoveredItem === item.id ? 'text-red-500 fill-current' : 'text-gray-600'}`} />
-                  </motion.div>
-                </div>
-                
-                <div className="p-6">
-                  <div className="flex justify-between items-start mb-2">
-                    <h3 className="text-lg font-bold text-gray-900">{item.name}</h3>
-                    <span className="text-lg font-semibold text-purple-600">{item.price}</span>
-                  </div>
-                  
-                  <div className="mb-4">
-                    <span className="text-sm text-gray-600">{item.origin}</span>
-                  </div>
-                  
-                  <div className="flex gap-2">
+                    <motion.span 
+                      className="text-white text-xl sm:text-2xl font-bold mb-3 sm:mb-4"
+                      initial={{ y: 20, opacity: 0 }}
+                      whileHover={{ y: 0, opacity: 1 }}
+                      transition={{ delay: 0.1 }}
+                    >
+                      {t('boutiqueSection.comingSoon')}
+                    </motion.span>
+                    <motion.p
+                      className="text-white/90 mb-4 sm:mb-6 text-sm sm:text-base"
+                      initial={{ y: 20, opacity: 0 }}
+                      whileHover={{ y: 0, opacity: 1 }}
+                      transition={{ delay: 0.2 }}
+                    >
+                      {t('boutiqueSection.exclusiveCollection')}
+                    </motion.p>
                     <motion.button
-                      className="flex-1 bg-purple-600 text-white py-2 px-4 rounded-lg font-medium hover:bg-purple-700 transition-colors"
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
+                      className="bg-white text-purple-700 px-6 py-2.5 rounded-full font-medium hover:bg-purple-50"
+                      initial={{ y: 20, opacity: 0 }}
+                      whileHover={{ y: 0, opacity: 1, scale: 1.05 }}
+                      transition={{ delay: 0.3 }}
+                      whileTap={{ scale: 0.95 }}
                     >
                       {t('boutiqueSection.notifyMe')}
                     </motion.button>
-                    <motion.button
-                      className="bg-gray-100 text-gray-700 p-2 rounded-lg hover:bg-gray-200 transition-colors"
-                      whileHover={{ scale: 1.1, rotate: 5 }}
-                      whileTap={{ scale: 0.9 }}
-                    >
-                      <ArrowRight className="h-5 w-5" />
-                    </motion.button>
-                  </div>
-                </div>
-                
-                {/* Coming Soon Overlay */}
-                <motion.div
-                  className="absolute inset-0 bg-purple-800/80 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center"
-                  initial={{ opacity: 0 }}
-                  whileHover={{ opacity: 1 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <motion.span 
-                    className="text-white text-2xl font-bold mb-4"
-                    initial={{ y: 20, opacity: 0 }}
-                    whileHover={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.1 }}
-                  >
-                    {t('boutiqueSection.comingSoon')}
-                  </motion.span>
-                  <motion.p
-                    className="text-white/90 mb-6"
-                    initial={{ y: 20, opacity: 0 }}
-                    whileHover={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.2 }}
-                  >
-                    {t('boutiqueSection.exclusiveCollection')}
-                  </motion.p>
-                  <motion.button
-                    className="bg-white text-purple-700 px-6 py-2 rounded-full font-medium hover:bg-purple-50"
-                    initial={{ y: 20, opacity: 0 }}
-                    whileHover={{ y: 0, opacity: 1, scale: 1.05 }}
-                    transition={{ delay: 0.3 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    {t('boutiqueSection.notifyMe')}
-                  </motion.button>
+                  </motion.div>
                 </motion.div>
-              </motion.div>
-            ))}
-          </motion.div>
-        </AnimatePresence>
-        
-        {/* Decorative elements */}
-        <div className="relative mt-16">
-          <motion.div
-            className="absolute -top-20 -left-20 w-40 h-40 bg-purple-200 rounded-full opacity-20 blur-xl"
-            animate={{ 
-              x: [0, 20, 0],
-              y: [0, -20, 0]
-            }}
-            transition={{ duration: 8, repeat: Infinity }}
-          />
-          <motion.div
-            className="absolute -bottom-20 -right-20 w-60 h-60 bg-indigo-200 rounded-full opacity-20 blur-xl"
-            animate={{ 
-              x: [0, -30, 0],
-              y: [0, 30, 0]
-            }}
-            transition={{ duration: 10, repeat: Infinity }}
-          />
+              ))}
+            </motion.div>
+          </AnimatePresence>
           
-          <motion.div
-            className="relative text-center"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.5 }}
-          >
-            <motion.button
-              className="inline-flex items-center bg-purple-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-purple-700 transition-colors"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+          {/* Decorative elements */}
+          <div className="relative mt-16">
+            <motion.div
+              className="absolute -top-20 -left-20 w-40 h-40 bg-purple-200 rounded-full opacity-20 blur-xl"
+              animate={{ 
+                x: [0, 20, 0],
+                y: [0, -20, 0]
+              }}
+              transition={{ duration: 8, repeat: Infinity }}
+            />
+            <motion.div
+              className="absolute -bottom-20 -right-20 w-60 h-60 bg-indigo-200 rounded-full opacity-20 blur-xl"
+              animate={{ 
+                x: [0, -30, 0],
+                y: [0, 30, 0]
+              }}
+              transition={{ duration: 10, repeat: Infinity }}
+            />
+            
+            <motion.div
+              className="relative text-center"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.5 }}
             >
-              {t('boutiqueSection.viewMore')}
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </motion.button>
-          </motion.div>
+              <motion.button
+                className="inline-flex items-center bg-purple-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-purple-700 transition-colors"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                {t('boutiqueSection.viewMore')}
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </motion.button>
+            </motion.div>
+          </div>
         </div>
       </div>
     </section>

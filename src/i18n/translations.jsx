@@ -48,6 +48,7 @@ export const translations = {
       chile: 'Explore Natural Wonders'
     },
     storeDescription: 'Our exclusive store is coming soon, bringing you the most authentic products from all across the Americas. Prepare your senses for an unforgettable experience.',
+    comingSoon: 'Coming Soon',
     storeComingSoon: 'Register for Exclusive Early Access',
     productSection: {
       description: 'Explore our curated selection of authentic products from across the Americas. Each item tells a story of tradition and craftsmanship.',
@@ -63,16 +64,16 @@ export const translations = {
       viewAll: 'Explore All Foods'
     },
     boutiqueSection: {
-      description: 'Discover our exclusive collection of handcrafted items that blend tradition with contemporary style.',
+      description: 'Discover our exclusive collection of handcrafted items from across the Americas',
       allCategories: 'All Categories',
       clothing: 'Clothing',
       jewelry: 'Jewelry',
       accessories: 'Accessories',
       featured: 'Featured',
-      comingSoon: 'Coming Soon',
-      exclusiveCollection: 'Be the first to discover our exclusive collection',
       notifyMe: 'Notify Me',
-      viewMore: 'Browse Collection'
+      viewMore: 'View More',
+      comingSoon: 'Coming Soon',
+      exclusiveCollection: 'Exclusive Collection Coming Soon'
     },
     regionSection: {
       description: 'Discover the diverse regions of the Americas, each with its unique traditions, flavors, and handcrafted treasures waiting to be explored.',
@@ -129,6 +130,7 @@ export const translations = {
       chile: 'Explora Maravillas Naturales'
     },
     storeDescription: 'Nuestra tienda exclusiva estará disponible muy pronto, trayendo los productos más auténticos de todas las Américas. Prepara tus sentidos para una experiencia inolvidable.',
+    comingSoon: 'Próximamente',
     storeComingSoon: 'Regístrate para Acceso Anticipado Exclusivo',
     productSection: {
       description: 'Explora nuestra selección cuidadosamente elegida de productos auténticos de todas las Américas. Cada artículo cuenta una historia de tradición y artesanía.',
@@ -144,16 +146,16 @@ export const translations = {
       viewAll: 'Explorar Todas las Comidas'
     },
     boutiqueSection: {
-      description: 'Descubre nuestra colección exclusiva de artículos hechos a mano que combinan la tradición con el estilo contemporáneo.',
+      description: 'Descubre nuestra colección exclusiva de artículos artesanales de las Américas',
       allCategories: 'Todas las Categorías',
       clothing: 'Ropa',
       jewelry: 'Joyería',
       accessories: 'Accesorios',
       featured: 'Destacado',
-      comingSoon: 'Próximamente',
-      exclusiveCollection: 'Sé el primero en descubrir nuestra colección exclusiva',
       notifyMe: 'Notificarme',
-      viewMore: 'Explorar Colección'
+      viewMore: 'Ver Más',
+      comingSoon: 'Próximamente',
+      exclusiveCollection: 'Colección Exclusiva Próximamente'
     },
     regionSection: {
       description: 'Descubre las diversas regiones de las Américas, cada una con sus tradiciones únicas, sabores y tesoros artesanales esperando ser explorados.',
@@ -210,6 +212,7 @@ export const translations = {
       chile: 'Explorez des Merveilles Naturelles'
     },
     storeDescription: 'Notre boutique exclusive ouvrira bientôt, vous apportant les produits les plus authentiques de toutes les Amériques. Préparez vos sens pour une expérience inoubliable.',
+    comingSoon: 'Bientôt Disponible',
     storeComingSoon: 'Inscrivez-vous pour un Accès Anticipé Exclusif',
     productSection: {
       description: 'Explorez notre sélection soignée de produits authentiques des Amériques. Chaque article raconte une histoire de tradition et d\'artisanat.',
@@ -225,16 +228,16 @@ export const translations = {
       viewAll: 'Explorer Toutes les Cuisines'
     },
     boutiqueSection: {
-      description: 'Découvrez notre collection exclusive d\'articles faits à la main qui allient tradition et style contemporain.',
+      description: 'Découvrez notre collection exclusive d\'articles artisanaux des Amériques',
       allCategories: 'Toutes les Catégories',
       clothing: 'Vêtements',
       jewelry: 'Bijoux',
       accessories: 'Accessoires',
       featured: 'En Vedette',
-      comingSoon: 'Bientôt Disponible',
-      exclusiveCollection: 'Soyez le premier à découvrir notre collection exclusive',
       notifyMe: 'Me Notifier',
-      viewMore: 'Parcourir la Collection'
+      viewMore: 'Voir Plus',
+      comingSoon: 'Bientôt Disponible',
+      exclusiveCollection: 'Collection Exclusive Bientôt Disponible'
     },
     regionSection: {
       description: 'Découvrez les diverses régions des Amériques, chacune avec ses traditions uniques, ses saveurs et ses trésors artisanaux qui attendent d\'être explorés.',
