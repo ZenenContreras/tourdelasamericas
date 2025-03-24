@@ -107,8 +107,8 @@ const ProductsSection = () => {
                   src={product.image}
                   alt={product.name}
                   className="w-full h-full object-cover"
-                  whileHover={{ scale: 1.1 }}
-                  transition={{ duration: 0.5 }}
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ duration: 0.3, ease: "easeOut" }}
                 />
                 <div className="absolute top-4 right-4 bg-white px-2 py-1 rounded-lg shadow-sm">
                   <div className="flex items-center space-x-1">
@@ -129,12 +129,13 @@ const ProductsSection = () => {
                 <motion.button
                   className="w-full mt-4 bg-indigo-50 text-indigo-600 px-4 py-2 rounded-lg font-medium hover:bg-indigo-100 transition-colors flex items-center justify-center"
                   whileHover={{ x: 5 }}
+                  transition={{ duration: 0.2 }}
                 >
                   <span>{t('productSection.viewDetails')}</span>
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </motion.button>
               </div>
-              <div className="absolute inset-0 bg-indigo-600/80 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
+              <div className="absolute inset-0 bg-indigo-600/80 flex items-center justify-center opacity-0 hover:opacity-100 transition-all duration-300 pointer-events-none">
                 <span className="text-white font-medium text-lg">{t('productSection.comingSoon')}</span>
               </div>
             </motion.div>
