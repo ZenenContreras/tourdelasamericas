@@ -53,7 +53,7 @@ const LanguageSelector = ({ inverted = false, isMobile = false, isTransparent = 
       >
         <motion.button
           className={`flex items-center justify-center rounded-full w-10 h-10 ${
-            isTransparent || inverted
+            false // Nunca usar modo transparente
               ? 'bg-white/10 backdrop-blur-sm border border-white/20 text-white hover:bg-white/20' 
               : 'bg-indigo-50 border border-indigo-100 text-indigo-600 hover:bg-indigo-100'
           } transition-all fast-transition animate-gpu`}
@@ -115,7 +115,7 @@ const LanguageSelector = ({ inverted = false, isMobile = false, isTransparent = 
     >
       <motion.button
         className={`flex items-center gap-2 px-3 py-2 rounded-full ${
-          isTransparent || inverted
+          false // Nunca usar modo transparente
             ? 'bg-white/10 backdrop-blur-sm border border-white/20 text-white hover:bg-white/20' 
             : 'bg-white/10 border border-indigo-100 text-indigo-600 hover:bg-indigo-50'
         } transition-all shadow-sm swift-transition`}
@@ -127,7 +127,7 @@ const LanguageSelector = ({ inverted = false, isMobile = false, isTransparent = 
         <motion.span
           animate={{ rotate: isOpen ? 180 : 0 }}
           transition={{ duration: 0.3 }}
-          className={isTransparent || inverted ? "text-white" : "text-indigo-600"}
+          className="text-indigo-600"
         >
           ▼
         </motion.span>

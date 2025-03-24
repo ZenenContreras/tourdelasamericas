@@ -195,7 +195,7 @@ const ImageCarousel = () => {
         modules={[Autoplay, EffectFade, Pagination, Navigation, A11y]}
         effect="fade"
         autoplay={{
-          delay: 6000,
+          delay: 3500,
           disableOnInteraction: false,
         }}
         pagination={{

@@ -183,17 +183,12 @@ const Navbar = ({ scrollToRef, homeRef }) => {
   const getNavbarClasses = () => {
     console.log('getNavbarClasses - isHomePage:', isHomePage, 'isScrolled:', isScrolled);
     
-    // Si no estamos en la página de inicio, o estamos scrolleados, usar fondo blanco
-    if (!isHomePage || isScrolled) {
-      return "fixed w-full z-50 transition-all duration-300 bg-white shadow-md";
-    }
-    
-    // Si estamos en la página de inicio y no hemos scrolleado, ser transparente
-    return "fixed w-full z-50 transition-all duration-300 bg-transparent";
+    // Siempre usar fondo blanco con sombra
+    return "fixed w-full z-50 transition-all duration-300 bg-white shadow-md";
   };
   
-  // Determinar si los textos deben ser blancos (en home sin scroll) o normales
-  const isTransparentNav = isHomePage && !isScrolled;
+  // El navbar siempre tendrá texto oscuro
+  const isTransparentNav = false;
 
   return (
     <>
