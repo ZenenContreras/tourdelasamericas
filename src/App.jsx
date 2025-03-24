@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, Suspense, lazy } from 'react';
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { motion, useScroll, useSpring } from 'framer-motion';
 import { useLanguage } from './contexts/LanguageContext';
 import Navbar from './components/Navbar';
@@ -70,27 +70,33 @@ function App() {
           targetRef = regionsRef;
           break;
         case '/':
+        case '/home':
+          targetRef = homeRef;
+          break;
         default:
+          // Si la ruta no existe, redirigimos a home
+          window.history.replaceState(null, '', '/');
           targetRef = homeRef;
           break;
       }
 
       if (targetRef && targetRef.current) {
-        scrollToRef(targetRef);
+        // Pequeño retraso para asegurar que la página se ha renderizado completamente
+        setTimeout(() => {
+          scrollToRef(targetRef);
+        }, 100);
       }
     };
 
-    // Tiempo reducido para una respuesta más rápida
-    const timer = setTimeout(scrollToSection, 50);
-    return () => clearTimeout(timer);
+    scrollToSection();
   }, [location.pathname]);
 
   // Observer para detectar secciones visibles y actualizar URL sin navegación
   useEffect(() => {
     const options = {
       root: null,
-      rootMargin: '-50% 0px -50% 0px',
-      threshold: 0
+      rootMargin: '-30% 0px -70% 0px', // Ajustado para mejor detección
+      threshold: 0.1
     };
 
     const handleIntersect = (entries) => {
@@ -110,11 +116,19 @@ function App() {
     const observer = new IntersectionObserver(handleIntersect, options);
 
     // Observar todas las secciones
-    if (homeRef.current) observer.observe(homeRef.current);
-    if (productsRef.current) observer.observe(productsRef.current);
-    if (foodsRef.current) observer.observe(foodsRef.current);
-    if (boutiqueRef.current) observer.observe(boutiqueRef.current);
-    if (regionsRef.current) observer.observe(regionsRef.current);
+    const sections = [
+      { ref: homeRef, id: 'home' },
+      { ref: productsRef, id: 'products' },
+      { ref: foodsRef, id: 'foods' },
+      { ref: boutiqueRef, id: 'boutique' },
+      { ref: regionsRef, id: 'regions' }
+    ];
+
+    sections.forEach(section => {
+      if (section.ref && section.ref.current) {
+        observer.observe(section.ref.current);
+      }
+    });
 
     return () => {
       observer.disconnect();
@@ -132,7 +146,7 @@ function App() {
       <Navbar scrollToRef={scrollToRef} homeRef={homeRef} />
       
       {/* Sección de inicio */}
-      <div ref={homeRef} id="home" className="relative h-screen w-full">
+      <div ref={homeRef} id="home" className="relative h-screen w-full section-container">
         <ImageCarousel />
         
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
@@ -194,22 +208,22 @@ function App() {
       {/* Secciones con Suspense para carga lenta */}
       <Suspense fallback={<Loading />}>
         {/* Sección de productos */}
-        <div ref={productsRef} id="products">
+        <div ref={productsRef} id="products" className="section-container">
           <ProductsSection />
         </div>
         
         {/* Sección de comidas */}
-        <div ref={foodsRef} id="foods">
+        <div ref={foodsRef} id="foods" className="section-container">
           <FoodsSection />
         </div>
         
         {/* Sección de boutique */}
-        <div ref={boutiqueRef} id="boutique">
+        <div ref={boutiqueRef} id="boutique" className="section-container">
           <BoutiqueSection />
         </div>
         
         {/* Sección de regiones */}
-        <div ref={regionsRef} id="regions">
+        <div ref={regionsRef} id="regions" className="section-container">
           <RegionsSection />
         </div>
       </Suspense>
@@ -217,12 +231,14 @@ function App() {
       <Footer />
       
       {/* Rutas para mantener la navegación por URL */}
-      <Routes location={location}>
+      <Routes>
         <Route path="/" element={<></>} />
+        <Route path="/home" element={<Navigate to="/" replace />} />
         <Route path="/products" element={<></>} />
         <Route path="/foods" element={<></>} />
         <Route path="/boutique" element={<></>} />
         <Route path="/regions" element={<></>} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </div>
   );

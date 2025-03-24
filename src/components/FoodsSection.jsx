@@ -10,7 +10,7 @@ const FoodsSection = () => {
     {
       id: 1,
       name: 'Arepas Venezolanas',
-      image: 'https://images.unsplash.com/photo-1617527018544-8b85e65283c7?auto=format&fit=crop&q=80',
+      image: 'https://cdn.pixabay.com/photo/2016/05/08/15/02/arepa-1379236_1280.jpg',
       country: 'Venezuela',
       category: 'Plato Principal',
       spicyLevel: 1
@@ -26,7 +26,7 @@ const FoodsSection = () => {
     {
       id: 3,
       name: 'Ceviche Peruano',
-      image: 'https://images.unsplash.com/photo-1632010751623-fd0dc55a7d0c?auto=format&fit=crop&q=80',
+      image: 'https://cdn.pixabay.com/photo/2020/01/02/21/31/shrimp-4736867_1280.jpg',
       country: 'Perú',
       category: 'Entradas',
       spicyLevel: 2

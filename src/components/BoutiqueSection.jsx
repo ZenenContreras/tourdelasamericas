@@ -18,8 +18,8 @@ const BoutiqueSection = () => {
   const boutique = [
     {
       id: 1,
-      name: 'Huipil Mexicano',
-      image: 'https://images.unsplash.com/photo-1606743628895-1c7c00b7b322?auto=format&fit=crop&q=80',
+      name: 'sombrero Mexicano',
+      image: 'https://cdn.pixabay.com/photo/2016/11/18/01/05/sombrero-1833089_1280.jpg',
       category: 'clothing',
       price: '$149.99',
       origin: 'México',
@@ -28,7 +28,7 @@ const BoutiqueSection = () => {
     {
       id: 2,
       name: 'Aretes de Filigrana',
-      image: 'https://images.unsplash.com/photo-1579037873544-f5d937d9b1e4?auto=format&fit=crop&q=80',
+      image: 'https://cdn.pixabay.com/photo/2017/10/29/20/27/earrings-2900740_1280.jpg',
       category: 'jewelry',
       price: '$79.99',
       origin: 'Colombia',
@@ -37,7 +37,7 @@ const BoutiqueSection = () => {
     {
       id: 3,
       name: 'Sombrero de Paja Toquilla',
-      image: 'https://images.unsplash.com/photo-1583507262027-d2abd6cab047?auto=format&fit=crop&q=80',
+      image: 'https://cdn.pixabay.com/photo/2013/08/30/12/06/sombrero-177347_960_720.jpg',
       category: 'accessories',
       price: '$159.99',
       origin: 'Ecuador',

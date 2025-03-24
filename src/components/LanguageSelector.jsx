@@ -116,8 +116,8 @@ const LanguageSelector = ({ inverted = false, isMobile = false, onLanguageChange
       <motion.button
         className={`flex items-center gap-2 px-3 py-2 rounded-full ${
           inverted 
-            ? 'bg-white/10 backdrop-blur-sm border border-white/20 text-white hover:bg-white/20' 
-            : 'bg-white/10 backdrop-blur-sm border border-indigo-100 text-indigo-600 hover:bg-indigo-50'
+            ? 'bg-white/10 border border-white/20 text-white hover:bg-white/20' 
+            : 'bg-white/10 border border-indigo-100 text-indigo-600 hover:bg-indigo-50'
         } transition-all shadow-sm swift-transition`}
         onClick={() => setIsOpen(!isOpen)}
         whileTap={{ scale: 0.95 }}

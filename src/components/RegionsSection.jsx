@@ -16,7 +16,7 @@ const RegionsSection = () => {
     },
     {
       key: 'centralAmerica',
-      image: "https://images.unsplash.com/photo-1589659072419-2fce34e35f04?auto=format&fit=crop&q=80",
+      image: "https://cdn.pixabay.com/photo/2019/07/29/14/14/old-town-panama-4370667_1280.jpg",
       countries: ['Guatemala', 'Costa Rica', 'Panamá', 'Honduras'],
       iconColor: "text-emerald-500"
     },

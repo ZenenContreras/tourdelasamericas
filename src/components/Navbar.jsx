@@ -17,6 +17,11 @@ const Navbar = ({ scrollToRef, homeRef }) => {
 
   // Controlar la transparencia del navbar al hacer scroll
   useEffect(() => {
+    // Verificar scroll inicial
+    if (window.scrollY > 50) {
+      setIsScrolled(true);
+    }
+    
     const handleScroll = () => {
       if (window.scrollY > 50) {
         setIsScrolled(true);
@@ -41,21 +46,58 @@ const Navbar = ({ scrollToRef, homeRef }) => {
     };
   }, [isMobileMenuOpen]);
 
+  // Obtener referencia según el ID de la sección
+  const getRefForId = (id) => {
+    if (id === 'home') return homeRef;
+    
+    const element = document.getElementById(id);
+    return element ? { current: element } : null;
+  };
+
   // Función mejorada para navegar y hacer scroll
-  const handleNavClick = (path, ref) => {
-    navigate(path);
-    if (scrollToRef && ref) {
-      scrollToRef(ref);
-    }
+  const handleNavClick = (id, path) => {
+    // Cerrar el menú móvil si está abierto
     setIsMobileMenuOpen(false);
+    
+    // Primero actualizamos la ruta
+    if (location.pathname !== path) {
+      navigate(path);
+    }
+    
+    // Luego buscamos la referencia y hacemos scroll
+    setTimeout(() => {
+      const targetRef = getRefForId(id);
+      
+      if (scrollToRef && targetRef) {
+        scrollToRef(targetRef);
+      } else {
+        // Fallback directo si scrollToRef no está disponible
+        const element = document.getElementById(id);
+        if (element) {
+          const yOffset = -80; // Ajuste para el navbar
+          const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+          window.scrollTo({
+            top: y,
+            behavior: 'smooth'
+          });
+        } else if (id === 'home' && homeRef && homeRef.current) {
+          const yOffset = -80;
+          const y = homeRef.current.getBoundingClientRect().top + window.pageYOffset + yOffset;
+          window.scrollTo({
+            top: y,
+            behavior: 'smooth'
+          });
+        }
+      }
+    }, 200); // Mayor tiempo de espera para asegurarnos de que todo esté cargado
   };
 
   const navLinks = [
-    { path: '/', name: t('nav.home'), ref: homeRef },
-    { path: '/products', name: t('nav.products') },
-    { path: '/foods', name: t('nav.foods') },
-    { path: '/boutique', name: t('nav.boutique') },
-    { path: '/regions', name: t('nav.regions') }
+    { id: 'home', path: '/', name: t('nav.home') },
+    { id: 'products', path: '/products', name: t('nav.products') },
+    { id: 'foods', path: '/foods', name: t('nav.foods') },
+    { id: 'boutique', path: '/boutique', name: t('nav.boutique') },
+    { id: 'regions', path: '/regions', name: t('nav.regions') }
   ];
 
   const activeNavLinkClass = "text-indigo-600 font-medium";
@@ -151,7 +193,7 @@ const Navbar = ({ scrollToRef, homeRef }) => {
               whileTap={{ scale: 0.97 }}
             >
               <button 
-                onClick={() => handleNavClick('/', homeRef)} 
+                onClick={() => handleNavClick('home', '/')} 
                 className="flex items-center"
                 aria-label="Ir al inicio"
               >
@@ -166,13 +208,12 @@ const Navbar = ({ scrollToRef, homeRef }) => {
             <div className="hidden md:flex items-center space-x-4 lg:space-x-8">
               {navLinks.map((link) => (
                 <motion.button
-                  key={link.path}
-                  onClick={() => handleNavClick(link.path, link.ref)}
-                  className={
-                    location.pathname === link.path 
-                      ? activeNavLinkClass 
-                      : `${normalNavLinkClass} ${!isScrolled && isHomePage ? 'text-white hover:text-indigo-100' : ''}`
-                  }
+                  key={link.id}
+                  onClick={() => handleNavClick(link.id, link.path)}
+                  className={`
+                    ${location.pathname === link.path ? activeNavLinkClass : normalNavLinkClass}
+                    ${!isScrolled && isHomePage ? 'text-white hover:text-indigo-100' : ''}
+                  `}
                   whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.97 }}
                 >
@@ -236,7 +277,7 @@ const Navbar = ({ scrollToRef, homeRef }) => {
               >
                 {navLinks.map((link, index) => (
                   <motion.div 
-                    key={link.path} 
+                    key={link.id} 
                     variants={itemVariants}
                     custom={index}
                     className="mb-2"
@@ -247,7 +288,7 @@ const Navbar = ({ scrollToRef, homeRef }) => {
                           ? 'bg-indigo-50 text-indigo-600' 
                           : 'text-gray-700 hover:bg-gray-50'
                       } transition-colors fast-transition animate-gpu`}
-                      onClick={() => handleNavClick(link.path, link.ref)}
+                      onClick={() => handleNavClick(link.id, link.path)}
                     >
                       <span>{link.name}</span>
                       <ChevronRight className={`h-4 w-4 ${location.pathname === link.path ? 'text-indigo-500' : 'text-gray-400'}`} />

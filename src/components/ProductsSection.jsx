@@ -10,7 +10,7 @@ const ProductsSection = () => {
     {
       id: 1,
       name: 'Poncho Colorido Andino',
-      image: 'https://images.unsplash.com/photo-1604397576410-089a0458d665?auto=format&fit=crop&q=80',
+      image: 'https://cdn.pixabay.com/photo/2017/08/10/08/06/clothes-2619832_960_720.jpg',
       country: 'Perú',
       price: '$79.99',
       rating: 4.9
@@ -26,7 +26,7 @@ const ProductsSection = () => {
     {
       id: 3,
       name: 'Árbol de la Vida Mexicano',
-      image: 'https://images.unsplash.com/photo-1618250363204-32708dc0e1ae?auto=format&fit=crop&q=80',
+      image: 'https://cdn.pixabay.com/photo/2017/08/01/06/29/arbol-solo-2563203_1280.jpg',
       country: 'México',
       price: '$129.99',
       rating: 5.0
