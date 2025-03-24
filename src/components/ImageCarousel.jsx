@@ -123,7 +123,7 @@ const CarouselSlide = memo(({ image, t, isActive }) => {
               className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white mb-3 sm:mb-4 md:mb-6 leading-tight"
               variants={textAnimation}
             >
-              <span className="text-indigo-400 block text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl">Tour de las Americas</span>
+              <span className="text-indigo-400 block text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl">Amériques</span>
               <span className="block mt-2 sm:mt-3 md:mt-4 text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl">{t(image.tagline)}</span>
             </motion.h2>
             
