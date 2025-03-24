@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { Globe2 } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
-const LanguageSelector = ({ inverted = false, isMobile = false }) => {
+const LanguageSelector = ({ inverted = false, isMobile = false, onLanguageChange = null }) => {
   const { language, setLanguage } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
+  const ref = useRef(null);
 
   const languageOptions = [
     { value: 'es', label: 'Español', flag: '🇪🇸' },
@@ -15,6 +16,31 @@ const LanguageSelector = ({ inverted = false, isMobile = false }) => {
 
   const currentLanguage = languageOptions.find(option => option.value === language);
   
+  // Manejar clics fuera del componente
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (ref.current && !ref.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [ref]);
+  
+  // Cambiar el idioma y notificar al componente padre si es necesario
+  const handleLanguageChange = (langValue) => {
+    setLanguage(langValue);
+    setIsOpen(false);
+    
+    // Notificar al componente padre (útil para cerrar el menú móvil)
+    if (onLanguageChange) {
+      onLanguageChange();
+    }
+  };
+  
   // Variante más pequeña para dispositivos móviles
   if (isMobile) {
     return (
@@ -23,6 +49,7 @@ const LanguageSelector = ({ inverted = false, isMobile = false }) => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         whileHover={{ scale: 1.05 }}
+        ref={ref}
       >
         <motion.button
           className={`flex items-center justify-center rounded-full w-8 h-8 ${
@@ -37,43 +64,42 @@ const LanguageSelector = ({ inverted = false, isMobile = false }) => {
           <Globe2 className="h-4 w-4" />
         </motion.button>
 
-        {isOpen && (
-          <motion.div 
-            className="absolute mt-2 right-0 w-36 bg-white rounded-lg shadow-lg overflow-hidden z-50 border border-gray-100"
-            initial={{ opacity: 0, y: -5 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -5 }}
-            transition={{ duration: 0.15 }}
-          >
-            {languageOptions.map((option) => (
-              <motion.button
-                key={option.value}
-                className={`w-full text-left px-3 py-2 flex items-center gap-2 text-sm ${
-                  language === option.value ? 'bg-indigo-50 text-indigo-600' : 'text-gray-700 hover:bg-gray-50'
-                }`}
-                onClick={() => {
-                  setLanguage(option.value);
-                  setIsOpen(false);
-                }}
-                whileHover={{ x: 3 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <span>{option.flag}</span>
-                <span>{option.label}</span>
-                {language === option.value && (
-                  <motion.span 
-                    className="ml-auto text-indigo-600"
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    transition={{ type: "spring", stiffness: 300, damping: 10 }}
-                  >
-                    ✓
-                  </motion.span>
-                )}
-              </motion.button>
-            ))}
-          </motion.div>
-        )}
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div 
+              className="absolute mt-2 right-0 w-36 bg-white rounded-lg shadow-lg overflow-hidden z-50 border border-gray-100"
+              initial={{ opacity: 0, y: -5, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -5, scale: 0.95 }}
+              transition={{ duration: 0.15 }}
+            >
+              {languageOptions.map((option) => (
+                <motion.button
+                  key={option.value}
+                  className={`w-full text-left px-3 py-2 flex items-center gap-2 text-sm ${
+                    language === option.value ? 'bg-indigo-50 text-indigo-600' : 'text-gray-700 hover:bg-gray-50'
+                  }`}
+                  onClick={() => handleLanguageChange(option.value)}
+                  whileHover={{ x: 3 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <span>{option.flag}</span>
+                  <span>{option.label}</span>
+                  {language === option.value && (
+                    <motion.span 
+                      className="ml-auto text-indigo-600"
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      transition={{ type: "spring", stiffness: 300, damping: 10 }}
+                    >
+                      ✓
+                    </motion.span>
+                  )}
+                </motion.button>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </motion.div>
     );
   }
@@ -85,6 +111,7 @@ const LanguageSelector = ({ inverted = false, isMobile = false }) => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       whileHover={{ scale: 1.05 }}
+      ref={ref}
     >
       <motion.button
         className={`flex items-center gap-2 px-3 py-2 rounded-full ${
@@ -105,40 +132,39 @@ const LanguageSelector = ({ inverted = false, isMobile = false }) => {
         </motion.span>
       </motion.button>
 
-      {isOpen && (
-        <motion.div 
-          className="absolute mt-2 right-0 w-40 bg-white rounded-lg shadow-lg overflow-hidden z-50 border border-gray-100"
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -10 }}
-          transition={{ duration: 0.2 }}
-        >
-          {languageOptions.map((option) => (
-            <motion.button
-              key={option.value}
-              className={`w-full text-left px-4 py-2 flex items-center gap-2 ${language === option.value ? 'bg-indigo-50 text-indigo-600' : 'text-gray-700 hover:bg-gray-50'}`}
-              onClick={() => {
-                setLanguage(option.value);
-                setIsOpen(false);
-              }}
-              whileHover={{ x: 5 }}
-            >
-              <span>{option.flag}</span>
-              <span>{option.label}</span>
-              {language === option.value && (
-                <motion.span 
-                  className="ml-auto text-indigo-600"
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ type: "spring", stiffness: 500, damping: 10 }}
-                >
-                  ✓
-                </motion.span>
-              )}
-            </motion.button>
-          ))}
-        </motion.div>
-      )}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div 
+            className="absolute mt-2 right-0 w-40 bg-white rounded-lg shadow-lg overflow-hidden z-50 border border-gray-100"
+            initial={{ opacity: 0, y: -10, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -10, scale: 0.95 }}
+            transition={{ duration: 0.2 }}
+          >
+            {languageOptions.map((option) => (
+              <motion.button
+                key={option.value}
+                className={`w-full text-left px-4 py-2 flex items-center gap-2 ${language === option.value ? 'bg-indigo-50 text-indigo-600' : 'text-gray-700 hover:bg-gray-50'}`}
+                onClick={() => handleLanguageChange(option.value)}
+                whileHover={{ x: 5 }}
+              >
+                <span>{option.flag}</span>
+                <span>{option.label}</span>
+                {language === option.value && (
+                  <motion.span 
+                    className="ml-auto text-indigo-600"
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ type: "spring", stiffness: 500, damping: 10 }}
+                  >
+                    ✓
+                  </motion.span>
+                )}
+              </motion.button>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 };

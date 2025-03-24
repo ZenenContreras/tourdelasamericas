@@ -18,6 +18,8 @@ html, body {
   width: 100%;
   height: 100%;
   max-width: 100vw;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
 }
 
 /* Mejor manejo de texto para dispositivos móviles */
@@ -43,6 +45,7 @@ html, body {
 /* Mejora el rendimiento de las animaciones al usar la GPU */
 .animate-gpu {
   transform: translateZ(0);
+  backface-visibility: hidden;
   will-change: transform, opacity;
 }
 
@@ -67,15 +70,33 @@ html, body {
 
 /* Clases de utilidad para transiciones más rápidas */
 .fast-transition {
-  transition-duration: 150ms !important;
+  transition-duration: 150ms;
 }
 
 .swift-transition {
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1) !important;
+  transition-duration: 200ms;
 }
 
 /* Evita desplazamientos de altura en cargas de imágenes */
 img {
   height: auto;
   max-width: 100%;
+}
+
+/* Solución para el menú fijo en iOS */
+.fixed {
+  -webkit-transform: translateZ(0);
+}
+
+/* Mejora para los enlaces activos en táctil */
+@media (hover: none) {
+  .hover\:bg-gray-50:active,
+  .hover\:bg-indigo-50:active,
+  .hover\:bg-indigo-100:active {
+    background-color: rgba(236, 236, 241, 0.6);
+  }
+  
+  .hover\:text-indigo-600:active {
+    color: #4F46E5;
+  }
 }
