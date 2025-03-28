@@ -119,7 +119,7 @@ const CarouselSlide = memo(({ image, t, isActive }) => {
             </motion.h2>
             
             <motion.p 
-              className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-white/80 mb-8 sm:mb-10 md:mb-12 max-w-3xl mx-auto leading-relaxed font-medium"
+              className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-white/80 mb-4 sm:mb-6 md:mb-8 lg:mb-12 max-w-3xl mx-auto leading-relaxed font-medium"
               variants={{
                 initial: { opacity: 0, y: 20 },
                 animate: { opacity: 1, y: 0 }
@@ -135,9 +135,9 @@ const CarouselSlide = memo(({ image, t, isActive }) => {
                 animate: { opacity: 1, y: 0 }
               }}
               transition={{ duration: 0.3, delay: 0.2 }}
-              className="space-y-4 sm:space-y-0 sm:space-x-4 flex flex-col sm:flex-row justify-center items-center"
+              className="space-y-4 sm:space-y-0 sm:space-x-4 flex flex-col sm:flex-row justify-center items-center mb-16 sm:mb-20 md:mb-24"
             >
-              <button className={`group relative inline-flex items-center justify-center bg-${image.color} text-white px-8 py-4 sm:px-10 sm:py-5 rounded-xl text-lg sm:text-xl font-bold transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-${image.color}/30 overflow-hidden`}>
+              <button className={`group relative inline-flex items-center justify-center bg-${image.color} text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl text-base sm:text-lg md:text-xl font-bold transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-${image.color}/30 overflow-hidden`}>
                 <span className="relative z-10">{t('storeComingSoon')}</span>
                 <div className={`absolute inset-0 bg-white/20 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left`}></div>
               </button>
@@ -147,7 +147,7 @@ const CarouselSlide = memo(({ image, t, isActive }) => {
       </div>
       
       {/* Categoría del producto - más visible en móvil */}
-      <div className={`absolute bottom-20 sm:bottom-16 right-4 sm:right-8 text-white text-base sm:text-lg md:text-xl font-bold bg-${image.color} backdrop-blur-sm px-4 py-2 sm:px-6 sm:py-3 rounded-xl shadow-lg shadow-${image.color}/20`}>
+      <div className={`absolute bottom-8 sm:bottom-12 right-4 sm:right-8 text-white text-sm sm:text-base md:text-lg font-bold bg-${image.color} backdrop-blur-sm px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg sm:rounded-xl shadow-lg shadow-${image.color}/20`}>
         {t(`categoryLabels.${image.category}`)}
       </div>
     </div>
