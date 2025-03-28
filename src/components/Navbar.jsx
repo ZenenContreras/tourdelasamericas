@@ -194,9 +194,9 @@ const Navbar = ({ scrollToRef, homeRef }) => {
     <>
       <motion.nav 
         className={getNavbarClasses()}
-        initial={{ y: -50 }}
+        initial={false}
         animate={{ y: 0 }}
-        transition={{ duration: 0.1, type: "spring", stiffness: 200 }}
+        transition={{ duration: 0.2 }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16 md:h-16">

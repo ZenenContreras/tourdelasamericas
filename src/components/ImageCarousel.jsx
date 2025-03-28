@@ -13,43 +13,33 @@ import 'swiper/css/navigation';
 const images = [
   {
     url: {
-      mobile: "https://images.unsplash.com/photo-1489914099268-1dad649f76bf?auto=format&fit=crop&q=70&w=640&h=960",
-      tablet: "https://images.unsplash.com/photo-1489914099268-1dad649f76bf?auto=format&fit=crop&q=75&w=1024&h=1024",
-      desktop: "https://images.unsplash.com/photo-1489914099268-1dad649f76bf?auto=format&fit=crop&q=80&w=1920&h=1080"
+      mobile: "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&q=70&w=640&h=960",
+      tablet: "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&q=75&w=1024&h=1024",
+      desktop: "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&q=80&w=1920&h=1080"
     },
-    location: "Machu Picchu, Perú",
-    tagline: "storeTagline.peru",
-    color: "indigo-400"
+    category: "products",
+    tagline: "products",
+    color: "indigo-600"
   },
   {
     url: {
-      mobile: "https://images.unsplash.com/photo-1516306580123-e6e52b1b7b5f?auto=format&fit=crop&q=70&w=640&h=960",
-      tablet: "https://images.unsplash.com/photo-1516306580123-e6e52b1b7b5f?auto=format&fit=crop&q=75&w=1024&h=1024",
-      desktop: "https://images.unsplash.com/photo-1516306580123-e6e52b1b7b5f?auto=format&fit=crop&q=80&w=1920&h=1080"
+      mobile: "https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&q=70&w=640&h=960",
+      tablet: "https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&q=75&w=1024&h=1024",
+      desktop: "https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&q=80&w=1920&h=1080"
     },
-    location: "Ciudad de México, México",
-    tagline: "storeTagline.mexico",
-    color: "amber-400"
+    category: "food",
+    tagline: "food",
+    color: "amber-600"
   },
   {
     url: {
-      mobile: "https://images.unsplash.com/photo-1483729558449-99ef09a8c325?auto=format&fit=crop&q=70&w=640&h=960",
-      tablet: "https://images.unsplash.com/photo-1483729558449-99ef09a8c325?auto=format&fit=crop&q=75&w=1024&h=1024",
-      desktop: "https://images.unsplash.com/photo-1483729558449-99ef09a8c325?auto=format&fit=crop&q=80&w=1920&h=1080"
+      mobile: "https://images.unsplash.com/photo-1469334031218-e382a71b716b?auto=format&fit=crop&q=70&w=640&h=960",
+      tablet: "https://images.unsplash.com/photo-1469334031218-e382a71b716b?auto=format&fit=crop&q=75&w=1024&h=1024",
+      desktop: "https://images.unsplash.com/photo-1469334031218-e382a71b716b?auto=format&fit=crop&q=80&w=1920&h=1080"
     },
-    location: "Rio de Janeiro, Brasil",
-    tagline: "storeTagline.brazil",
-    color: "green-400"
-  },
-  {
-    url: {
-      mobile: "https://images.unsplash.com/photo-1526392060635-9d6019884377?auto=format&fit=crop&q=70&w=640&h=960",
-      tablet: "https://images.unsplash.com/photo-1526392060635-9d6019884377?auto=format&fit=crop&q=75&w=1024&h=1024",
-      desktop: "https://images.unsplash.com/photo-1526392060635-9d6019884377?auto=format&fit=crop&q=80&w=1920&h=1080"
-    },
-    location: "Parque Nacional Torres del Paine, Chile",
-    tagline: "storeTagline.chile",
-    color: "blue-400"
+    category: "boutique",
+    tagline: "boutique",
+    color: "purple-600"
   }
 ];
 
@@ -63,17 +53,8 @@ const CarouselSlide = memo(({ image, t, isActive }) => {
   useEffect(() => {
     const img = new Image();
     img.src = image.url.mobile;
-    img.onload = () => {
-      setIsImageLoaded(true);
-    };
+    img.onload = () => setIsImageLoaded(true);
   }, [image.url.mobile]);
-
-  // Animación para texto más fluida
-  const textAnimation = {
-    initial: { opacity: 0, y: 10 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.2 }
-  };
 
   return (
     <div ref={ref} className="relative h-full">
@@ -88,7 +69,7 @@ const CarouselSlide = memo(({ image, t, isActive }) => {
         <source media="(min-width: 640px)" srcSet={image.url.tablet} />
         <img
           src={image.url.mobile}
-          alt={image.location}
+          alt={t(`categoryLabels.${image.category}`)}
           className={`w-full h-full object-cover transition-opacity duration-500 ${isImageLoaded ? 'opacity-100' : 'opacity-0'}`}
           loading={isActive ? "eager" : "lazy"}
           fetchpriority={isActive ? "high" : "low"}
@@ -97,9 +78,9 @@ const CarouselSlide = memo(({ image, t, isActive }) => {
       </picture>
       
       {/* Gradiente sobre la imagen - más oscuro en móviles para mejor legibilidad */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/70 to-black/40" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/70 to-black/30" />
       
-      {/* Contenido y texto del carrusel - optimizado para móviles */}
+      {/* Contenido y texto del carrusel - optimizado para productos */}
       <div className="absolute inset-0 flex flex-col justify-center items-center text-center px-4 sm:px-6 lg:px-8">
         {inView && (
           <motion.div
@@ -114,48 +95,60 @@ const CarouselSlide = memo(({ image, t, isActive }) => {
               animate={{ scale: 1 }}
               transition={{ type: "spring", stiffness: 300, damping: 15 }}
             >
-              <div className="bg-indigo-600/90 backdrop-blur-sm text-white px-4 py-2 sm:px-6 sm:py-2.5 md:px-8 md:py-3 rounded-lg inline-block">
-                <span className="text-sm sm:text-base uppercase tracking-wider font-semibold">{t('comingSoon')}</span>
+              <div className="backdrop-blur-sm text-white px-6 py-3 sm:px-8 sm:py-4 rounded-xl inline-block shadow-lg shadow-indigo-600/20">
+                <span className="text-base sm:text-lg md:text-xl uppercase tracking-wider font-bold">
+                  {t('comingSoon')}
+                </span>
               </div>
             </motion.div>
             
             <motion.h2 
-              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white mb-3 sm:mb-4 md:mb-6 leading-tight"
-              variants={textAnimation}
+              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black text-white mb-4 sm:mb-6 md:mb-8 leading-tight"
+              variants={{
+                initial: { opacity: 0, y: 20 },
+                animate: { opacity: 1, y: 0 },
+                transition: { duration: 0.4 }
+              }}
             >
-              <span className="text-indigo-400 block text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl">Amériques</span>
-              <span className="block mt-2 sm:mt-3 md:mt-4 text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl">{t(image.tagline)}</span>
+              <span className={`text-${image.color} block text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black tracking-tight'}`}>
+                Amériques
+              </span>
+              <span className="block mt-3 sm:mt-4 md:mt-6 text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-white/90 font-extrabold">
+                {t(`categoryLabels.${image.category}`)}
+              </span>
             </motion.h2>
             
             <motion.p 
-              className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-200 mb-6 sm:mb-8 md:mb-10 max-w-2xl mx-auto leading-relaxed"
+              className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-white/80 mb-8 sm:mb-10 md:mb-12 max-w-3xl mx-auto leading-relaxed font-medium"
               variants={{
-                initial: { opacity: 0, y: 10 },
+                initial: { opacity: 0, y: 20 },
                 animate: { opacity: 1, y: 0 }
               }}
-              transition={{ duration: 0.2, delay: 0.1 }}
+              transition={{ duration: 0.3, delay: 0.1 }}
             >
               {t('storeDescription')}
             </motion.p>
             
             <motion.div
               variants={{
-                initial: { opacity: 0, y: 10 },
+                initial: { opacity: 0, y: 20 },
                 animate: { opacity: 1, y: 0 }
               }}
-              transition={{ duration: 0.2, delay: 0.2 }}
+              transition={{ duration: 0.3, delay: 0.2 }}
+              className="space-y-4 sm:space-y-0 sm:space-x-4 flex flex-col sm:flex-row justify-center items-center"
             >
-              <span className="inline-block animate-pulse bg-white/20 backdrop-blur-sm text-white px-4 py-2 sm:px-5 sm:py-3 rounded-lg text-sm sm:text-base font-medium">
-                {t('storeComingSoon')}
-              </span>
+              <button className={`group relative inline-flex items-center justify-center bg-${image.color} text-white px-8 py-4 sm:px-10 sm:py-5 rounded-xl text-lg sm:text-xl font-bold transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-${image.color}/30 overflow-hidden`}>
+                <span className="relative z-10">{t('storeComingSoon')}</span>
+                <div className={`absolute inset-0 bg-white/20 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left`}></div>
+              </button>
             </motion.div>
           </motion.div>
         )}
       </div>
       
-      {/* Ubicación de la imagen - más visible en móvil */}
-      <div className="absolute bottom-20 sm:bottom-16 right-4 sm:right-8 text-white text-sm sm:text-base md:text-xl font-medium bg-black/60 backdrop-blur-sm px-3 py-1 sm:px-4 sm:py-2 rounded-lg">
-        {image.location}
+      {/* Categoría del producto - más visible en móvil */}
+      <div className={`absolute bottom-20 sm:bottom-16 right-4 sm:right-8 text-white text-base sm:text-lg md:text-xl font-bold bg-${image.color} backdrop-blur-sm px-4 py-2 sm:px-6 sm:py-3 rounded-xl shadow-lg shadow-${image.color}/20`}>
+        {t(`categoryLabels.${image.category}`)}
       </div>
     </div>
   );

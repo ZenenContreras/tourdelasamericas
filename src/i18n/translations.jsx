@@ -42,10 +42,10 @@ export const translations = {
       rights: 'All rights reserved.'
     },
     storeTagline: {
-      peru: 'Discover Ancestral Treasures',
-      mexico: 'Experience Vibrant Flavors',
-      brazil: 'Feel the Exotic Rhythm',
-      chile: 'Explore Natural Wonders'
+      drinks: 'Artisanal Drinks from the Americas',
+      food: 'Traditional Flavors of Our Land',
+      accessories: 'Exclusive Handcrafted Accessories',
+      art: 'Contemporary Art & Design'
     },
     storeDescription: 'Our exclusive store is coming soon, bringing you the most authentic products from all across the Americas. Prepare your senses for an unforgettable experience.',
     comingSoon: 'Coming Soon',
@@ -79,7 +79,21 @@ export const translations = {
       description: 'Discover the diverse regions of the Americas, each with its unique traditions, flavors, and handcrafted treasures waiting to be explored.',
       exploreAll: 'Explore All Regions'
     },
-    scrollDown: 'Scroll Down'
+    scrollDown: 'Scroll Down',
+    productDescription: {
+      drinks: 'Discover our selection of unique artisanal beverages, from traditional mezcal to exotic fruit drinks.',
+      food: 'Experience authentic flavors through our carefully selected traditional dishes and ingredients.',
+      accessories: 'Each accessory tells a story of craftsmanship and cultural heritage.',
+      art: 'Contemporary pieces that blend tradition with modern design.'
+    },
+    categoryLabels: {
+      products: 'Products',
+      drinks: 'Artisanal Drinks',
+      food: 'Local Gastronomy',
+      accessories: 'Exclusive Accessories',
+      art: 'Art & Design',
+      boutique: 'Exclusive Boutique'
+    }
   },
   es: {
     nav: {
@@ -127,9 +141,13 @@ export const translations = {
       peru: 'Descubre Tesoros Ancestrales',
       mexico: 'Experimenta Sabores Vibrantes',
       brazil: 'Siente el Ritmo Exótico',
-      chile: 'Explora Maravillas Naturales'
+      chile: 'Explora Maravillas Naturales',
+      drinks: 'Bebidas Artesanales de las Américas',
+      food: 'Sabores Tradicionales de Nuestra Tierra',
+      accessories: 'Accesorios Exclusivos Artesanales',
+      art: 'Arte y Diseño Contemporáneo'
     },
-    storeDescription: 'Nuestra tienda exclusiva estará disponible muy pronto, trayendo los productos más auténticos de todas las Américas. Prepara tus sentidos para una experiencia inolvidable.',
+    storeDescription: 'Nuestra tienda exclusiva estará disponible muy pronto, trayendo los productos más auténticos de todas las Américas.\nPrepara tus sentidos para una experiencia inolvidable.',
     comingSoon: 'Próximamente',
     storeComingSoon: 'Regístrate para Acceso Anticipado Exclusivo',
     productSection: {
@@ -161,7 +179,21 @@ export const translations = {
       description: 'Descubre las diversas regiones de las Américas, cada una con sus tradiciones únicas, sabores y tesoros artesanales esperando ser explorados.',
       exploreAll: 'Explorar Todas las Regiones'
     },
-    scrollDown: 'Desliza Abajo'
+    scrollDown: 'Desliza Abajo',
+    productDescription: {
+      drinks: 'Descubre nuestra selección de bebidas artesanales únicas, desde mezcal tradicional hasta bebidas exóticas de frutas.',
+      food: 'Experimenta sabores auténticos a través de nuestros platos e ingredientes tradicionales cuidadosamente seleccionados.',
+      accessories: 'Cada accesorio cuenta una historia de artesanía y herencia cultural.',
+      art: 'Piezas contemporáneas que fusionan la tradición con el diseño moderno.'
+    },
+    categoryLabels: {
+      products: 'Productos',
+      drinks: 'Bebidas Artesanales',
+      food: 'Gastronomía Local',
+      accessories: 'Accesorios Exclusivos',
+      art: 'Arte y Diseño',
+      boutique: 'Boutique Exclusiva'
+    }
   },
   fr: {
     nav: {
@@ -209,7 +241,11 @@ export const translations = {
       peru: 'Découvrez des Trésors Ancestraux',
       mexico: 'Vivez des Saveurs Vibrantes',
       brazil: 'Ressentez le Rythme Exotique',
-      chile: 'Explorez des Merveilles Naturelles'
+      chile: 'Explorez des Merveilles Naturelles',
+      drinks: 'Boissons Artisanales des Amériques',
+      food: 'Saveurs Traditionnelles de Notre Terre',
+      accessories: 'Accessoires Exclusifs Artisanaux',
+      art: 'Art et Design Contemporain'
     },
     storeDescription: 'Notre boutique exclusive ouvrira bientôt, vous apportant les produits les plus authentiques de toutes les Amériques. Préparez vos sens pour une expérience inoubliable.',
     comingSoon: 'Bientôt Disponible',
@@ -243,6 +279,20 @@ export const translations = {
       description: 'Découvrez les diverses régions des Amériques, chacune avec ses traditions uniques, ses saveurs et ses trésors artisanaux qui attendent d\'être explorés.',
       exploreAll: 'Explorer Toutes les Régions'
     },
-    scrollDown: 'Défiler vers le Bas'
+    scrollDown: 'Défiler vers le Bas',
+    productDescription: {
+      drinks: 'Découvrez notre sélection de boissons artisanales uniques, du mezcal traditionnel aux boissons exotiques aux fruits.',
+      food: 'Découvrez des saveurs authentiques à travers nos plats et ingrédients traditionnels soigneusement sélectionnés.',
+      accessories: 'Chaque accessoire raconte une histoire d\'artisanat et d\'héritage culturel.',
+      art: 'Pièces contemporaines mêlant tradition et design moderne.'
+    },
+    categoryLabels: {
+      products: 'Produits',
+      drinks: 'Boissons Artisanales',
+      food: 'Gastronomie Locale',
+      accessories: 'Accessoires Exclusifs',
+      art: 'Art et Design',
+      boutique: 'Boutique Exclusive'
+    }
   }
 };
