@@ -13,9 +13,9 @@ import 'swiper/css/navigation';
 const images = [
   {
     url: {
-      mobile: "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&q=70&w=640&h=960",
-      tablet: "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&q=75&w=1024&h=1024",
-      desktop: "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&q=80&w=1920&h=1080"
+      mobile: "/fondoProductos.png",
+      tablet: "/fondoProductos.png",
+      desktop: "/fondoProductos.png"
     },
     category: "products",
     tagline: "products",
@@ -23,9 +23,9 @@ const images = [
   },
   {
     url: {
-      mobile: "https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&q=70&w=640&h=960",
-      tablet: "https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&q=75&w=1024&h=1024",
-      desktop: "https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&q=80&w=1920&h=1080"
+      mobile: "/fondoGastronomia.png",
+      tablet: "/fondoGastronomia.png",
+      desktop: "/fondoGastronomia.png"
     },
     category: "food",
     tagline: "food",
@@ -33,9 +33,9 @@ const images = [
   },
   {
     url: {
-      mobile: "https://images.unsplash.com/photo-1469334031218-e382a71b716b?auto=format&fit=crop&q=70&w=640&h=960",
-      tablet: "https://images.unsplash.com/photo-1469334031218-e382a71b716b?auto=format&fit=crop&q=75&w=1024&h=1024",
-      desktop: "https://images.unsplash.com/photo-1469334031218-e382a71b716b?auto=format&fit=crop&q=80&w=1920&h=1080"
+      mobile: "/fondoBoutique.png",
+      tablet: "/fondoBoutique.png",
+      desktop: "/fondoBoutique.png"
     },
     category: "boutique",
     tagline: "boutique",
