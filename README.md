@@ -105,7 +105,7 @@ Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE.md](LICENSE.m
 
 ## 📧 Contacto
 
-Tu Nombre - [@tutwitter](https://twitter.com/tutwitter) - email@ejemplo.com
+Zenen Contreras - Zenencontreras1@gmail.com
 
-Link del Proyecto: [https://github.com/tu-usuario/tourdelasamericas](https://github.com/tu-usuario/tourdelasamericas)
+Link del Proyecto: [https://github.com/ZenenContreras/tourdelasamericas](https://github.com/ZenenContreras/tourdelasamericas)
 
