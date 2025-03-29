@@ -11,7 +11,7 @@ const ProductsSection = () => {
     {
       id: 1,
       name: 'Poncho Colorido Andino',
-      image: 'https://cdn.pixabay.com/photo/2017/08/10/08/06/clothes-2619832_960_720.jpg',
+      image: '/poncho.png',
       country: 'Perú',
       price: '$79.99',
       rating: 4.9
@@ -19,7 +19,7 @@ const ProductsSection = () => {
     {
       id: 2,
       name: 'Sombrero Vueltiao',
-      image: 'https://images.unsplash.com/photo-1578878799601-d40c1b42d86c?auto=format&fit=crop&q=80',
+      image: '/sombrero.png',
       country: 'Colombia',
       price: '$64.99',
       rating: 4.7
@@ -27,7 +27,7 @@ const ProductsSection = () => {
     {
       id: 3,
       name: 'Árbol de la Vida Mexicano',
-      image: 'https://cdn.pixabay.com/photo/2017/08/01/06/29/arbol-solo-2563203_1280.jpg',
+      image: '/arbol.png',
       country: 'México',
       price: '$129.99',
       rating: 5.0
@@ -35,7 +35,7 @@ const ProductsSection = () => {
     {
       id: 4,
       name: 'Pulsera Wayuu',
-      image: 'https://images.unsplash.com/photo-1611085583191-a3b181a88401?auto=format&fit=crop&q=80',
+      image: '/pulsera.png',
       country: 'Colombia',
       price: '$24.99',
       rating: 4.8
