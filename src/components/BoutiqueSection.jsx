@@ -37,7 +37,7 @@ const BoutiqueSection = () => {
     {
       id: 3,
       name: 'Sombrero de Paja Toquilla',
-      image: 'https://cdn.pixabay.com/photo/2013/08/30/12/06/sombrero-177347_960_720.jpg',
+      image: '/sombreroPeruano.png',
       category: 'accessories',
       price: '$159.99',
       origin: 'Ecuador',
@@ -46,7 +46,7 @@ const BoutiqueSection = () => {
     {
       id: 4,
       name: 'Bolso Wayuu',
-      image: 'https://images.unsplash.com/photo-1590874103328-eac38a683ce7?auto=format&fit=crop&q=80',
+      image: '/bolso.png',
       category: 'accessories',
       price: '$84.99',
       origin: 'Colombia',
