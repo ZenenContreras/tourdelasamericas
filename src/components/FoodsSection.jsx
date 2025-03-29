@@ -11,7 +11,7 @@ const FoodsSection = () => {
     {
       id: 1,
       name: 'Arepas Venezolanas',
-      image: 'https://cdn.pixabay.com/photo/2016/05/08/15/02/arepa-1379236_1280.jpg',
+      image: '/arepas.png',
       country: 'Venezuela',
       category: 'Plato Principal',
       spicyLevel: 1
@@ -19,7 +19,7 @@ const FoodsSection = () => {
     {
       id: 2,
       name: 'Tacos al Pastor',
-      image: 'https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?auto=format&fit=crop&q=80',
+      image: '/tacos.png',
       country: 'México',
       category: 'Antojitos',
       spicyLevel: 3
@@ -27,7 +27,7 @@ const FoodsSection = () => {
     {
       id: 3,
       name: 'Ceviche Peruano',
-      image: 'https://cdn.pixabay.com/photo/2020/01/02/21/31/shrimp-4736867_1280.jpg',
+      image: '/ceviche.png',
       country: 'Perú',
       category: 'Entradas',
       spicyLevel: 2
