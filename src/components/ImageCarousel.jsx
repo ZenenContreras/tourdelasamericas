@@ -95,7 +95,7 @@ const CarouselSlide = memo(({ image, t, isActive }) => {
               animate={{ scale: 1 }}
               transition={{ type: "spring", stiffness: 300, damping: 15 }}
             >
-              <div className="backdrop-blur-sm text-white px-6 py-3 sm:px-8 sm:py-4 rounded-xl inline-block shadow-lg shadow-indigo-600/20">
+              <div className="backdrop-blur-sm text-white px-6 py-3 sm:px-8 sm:py-4 rounded-xl inline-block shadow-lg">
                 <span className="text-base sm:text-lg md:text-xl uppercase tracking-wider font-bold">
                   {t('comingSoon')}
                 </span>
