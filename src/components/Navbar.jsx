@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Store, Menu, X, ChevronRight } from 'lucide-react';
+import { Menu, X, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '../contexts/LanguageContext';
 import LanguageSelector from './LanguageSelector';
@@ -210,7 +210,11 @@ const Navbar = ({ scrollToRef, homeRef }) => {
                 className="flex items-center"
                 aria-label="Ir al inicio"
               >
-                <Store className={`h-6 w-6 sm:h-6 sm:w-6 md:h-7 md:w-7 ${isTransparentNav ? 'text-white' : 'text-indigo-600'}`} />
+                <img 
+                  src="/america.png" 
+                  alt="Logo Tour de las Americas" 
+                  className={`h-10 w-10 sm:h-10 sm:w-10 md:h-10 md:w-10 object-contain`} 
+                />
                 <span className={`ml-2 text-base sm:text-base md:text-lg font-bold truncate ${isTransparentNav ? 'text-white' : 'text-gray-900'}`}>
                   Amériques
                 </span>
