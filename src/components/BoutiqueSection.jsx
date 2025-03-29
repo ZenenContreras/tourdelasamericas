@@ -18,8 +18,8 @@ const BoutiqueSection = () => {
   const boutique = [
     {
       id: 1,
-      name: 'sombrero Mexicano',
-      image: 'https://cdn.pixabay.com/photo/2016/11/18/01/05/sombrero-1833089_1280.jpg',
+      name: 'Sombrero Mexicano',
+      image: '/sombreroMexicano.png',
       category: 'clothing',
       price: '$149.99',
       origin: 'México',
@@ -28,7 +28,7 @@ const BoutiqueSection = () => {
     {
       id: 2,
       name: 'Aretes de Filigrana',
-      image: 'https://cdn.pixabay.com/photo/2017/10/29/20/27/earrings-2900740_1280.jpg',
+      image: '/aretes.png',
       category: 'jewelry',
       price: '$79.99',
       origin: 'Colombia',
