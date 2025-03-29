@@ -1,10 +1,11 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingBag, Star, ArrowRight } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 
 const ProductsSection = () => {
   const { t } = useLanguage();
+  const [clickedProduct, setClickedProduct] = useState(null);
 
   const products = [
     {
@@ -69,6 +70,11 @@ const ProductsSection = () => {
     }
   };
 
+  const handleProductClick = (productId) => {
+    setClickedProduct(productId);
+    setTimeout(() => setClickedProduct(null), 2000); // Reset after 2 seconds
+  };
+
   return (
     <section className="py-12 sm:py-16 md:py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -98,17 +104,16 @@ const ProductsSection = () => {
           {products.map((product) => (
             <motion.div
               key={product.id}
-              className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 border border-gray-100"
+              className="relative bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 border border-gray-100 cursor-pointer"
               variants={itemVariants}
-              whileHover="hover"
+              onClick={() => handleProductClick(product.id)}
             >
               <div className="relative h-56 sm:h-64 overflow-hidden">
                 <motion.img
                   src={product.image}
                   alt={product.name}
                   className="w-full h-full object-cover"
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ duration: 0.3, ease: "easeOut" }}
+                  transition={{ duration: 0.3 }}
                 />
                 <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-sm">
                   <div className="flex items-center space-x-1">
@@ -126,15 +131,31 @@ const ProductsSection = () => {
                 <p className="text-sm sm:text-base text-gray-600 mb-4 line-clamp-2">{product.description}</p>
                 <div className="flex justify-between items-center">
                   <span className="text-lg sm:text-xl font-bold text-indigo-600">{product.price}</span>
-                  <motion.button
-                    className="bg-indigo-100 hover:bg-indigo-200 text-indigo-700 p-2.5 sm:p-3 rounded-full"
-                    whileHover={{ scale: 1.1, rotate: 5 }}
-                    whileTap={{ scale: 0.9 }}
-                  >
-                    <ArrowRight className="h-5 w-5" />
-                  </motion.button>
+                  <ArrowRight className="h-5 w-5 text-gray-400" />
                 </div>
               </div>
+
+              {/* Coming Soon Overlay */}
+              <AnimatePresence>
+                {clickedProduct === product.id && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="absolute inset-0 bg-indigo-600/90 backdrop-blur-sm flex items-center justify-center"
+                  >
+                    <motion.div
+                      initial={{ scale: 0.8, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      exit={{ scale: 0.8, opacity: 0 }}
+                      className="text-center p-6"
+                    >
+                      <span className="text-white text-xl font-bold block mb-2">{t('productSection.comingSoon')}</span>
+                      <span className="text-white/80 text-sm">{t('productSection.clickToSee')}</span>
+                    </motion.div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </motion.div>
           ))}
         </motion.div>

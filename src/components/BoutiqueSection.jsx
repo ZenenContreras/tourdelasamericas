@@ -6,7 +6,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 const BoutiqueSection = () => {
   const { t } = useLanguage();
   const [activeCategory, setActiveCategory] = useState('all');
-  const [hoveredItem, setHoveredItem] = useState(null);
+  const [clickedItem, setClickedItem] = useState(null);
 
   const categories = [
     { id: 'all', name: 'boutiqueSection.allCategories' },
@@ -53,6 +53,11 @@ const BoutiqueSection = () => {
       isFeatured: false
     }
   ];
+
+  const handleItemClick = (itemId) => {
+    setClickedItem(itemId);
+    setTimeout(() => setClickedItem(null), 2000); // Reset after 2 seconds
+  };
 
   const filteredBoutique = activeCategory === 'all' 
     ? boutique 
@@ -126,42 +131,28 @@ const BoutiqueSection = () => {
               {filteredBoutique.map((item) => (
                 <motion.div
                   key={item.id}
-                  className="relative bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300"
-                  whileHover={{ y: -10 }}
-                  onHoverStart={() => setHoveredItem(item.id)}
-                  onHoverEnd={() => setHoveredItem(null)}
-                  layout
+                  className="relative bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 cursor-pointer"
+                  onClick={() => handleItemClick(item.id)}
                 >
                   <div className="relative h-64 sm:h-72 overflow-hidden">
                     <motion.img
                       src={item.image}
                       alt={item.name}
                       className="w-full h-full object-cover"
-                      initial={{ scale: 1 }}
-                      whileHover={{ scale: 1.1 }}
-                      transition={{ duration: 0.4 }}
+                      transition={{ duration: 0.3 }}
                     />
                     
                     <div className="absolute top-4 left-4">
                       {item.isFeatured && (
-                        <motion.div
-                          className="bg-purple-600 text-white py-1.5 px-3 rounded-full text-xs uppercase tracking-wider font-semibold"
-                          initial={{ opacity: 0, x: -20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: 0.2 }}
-                        >
+                        <div className="bg-purple-600 text-white py-1.5 px-3 rounded-full text-xs uppercase tracking-wider font-semibold">
                           {t('boutiqueSection.featured')}
-                        </motion.div>
+                        </div>
                       )}
                     </div>
                     
-                    <motion.div
-                      className="absolute top-4 right-4 bg-white/80 backdrop-blur-sm p-2.5 rounded-full"
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
-                    >
-                      <Heart className={`h-5 w-5 ${hoveredItem === item.id ? 'text-red-500 fill-current' : 'text-gray-600'}`} />
-                    </motion.div>
+                    <div className="absolute top-4 right-4 bg-white/80 backdrop-blur-sm p-2.5 rounded-full">
+                      <Heart className="h-5 w-5 text-gray-600" />
+                    </div>
                   </div>
                   
                   <div className="p-5 sm:p-6">
@@ -175,56 +166,36 @@ const BoutiqueSection = () => {
                     </div>
                     
                     <div className="flex gap-2 sm:gap-3">
-                      <motion.button
-                        className="flex-1 bg-purple-600 text-white py-2.5 px-4 rounded-lg font-medium hover:bg-purple-700 transition-colors"
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                      >
+                      <div className="flex-1 bg-purple-600 text-white py-2.5 px-4 rounded-lg font-medium">
                         {t('boutiqueSection.notifyMe')}
-                      </motion.button>
-                      <motion.button
-                        className="bg-gray-100 text-gray-700 p-2.5 rounded-lg hover:bg-gray-200 transition-colors"
-                        whileHover={{ scale: 1.1, rotate: 5 }}
-                        whileTap={{ scale: 0.9 }}
-                      >
+                      </div>
+                      <div className="bg-gray-100 text-gray-700 p-2.5 rounded-lg">
                         <ArrowRight className="h-5 w-5" />
-                      </motion.button>
+                      </div>
                     </div>
                   </div>
-                  
+
                   {/* Coming Soon Overlay */}
-                  <motion.div
-                    className="absolute inset-0 bg-purple-800/80 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center"
-                    initial={{ opacity: 0 }}
-                    whileHover={{ opacity: 1 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <motion.span 
-                      className="text-white text-xl sm:text-2xl font-bold mb-3 sm:mb-4"
-                      initial={{ y: 20, opacity: 0 }}
-                      whileHover={{ y: 0, opacity: 1 }}
-                      transition={{ delay: 0.1 }}
-                    >
-                      {t('boutiqueSection.comingSoon')}
-                    </motion.span>
-                    <motion.p
-                      className="text-white/90 mb-4 sm:mb-6 text-sm sm:text-base"
-                      initial={{ y: 20, opacity: 0 }}
-                      whileHover={{ y: 0, opacity: 1 }}
-                      transition={{ delay: 0.2 }}
-                    >
-                      {t('boutiqueSection.exclusiveCollection')}
-                    </motion.p>
-                    <motion.button
-                      className="bg-white text-purple-700 px-6 py-2.5 rounded-full font-medium hover:bg-purple-50"
-                      initial={{ y: 20, opacity: 0 }}
-                      whileHover={{ y: 0, opacity: 1, scale: 1.05 }}
-                      transition={{ delay: 0.3 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      {t('boutiqueSection.notifyMe')}
-                    </motion.button>
-                  </motion.div>
+                  <AnimatePresence>
+                    {clickedItem === item.id && (
+                      <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="absolute inset-0 bg-purple-600/90 backdrop-blur-sm flex items-center justify-center"
+                      >
+                        <motion.div
+                          initial={{ scale: 0.8, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          exit={{ scale: 0.8, opacity: 0 }}
+                          className="text-center p-6"
+                        >
+                          <span className="text-white text-xl font-bold block mb-2">{t('boutiqueSection.comingSoon')}</span>
+                          <span className="text-white/80 text-sm">{t('boutiqueSection.clickToSee')}</span>
+                        </motion.div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </motion.div>
               ))}
             </motion.div>

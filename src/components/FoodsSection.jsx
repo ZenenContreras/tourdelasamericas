@@ -1,10 +1,11 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Utensils, Flame, ArrowRight } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 
 const FoodsSection = () => {
   const { t } = useLanguage();
+  const [clickedFood, setClickedFood] = useState(null);
 
   const foods = [
     {
@@ -69,6 +70,11 @@ const FoodsSection = () => {
     );
   };
 
+  const handleFoodClick = (foodId) => {
+    setClickedFood(foodId);
+    setTimeout(() => setClickedFood(null), 2000); // Reset after 2 seconds
+  };
+
   return (
     <section className="py-12 sm:py-16 md:py-20 bg-gradient-to-br from-amber-50 to-orange-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -99,16 +105,15 @@ const FoodsSection = () => {
             {foods.map((food) => (
               <motion.div
                 key={food.id}
-                className="bg-white rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-shadow duration-300"
+                className="relative bg-white rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-shadow duration-300 cursor-pointer"
                 variants={cardVariants}
-                whileHover={{ y: -10 }}
+                onClick={() => handleFoodClick(food.id)}
               >
                 <div className="relative h-64 sm:h-72 overflow-hidden">
                   <motion.img
                     src={food.image}
                     alt={food.name}
                     className="w-full h-full object-cover"
-                    whileHover={{ scale: 1.05 }}
                     transition={{ duration: 0.3 }}
                   />
                   <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-full text-sm font-medium text-amber-700">
@@ -124,12 +129,9 @@ const FoodsSection = () => {
                       </span>
                       <h3 className="mt-2 text-lg sm:text-xl font-bold text-gray-900">{food.name}</h3>
                     </div>
-                    <motion.div 
-                      whileHover={{ rotate: 15 }}
-                      className="text-2xl sm:text-3xl"
-                    >
+                    <div className="text-2xl sm:text-3xl">
                       {food.id === 1 ? '🇻🇪' : food.id === 2 ? '🇲🇽' : '🇵🇪'}
-                    </motion.div>
+                    </div>
                   </div>
                   
                   <div className="flex justify-between items-center">
@@ -137,20 +139,31 @@ const FoodsSection = () => {
                       <p className="text-sm text-gray-500 mb-1">{t('foodSection.spicyLevel')}:</p>
                       <SpicyLevel level={food.spicyLevel} />
                     </div>
-                    <motion.button
-                      className="bg-amber-100 hover:bg-amber-200 text-amber-700 p-2.5 sm:p-3 rounded-full"
-                      whileHover={{ scale: 1.1, rotate: 5 }}
-                      whileTap={{ scale: 0.9 }}
-                    >
-                      <ArrowRight className="h-5 w-5" />
-                    </motion.button>
+                    <ArrowRight className="h-5 w-5 text-gray-400" />
                   </div>
                 </div>
 
-                {/* Overlay con mensaje de proximamente */}
-                <div className="absolute inset-0 bg-amber-600/90 backdrop-blur-sm flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
-                  <span className="text-white text-lg sm:text-xl font-bold">{t('foodSection.comingSoon')}</span>
-                </div>
+                {/* Coming Soon Overlay */}
+                <AnimatePresence>
+                  {clickedFood === food.id && (
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      className="absolute inset-0 bg-amber-600/90 backdrop-blur-sm flex items-center justify-center"
+                    >
+                      <motion.div
+                        initial={{ scale: 0.8, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        exit={{ scale: 0.8, opacity: 0 }}
+                        className="text-center p-6"
+                      >
+                        <span className="text-white text-xl font-bold block mb-2">{t('foodSection.comingSoon')}</span>
+                        <span className="text-white/80 text-sm">{t('foodSection.clickToSee')}</span>
+                      </motion.div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </motion.div>
             ))}
           </motion.div>

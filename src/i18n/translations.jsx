@@ -47,7 +47,7 @@ export const translations = {
       accessories: 'Exclusive Handcrafted Accessories',
       art: 'Contemporary Art & Design'
     },
-    storeDescription: 'Our exclusive store is coming soon, bringing you the most authentic products from all across the Americas. Prepare your senses for an unforgettable experience.',
+    storeDescription: 'Our exclusive store is coming soon, bringing you the most authentic products from all across the Americas.',
     comingSoon: 'Coming Soon',
     storeComingSoon: 'Register for Exclusive Early Access',
     productSection: {
@@ -55,13 +55,15 @@ export const translations = {
       featured: 'Featured',
       viewDetails: 'View Details',
       comingSoon: 'Coming Soon',
-      viewAll: 'View All Products'
+      viewAll: 'View All Products',
+      clickToSee: 'Click to see more'
     },
     foodSection: {
       description: 'Savor the authentic flavors of traditional dishes from the Americas. Each recipe carries centuries of history and culture.',
       spicyLevel: 'Spicy Level',
       comingSoon: 'Coming Soon to Your Table',
-      viewAll: 'Explore All Foods'
+      viewAll: 'Explore All Foods',
+      clickToSee: 'Click to see more'
     },
     boutiqueSection: {
       description: 'Discover our exclusive collection of handcrafted items from across the Americas',
@@ -73,7 +75,8 @@ export const translations = {
       notifyMe: 'Notify Me',
       viewMore: 'View More',
       comingSoon: 'Coming Soon',
-      exclusiveCollection: 'Exclusive Collection Coming Soon'
+      exclusiveCollection: 'Exclusive Collection Coming Soon',
+      clickToSee: 'Click to see more'
     },
     regionSection: {
       description: 'Discover the diverse regions of the Americas, each with its unique traditions, flavors, and handcrafted treasures waiting to be explored.',
@@ -147,7 +150,7 @@ export const translations = {
       accessories: 'Accesorios Exclusivos Artesanales',
       art: 'Arte y Diseño Contemporáneo'
     },
-    storeDescription: 'Nuestra tienda exclusiva estará disponible muy pronto, trayendo los productos más auténticos de todas las Américas.\nPrepara tus sentidos para una experiencia inolvidable.',
+    storeDescription: 'Nuestra tienda exclusiva estará disponible muy pronto, trayendo los productos más auténticos de todas las Américas.',
     comingSoon: 'Próximamente',
     storeComingSoon: 'Regístrate para Acceso Anticipado Exclusivo',
     productSection: {
@@ -155,13 +158,15 @@ export const translations = {
       featured: 'Destacado',
       viewDetails: 'Ver Detalles',
       comingSoon: 'Próximamente',
-      viewAll: 'Ver Todos los Productos'
+      viewAll: 'Ver Todos los Productos',
+      clickToSee: 'Clic para ver más'
     },
     foodSection: {
       description: 'Saborea los auténticos sabores de platos tradicionales de las Américas. Cada receta lleva siglos de historia y cultura.',
       spicyLevel: 'Nivel de Picante',
       comingSoon: 'Próximamente en Tu Mesa',
-      viewAll: 'Explorar Todas las Comidas'
+      viewAll: 'Explorar Todas las Comidas',
+      clickToSee: 'Clic para ver más'
     },
     boutiqueSection: {
       description: 'Descubre nuestra colección exclusiva de artículos artesanales de las Américas',
@@ -173,7 +178,8 @@ export const translations = {
       notifyMe: 'Notificarme',
       viewMore: 'Ver Más',
       comingSoon: 'Próximamente',
-      exclusiveCollection: 'Colección Exclusiva Próximamente'
+      exclusiveCollection: 'Colección Exclusiva Próximamente',
+      clickToSee: 'Clic para ver más'
     },
     regionSection: {
       description: 'Descubre las diversas regiones de las Américas, cada una con sus tradiciones únicas, sabores y tesoros artesanales esperando ser explorados.',
@@ -247,7 +253,7 @@ export const translations = {
       accessories: 'Accessoires Exclusifs Artisanaux',
       art: 'Art et Design Contemporain'
     },
-    storeDescription: 'Notre boutique exclusive ouvrira bientôt, vous apportant les produits les plus authentiques de toutes les Amériques. Préparez vos sens pour une expérience inoubliable.',
+    storeDescription: 'Notre boutique exclusive ouvrira bientôt, vous apportant les produits les plus authentiques de toutes les Amériques.',
     comingSoon: 'Bientôt Disponible',
     storeComingSoon: 'Inscrivez-vous pour un Accès Anticipé Exclusif',
     productSection: {
@@ -255,13 +261,15 @@ export const translations = {
       featured: 'En Vedette',
       viewDetails: 'Voir Détails',
       comingSoon: 'Bientôt Disponible',
-      viewAll: 'Voir Tous les Produits'
+      viewAll: 'Voir Tous les Produits',
+      clickToSee: 'Cliquez pour voir plus'
     },
     foodSection: {
       description: 'Savourez les saveurs authentiques des plats traditionnels des Amériques. Chaque recette porte des siècles d\'histoire et de culture.',
       spicyLevel: 'Niveau d\'Épice',
       comingSoon: 'Bientôt à Votre Table',
-      viewAll: 'Explorer Toutes les Cuisines'
+      viewAll: 'Explorer Toutes les Cuisines',
+      clickToSee: 'Cliquez pour voir plus'
     },
     boutiqueSection: {
       description: 'Découvrez notre collection exclusive d\'articles artisanaux des Amériques',
@@ -273,7 +281,8 @@ export const translations = {
       notifyMe: 'Me Notifier',
       viewMore: 'Voir Plus',
       comingSoon: 'Bientôt Disponible',
-      exclusiveCollection: 'Collection Exclusive Bientôt Disponible'
+      exclusiveCollection: 'Collection Exclusive Bientôt Disponible',
+      clickToSee: 'Cliquez pour voir plus'
     },
     regionSection: {
       description: 'Découvrez les diverses régions des Amériques, chacune avec ses traditions uniques, ses saveurs et ses trésors artisanaux qui attendent d\'être explorés.',
