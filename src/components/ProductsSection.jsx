@@ -104,11 +104,11 @@ const ProductsSection = () => {
                 <img 
                   src={category.image} 
                   alt={category.name}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 filter blur-[1px]"
                 />
                 
-                {/* Gradiente para mejor legibilidad - opacidad reducida */}
-                <div className={`absolute inset-0 bg-gradient-to-r ${category.color} opacity-40 transition-opacity duration-300 group-hover:opacity-50`}></div>
+                {/* Gradiente para mejor legibilidad - opacidad reducida al 10% */}
+                <div className={`absolute inset-0 bg-gradient-to-r ${category.color} opacity-10 transition-opacity duration-300 group-hover:opacity-20`}></div>
               
                 {/* Contenido de la categoría */}
                 <div className="absolute inset-0 flex flex-col justify-center p-6 sm:p-8">

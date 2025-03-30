@@ -45,14 +45,14 @@ const ImageCarousel = () => {
           <img
             src={isMobile ? "/america1.png" : "/america.png"}
             alt="Origen America"
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover filter blur-[2px]"
             loading="eager"
             fetchpriority="high"
           />
         </picture>
         
         {/* Gradiente más sutil sobre la imagen */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-black/10 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-black/5 to-transparent" />
         
         {/* Contenido principal */}
         <div className="absolute inset-0 flex flex-col justify-center px-4 sm:px-6 lg:px-8">
@@ -121,8 +121,8 @@ const ImageCarousel = () => {
               >
                 <div className="grid grid-cols-1 gap-5 max-w-md mx-auto">
                   <motion.div 
-                    className="bg-indigo-600/15 p-5 rounded-xl flex items-center h-24 border border-white/10 shadow-lg group"
-                    whileHover={{ scale: 1.02, backgroundColor: "rgba(79, 70, 229, 0.2)" }}
+                    className="bg-indigo-600/10 p-5 rounded-xl flex items-center h-24 border border-white/10 shadow-lg group backdrop-blur-sm"
+                    whileHover={{ scale: 1.02, backgroundColor: "rgba(79, 70, 229, 0.15)" }}
                   >
                     <ShoppingBag className="h-8 w-8 text-white mr-4 group-hover:scale-110 transition-transform" />
                     <div>
@@ -134,8 +134,8 @@ const ImageCarousel = () => {
                   </motion.div>
                   
                   <motion.div 
-                    className="bg-amber-500/15 p-5 rounded-xl flex items-center h-24 border border-white/10 shadow-lg group"
-                    whileHover={{ scale: 1.02, backgroundColor: "rgba(245, 158, 11, 0.2)" }}
+                    className="bg-amber-500/10 p-5 rounded-xl flex items-center h-24 border border-white/10 shadow-lg group backdrop-blur-sm"
+                    whileHover={{ scale: 1.02, backgroundColor: "rgba(245, 158, 11, 0.15)" }}
                   >
                     <Utensils className="h-8 w-8 text-white mr-4 group-hover:scale-110 transition-transform" />
                     <div>
@@ -147,7 +147,7 @@ const ImageCarousel = () => {
                   </motion.div>
                   
                   <motion.div 
-                    className="bg-purple-500/15 p-5 rounded-xl flex items-center h-24 border border-white/10 shadow-lg group"
+                    className="bg-purple-500/15 p-5 rounded-xl flex items-center h-24 border border-white/10 shadow-lg group backdrop-blur-sm"
                     whileHover={{ scale: 1.02, backgroundColor: "rgba(168, 85, 247, 0.2)" }}
                   >
                     <Store className="h-8 w-8 text-white mr-4 group-hover:scale-110 transition-transform" />
@@ -169,7 +169,7 @@ const ImageCarousel = () => {
                 transition={{ duration: 0.5, delay: 0.6 }}
               >
                 <motion.div 
-                  className="bg-indigo-600/15 p-3 rounded-xl flex flex-col items-center justify-center h-20 border border-white/10"
+                  className="bg-indigo-600/10 p-3 rounded-xl flex flex-col items-center justify-center h-20 border border-white/10 backdrop-blur-sm"
                   whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.97 }}
                 >
@@ -180,7 +180,7 @@ const ImageCarousel = () => {
                 </motion.div>
                 
                 <motion.div 
-                  className="bg-amber-500/15 p-3 rounded-xl flex flex-col items-center justify-center h-20 border border-white/10"
+                  className="bg-amber-500/10 p-3 rounded-xl flex flex-col items-center justify-center h-20 border border-white/10 backdrop-blur-sm"
                   whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.97 }}
                 >
@@ -191,7 +191,7 @@ const ImageCarousel = () => {
                 </motion.div>
                 
                 <motion.div 
-                  className="bg-purple-500/15 p-3 rounded-xl flex flex-col items-center justify-center h-20 border border-white/10"
+                  className="bg-purple-500/15 p-3 rounded-xl flex flex-col items-center justify-center h-20 border border-white/10 backdrop-blur-sm"
                   whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.97 }}
                 >
