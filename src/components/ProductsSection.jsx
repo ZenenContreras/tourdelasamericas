@@ -104,7 +104,7 @@ const ProductsSection = () => {
                 <img 
                   src={category.image} 
                   alt={category.name}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 filter blur-[1px]"
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 filter blur-[0.8px]"
                 />
                 
                 {/* Gradiente para mejor legibilidad - opacidad reducida al 10% */}

@@ -71,7 +71,7 @@ const FoodsSection = () => {
                 <img 
                   src={region.image} 
                   alt={region.name}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 filter blur-[1px]"
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 filter blur-[0.8px]"
                 />
                 
                 <div className={`absolute inset-0 bg-gradient-to-r ${region.color} opacity-10 transition-opacity duration-300 group-hover:opacity-20`}></div>

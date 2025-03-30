@@ -91,15 +91,19 @@ export const translations = {
     },
     boutiqueSection: {
       description: 'Discover our exclusive collection of handcrafted items from across the Americas',
-      allCategories: 'All Categories',
-      clothing: 'Clothing',
-      jewelry: 'Jewelry',
-      accessories: 'Accessories',
-      featured: 'Featured',
-      notifyMe: 'Notify Me',
-      viewMore: 'View More',
+      categories: {
+        clothing: 'Clothing',
+        accessories: 'Accessories',
+        souvenirs: 'Souvenirs'
+      },
+      categoryDescriptions: {
+        clothing: 'Team jerseys, jeans and more exclusive clothing',
+        accessories: 'Unique and artisanal accessories from all regions',
+        souvenirs: 'Traditional souvenirs and crafts from the Americas'
+      },
+      viewMore: 'View more',
+      viewCatalog: 'View complete catalog',
       comingSoon: 'Coming Soon',
-      exclusiveCollection: 'Exclusive Collection Coming Soon',
       clickToSee: 'Click to see more'
     },
     scrollDown: 'Scroll Down',
@@ -201,15 +205,19 @@ export const translations = {
     },
     boutiqueSection: {
       description: 'Descubre nuestra colección exclusiva de artículos artesanales de las Américas',
-      allCategories: 'Todas las Categorías',
-      clothing: 'Ropa',
-      jewelry: 'Joyería',
-      accessories: 'Accesorios',
-      featured: 'Destacado',
-      notifyMe: 'Notificarme',
-      viewMore: 'Ver Más',
+      categories: {
+        clothing: 'Ropa',
+        accessories: 'Accesorios',
+        souvenirs: 'Souvenirs'
+      },
+      categoryDescriptions: {
+        clothing: 'Camisetas de la selección, jeans para cola y más prendas exclusivas',
+        accessories: 'Accesorios únicos y artesanales de todas las regiones',
+        souvenirs: 'Recuerdos y artesanías tradicionales de las Américas'
+      },
+      viewMore: 'Ver más',
+      viewCatalog: 'Ver catálogo completo',
       comingSoon: 'Próximamente',
-      exclusiveCollection: 'Colección Exclusiva Próximamente',
       clickToSee: 'Clic para ver más'
     },
     scrollDown: 'Desliza Abajo',
@@ -311,15 +319,19 @@ export const translations = {
     },
     boutiqueSection: {
       description: 'Découvrez notre collection exclusive d\'articles artisanaux des Amériques',
-      allCategories: 'Toutes les Catégories',
-      clothing: 'Vêtements',
-      jewelry: 'Bijoux',
-      accessories: 'Accessoires',
-      featured: 'En Vedette',
-      notifyMe: 'Me Notifier',
-      viewMore: 'Voir Plus',
+      categories: {
+        clothing: 'Vêtements',
+        accessories: 'Accessoires',
+        souvenirs: 'Souvenirs'
+      },
+      categoryDescriptions: {
+        clothing: 'Maillots d\'équipe, jeans et plus de vêtements exclusifs',
+        accessories: 'Accessoires uniques et artisanaux de toutes les régions',
+        souvenirs: 'Souvenirs et artisanat traditionnel des Amériques'
+      },
+      viewMore: 'Voir plus',
+      viewCatalog: 'Voir le catalogue complet',
       comingSoon: 'Bientôt Disponible',
-      exclusiveCollection: 'Collection Exclusive Bientôt Disponible',
       clickToSee: 'Cliquez pour voir plus'
     },
     scrollDown: 'Défiler vers le Bas',
