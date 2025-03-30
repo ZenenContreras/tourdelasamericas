@@ -13,7 +13,7 @@ const FoodsSection = () => {
       name: 'Norte América',
       icon: <MapPin className="h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10 text-red-500" />,
       description: 'Descubre los sabores de Estados Unidos, Canadá y México, desde hamburguesas y pizza hasta tacos y poutine',
-      image: '/norteamerica.jpg',
+      image: '/norteAmerica.png',
       color: 'from-red-600 to-red-400',
       countries: ['Estados Unidos', 'Canadá', 'México']
     },
@@ -22,7 +22,7 @@ const FoodsSection = () => {
       name: 'Centro América',
       icon: <MapPin className="h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10 text-green-500" />,
       description: 'Explora la gastronomía colorida de Guatemala, Costa Rica, Panamá, Honduras y más países centroamericanos',
-      image: '/centroamerica.jpg',
+      image: '/centroAmerica.png',
       color: 'from-green-600 to-green-400',
       countries: ['Guatemala', 'Costa Rica', 'Panamá', 'Honduras']
     },
@@ -31,7 +31,7 @@ const FoodsSection = () => {
       name: 'Sur América',
       icon: <MapPin className="h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10 text-yellow-500" />,
       description: 'Disfruta de los platos típicos de Argentina, Brasil, Perú, Colombia y otros países sudamericanos',
-      image: '/sudamerica.jpg',
+      image: '/surAmerica.png',
       color: 'from-yellow-600 to-yellow-400',
       countries: ['Argentina', 'Brasil', 'Perú', 'Colombia', 'Chile']
     }
