@@ -112,19 +112,19 @@ const ProductsSection = () => {
               
                 {/* Contenido de la categoría */}
                 <div className="absolute inset-0 flex flex-col justify-center p-6 sm:p-8">
-                  <div className="flex items-center mb-3 sm:mb-4 bg-black/10 backdrop-blur-sm p-2 rounded-lg inline-block">
+                  <div className="flex items-center mb-3 sm:mb-4 inline-block">
                     {category.icon}
-                    <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-white ml-3 sm:ml-4 drop-shadow-md" style={{ textShadow: '0 1px 3px rgba(0,0,0,0.5)' }}>
+                    <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-white ml-3 sm:ml-4 drop-shadow-lg" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.7)' }}>
                       {category.name}
                     </h3>
                   </div>
                   
-                  <p className="text-sm sm:text-base text-white mb-4 sm:mb-6 max-w-2xl drop-shadow-md bg-black/10 backdrop-blur-sm p-2 rounded-lg" style={{ textShadow: '0 1px 3px rgba(0,0,0,0.5)' }}>
+                  <p className="text-sm sm:text-base text-white mb-4 sm:mb-6 max-w-2xl drop-shadow-lg" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.7)' }}>
                     {category.description}
                   </p>
                   
-                  <div className="flex items-center text-white mt-auto bg-black/20 backdrop-blur-sm px-3 py-2 rounded-lg inline-flex">
-                    <span className="text-sm sm:text-base font-medium">Ver productos</span>
+                  <div className="flex items-center text-white mt-auto bg-black/15 px-3 py-2 rounded-lg inline-flex">
+                    <span className="text-sm sm:text-base font-medium drop-shadow-md" style={{ textShadow: '0 1px 2px rgba(0,0,0,0.5)' }}>Ver productos</span>
                     <motion.div 
                       className="ml-2"
                       initial={{ x: 0 }}
