@@ -129,7 +129,7 @@ const ImageCarousel = () => {
                       <h3 className="text-white font-semibold text-lg drop-shadow-md" style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.4)' }}>
                         {t('categories.products')}
                       </h3>
-                      <p className="text-white/90 text-sm drop-shadow-md" style={{ textShadow: '0 1px 3px rgba(0, 0, 0, 0.4)' }}>Productos auténticos de América</p>
+                      <p className="text-white/90 text-sm drop-shadow-md" style={{ textShadow: '0 1px 3px rgba(0, 0, 0, 0.4)' }}>{t('productSection.description')}</p>
                     </div>
                   </motion.div>
                   
@@ -142,7 +142,7 @@ const ImageCarousel = () => {
                       <h3 className="text-white font-semibold text-lg drop-shadow-md" style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.4)' }}>
                         {t('categories.foods')}
                       </h3>
-                      <p className="text-white/90 text-sm drop-shadow-md" style={{ textShadow: '0 1px 3px rgba(0, 0, 0, 0.4)' }}>Sabores regionales tradicionales</p>
+                      <p className="text-white/90 text-sm drop-shadow-md" style={{ textShadow: '0 1px 3px rgba(0, 0, 0, 0.4)' }}>{t('foodSection.description')}</p>
                     </div>
                   </motion.div>
                   
@@ -155,7 +155,7 @@ const ImageCarousel = () => {
                       <h3 className="text-white font-semibold text-lg drop-shadow-md" style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.4)' }}>
                         {t('categories.boutiqueSouvenirs')}
                       </h3>
-                      <p className="text-white/90 text-sm drop-shadow-md" style={{ textShadow: '0 1px 3px rgba(0, 0, 0, 0.4)' }}>Artesanías y recuerdos únicos</p>
+                      <p className="text-white/90 text-sm drop-shadow-md" style={{ textShadow: '0 1px 3px rgba(0, 0, 0, 0.4)' }}>{t('boutiqueSection.description')}</p>
                     </div>
                   </motion.div>
                 </div>

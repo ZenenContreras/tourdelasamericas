@@ -10,25 +10,25 @@ const ProductsSection = () => {
   const categories = [
     {
       id: 'harina-masa',
-      name: 'Harina y masa',
+      name: t('productSection.categories.flour'),
       icon: <UtensilsCrossed className="h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10 text-yellow-500" />,
-      description: 'Descubre nuestras harinas de maíz, trigo y especialidades para preparar arepas, tortillas y más',
+      description: t('productSection.categoryDescriptions.flour'),
       image: '/harinasMasas.png',
       color: 'from-yellow-600 to-yellow-400'
     },
     {
       id: 'salsas-aderezos',
-      name: 'Salsas y aderezos',
+      name: t('productSection.categories.sauces'),
       icon: <Sandwich className="h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10 text-red-500" />,
-      description: 'Explora nuestra variedad de salsas picantes, moles, chimichurris y condimentos auténticos',
+      description: t('productSection.categoryDescriptions.sauces'),
       image: '/salsasAderezos.png',
       color: 'from-red-600 to-red-400'
     },
     {
       id: 'paquetes-snacks',
-      name: 'Paquetes y snacks',
+      name: t('productSection.categories.snacks'),
       icon: <Package className="h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10 text-green-500" />,
-      description: 'Disfruta de nuestros chips de tortilla, bocadillos, galletas y dulces tradicionales',
+      description: t('productSection.categoryDescriptions.snacks'),
       image: '/paquetesSnacks.png',
       color: 'from-green-600 to-green-400'
     }
@@ -78,7 +78,7 @@ const ProductsSection = () => {
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900">{t('sections.products')}</h2>
           </div>
           <p className="mt-3 sm:mt-4 text-base sm:text-lg md:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            Explora nuestras categorías de productos auténticos de las Américas, cada una con sabores y tradiciones únicas.
+            {t('productSection.description')}
           </p>
         </motion.div>
 
@@ -93,7 +93,7 @@ const ProductsSection = () => {
           {categories.map((category) => (
             <motion.div
               key={category.id}
-              className="relative overflow-hidden rounded-xl shadow-lg cursor-pointer group h-52 sm:h-56 md:h-64"
+              className="relative overflow-hidden rounded-xl shadow-lg cursor-pointer group h-52 sm:h-56 md:h-80"
               variants={itemVariants}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
@@ -124,7 +124,7 @@ const ProductsSection = () => {
                   </p>
                   
                   <div className="flex items-center text-white mt-auto bg-black/15 px-3 py-2 rounded-lg inline-flex">
-                    <span className="text-sm sm:text-base font-medium drop-shadow-md" style={{ textShadow: '0 1px 2px rgba(0,0,0,0.5)' }}>Ver productos</span>
+                    <span className="text-sm sm:text-base font-medium drop-shadow-md" style={{ textShadow: '0 1px 2px rgba(0,0,0,0.5)' }}>{t('productSection.viewProducts')}</span>
                     <motion.div 
                       className="ml-2"
                       initial={{ x: 0 }}
@@ -153,7 +153,7 @@ const ProductsSection = () => {
             whileTap={{ scale: 0.95 }}
             onClick={() => window.location.href = '/catalogo'}
           >
-            Ver catálogo completo
+            {t('productSection.viewCatalog')}
             <ArrowRight className="ml-2 h-5 w-5" />
           </motion.button>
         </motion.div>

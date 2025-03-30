@@ -44,12 +44,6 @@ export const translations = {
       contact: 'Contact',
       rights: 'All rights reserved.'
     },
-    storeTagline: {
-      drinks: 'Artisanal Drinks from the Americas',
-      food: 'Traditional Flavors of Our Land',
-      accessories: 'Exclusive Handcrafted Accessories',
-      art: 'Contemporary Art & Design'
-    },
     storeDescription: 'Our exclusive store is coming soon, bringing you the most authentic products from all across the Americas.',
     comingSoon: 'Coming Soon',
     storeComingSoon: 'Register for Exclusive Early Access',
@@ -59,14 +53,41 @@ export const translations = {
       viewDetails: 'View Details',
       comingSoon: 'Coming Soon',
       viewAll: 'View All Products',
-      clickToSee: 'Click to see more'
+      clickToSee: 'Click to see more',
+      categories: {
+        flour: 'Flour and Dough',
+        sauces: 'Sauces and Dressings',
+        snacks: 'Packages and Snacks'
+      },
+      categoryDescriptions: {
+        flour: 'Discover our corn, wheat and specialty flours for preparing arepas, tortillas and more',
+        sauces: 'Explore our variety of spicy sauces, moles, chimichurris and authentic condiments',
+        snacks: 'Enjoy our tortilla chips, snacks, cookies and traditional sweets'
+      },
+      viewProducts: 'View products',
+      viewCatalog: 'View complete catalog'
     },
     foodSection: {
-      description: 'Savor the authentic flavors of traditional dishes from the Americas. Each recipe carries centuries of history and culture.',
-      spicyLevel: 'Spicy Level',
-      comingSoon: 'Coming Soon to Your Table',
-      viewAll: 'Explore All Foods',
-      clickToSee: 'Click to see more'
+      description: 'Explore our collection of authentic dishes and traditional flavors from the diverse regions of America.',
+      regions: {
+        northAmerica: {
+          name: 'North America',
+          description: 'Discover the flavors of the United States, Canada and Mexico, from hamburgers and pizza to tacos and poutine',
+          countries: ['United States', 'Canada', 'Mexico']
+        },
+        centralAmerica: {
+          name: 'Central America',
+          description: 'Explore the colorful gastronomy of Guatemala, Costa Rica, Panama, Honduras and more Central American countries',
+          countries: ['Guatemala', 'Costa Rica', 'Panama', 'Honduras']
+        },
+        southAmerica: {
+          name: 'South America',
+          description: 'Enjoy typical dishes from Argentina, Brazil, Peru, Colombia and other South American countries',
+          countries: ['Argentina', 'Brazil', 'Peru', 'Colombia', 'Chile']
+        }
+      },
+      viewFood: 'View gastronomy',
+      viewCatalog: 'View complete catalog'
     },
     boutiqueSection: {
       description: 'Discover our exclusive collection of handcrafted items from across the Americas',
@@ -81,25 +102,7 @@ export const translations = {
       exclusiveCollection: 'Exclusive Collection Coming Soon',
       clickToSee: 'Click to see more'
     },
-    regionSection: {
-      description: 'Discover the diverse regions of the Americas, each with its unique traditions, flavors, and handcrafted treasures waiting to be explored.',
-      exploreAll: 'Explore All Regions'
-    },
     scrollDown: 'Scroll Down',
-    productDescription: {
-      drinks: 'Discover our selection of unique artisanal beverages, from traditional mezcal to exotic fruit drinks.',
-      food: 'Experience authentic flavors through our carefully selected traditional dishes and ingredients.',
-      accessories: 'Each accessory tells a story of craftsmanship and cultural heritage.',
-      art: 'Contemporary pieces that blend tradition with modern design.'
-    },
-    categoryLabels: {
-      products: 'Products',
-      drinks: 'Artisanal Drinks',
-      food: 'Local Gastronomy',
-      accessories: 'Exclusive Accessories',
-      art: 'Art & Design',
-      boutique: 'Exclusive Boutique'
-    },
     categories: {
       products: 'Products',
       foods: 'Foods',
@@ -151,16 +154,6 @@ export const translations = {
       contact: 'Contacto',
       rights: 'Todos los derechos reservados.'
     },
-    storeTagline: {
-      peru: 'Descubre Tesoros Ancestrales',
-      mexico: 'Experimenta Sabores Vibrantes',
-      brazil: 'Siente el Ritmo Exótico',
-      chile: 'Explora Maravillas Naturales',
-      drinks: 'Bebidas Artesanales de las Américas',
-      food: 'Sabores Tradicionales de Nuestra Tierra',
-      accessories: 'Accesorios Exclusivos Artesanales',
-      art: 'Arte y Diseño Contemporáneo'
-    },
     storeDescription: 'Nuestra tienda exclusiva estará disponible muy pronto, trayendo los productos más auténticos de todas las Américas.',
     comingSoon: 'Próximamente',
     storeComingSoon: 'Regístrate para Acceso Anticipado Exclusivo',
@@ -170,14 +163,41 @@ export const translations = {
       viewDetails: 'Ver Detalles',
       comingSoon: 'Próximamente',
       viewAll: 'Ver Todos los Productos',
-      clickToSee: 'Clic para ver más'
+      clickToSee: 'Clic para ver más',
+      categories: {
+        flour: 'Harina y masa',
+        sauces: 'Salsas y aderezos',
+        snacks: 'Paquetes y snacks'
+      },
+      categoryDescriptions: {
+        flour: 'Descubre nuestras harinas de maíz, trigo y especialidades para preparar arepas, tortillas y más',
+        sauces: 'Explora nuestra variedad de salsas picantes, moles, chimichurris y condimentos auténticos',
+        snacks: 'Disfruta de nuestros chips de tortilla, bocadillos, galletas y dulces tradicionales'
+      },
+      viewProducts: 'Ver productos',
+      viewCatalog: 'Ver catálogo completo'
     },
     foodSection: {
-      description: 'Saborea los auténticos sabores de platos tradicionales de las Américas. Cada receta lleva siglos de historia y cultura.',
-      spicyLevel: 'Nivel de Picante',
-      comingSoon: 'Próximamente en Tu Mesa',
-      viewAll: 'Explorar Todas las Comidas',
-      clickToSee: 'Clic para ver más'
+      description: 'Explora nuestra colección de platos auténticos y sabores tradicionales de las diversas regiones de América.',
+      regions: {
+        northAmerica: {
+          name: 'Norte América',
+          description: 'Descubre los sabores de Estados Unidos, Canadá y México, desde hamburguesas y pizza hasta tacos y poutine',
+          countries: ['Estados Unidos', 'Canadá', 'México']
+        },
+        centralAmerica: {
+          name: 'Centro América',
+          description: 'Explora la gastronomía colorida de Guatemala, Costa Rica, Panamá, Honduras y más países centroamericanos',
+          countries: ['Guatemala', 'Costa Rica', 'Panamá', 'Honduras']
+        },
+        southAmerica: {
+          name: 'Sur América',
+          description: 'Disfruta de los platos típicos de Argentina, Brasil, Perú, Colombia y otros países sudamericanos',
+          countries: ['Argentina', 'Brasil', 'Perú', 'Colombia', 'Chile']
+        }
+      },
+      viewFood: 'Ver gastronomía',
+      viewCatalog: 'Ver catálogo completo'
     },
     boutiqueSection: {
       description: 'Descubre nuestra colección exclusiva de artículos artesanales de las Américas',
@@ -192,29 +212,11 @@ export const translations = {
       exclusiveCollection: 'Colección Exclusiva Próximamente',
       clickToSee: 'Clic para ver más'
     },
-    regionSection: {
-      description: 'Descubre las diversas regiones de las Américas, cada una con sus tradiciones únicas, sabores y tesoros artesanales esperando ser explorados.',
-      exploreAll: 'Explorar Todas las Regiones'
-    },
     scrollDown: 'Desliza Abajo',
-    productDescription: {
-      drinks: 'Descubre nuestra selección de bebidas artesanales únicas, desde mezcal tradicional hasta bebidas exóticas de frutas.',
-      food: 'Experimenta sabores auténticos a través de nuestros platos e ingredientes tradicionales cuidadosamente seleccionados.',
-      accessories: 'Cada accesorio cuenta una historia de artesanía y herencia cultural.',
-      art: 'Piezas contemporáneas que fusionan la tradición con el diseño moderno.'
-    },
-    categoryLabels: {
-      products: 'Productos',
-      drinks: 'Bebidas Artesanales',
-      food: 'Gastronomía Local',
-      accessories: 'Accesorios Exclusivos',
-      art: 'Arte y Diseño',
-      boutique: 'Boutique Exclusiva'
-    },
     categories: {
       products: 'Productos',
       foods: 'Comidas',
-      boutiqueSouvenirs: 'Boutique & Souvenirs'
+      boutiqueSouvenirs: 'Boutique y Recuerdos'
     }
   },
   fr: {
@@ -262,16 +264,6 @@ export const translations = {
       contact: 'Contact',
       rights: 'Tous droits réservés.'
     },
-    storeTagline: {
-      peru: 'Découvrez des Trésors Ancestraux',
-      mexico: 'Vivez des Saveurs Vibrantes',
-      brazil: 'Ressentez le Rythme Exotique',
-      chile: 'Explorez des Merveilles Naturelles',
-      drinks: 'Boissons Artisanales des Amériques',
-      food: 'Saveurs Traditionnelles de Notre Terre',
-      accessories: 'Accessoires Exclusifs Artisanaux',
-      art: 'Art et Design Contemporain'
-    },
     storeDescription: 'Notre boutique exclusive ouvrira bientôt, vous apportant les produits les plus authentiques de toutes les Amériques.',
     comingSoon: 'Bientôt Disponible',
     storeComingSoon: 'Inscrivez-vous pour un Accès Anticipé Exclusif',
@@ -281,14 +273,41 @@ export const translations = {
       viewDetails: 'Voir Détails',
       comingSoon: 'Bientôt Disponible',
       viewAll: 'Voir Tous les Produits',
-      clickToSee: 'Cliquez pour voir plus'
+      clickToSee: 'Cliquez pour voir plus',
+      categories: {
+        flour: 'Farine et Pâte',
+        sauces: 'Sauces et Vinaigrettes',
+        snacks: 'Paquets et Collations'
+      },
+      categoryDescriptions: {
+        flour: 'Découvrez nos farines de maïs, de blé et spécialités pour préparer arepas, tortillas et plus',
+        sauces: 'Explorez notre variété de sauces épicées, moles, chimichurris et condiments authentiques',
+        snacks: 'Savourez nos chips de tortilla, collations, biscuits et bonbons traditionnels'
+      },
+      viewProducts: 'Voir les produits',
+      viewCatalog: 'Voir le catalogue complet'
     },
     foodSection: {
-      description: 'Savourez les saveurs authentiques des plats traditionnels des Amériques. Chaque recette porte des siècles d\'histoire et de culture.',
-      spicyLevel: 'Niveau d\'Épice',
-      comingSoon: 'Bientôt à Votre Table',
-      viewAll: 'Explorer Toutes les Cuisines',
-      clickToSee: 'Cliquez pour voir plus'
+      description: 'Explorez notre collection de plats authentiques et de saveurs traditionnelles des diverses régions d\'Amérique.',
+      regions: {
+        northAmerica: {
+          name: 'Amérique du Nord',
+          description: 'Découvrez les saveurs des États-Unis, du Canada et du Mexique, des hamburgers et pizzas aux tacos et poutine',
+          countries: ['États-Unis', 'Canada', 'Mexique']
+        },
+        centralAmerica: {
+          name: 'Amérique Centrale',
+          description: 'Explorez la gastronomie colorée du Guatemala, du Costa Rica, du Panama, du Honduras et d\'autres pays d\'Amérique centrale',
+          countries: ['Guatemala', 'Costa Rica', 'Panama', 'Honduras']
+        },
+        southAmerica: {
+          name: 'Amérique du Sud',
+          description: 'Savourez les plats typiques d\'Argentine, du Brésil, du Pérou, de Colombie et d\'autres pays d\'Amérique du Sud',
+          countries: ['Argentine', 'Brésil', 'Pérou', 'Colombie', 'Chili']
+        }
+      },
+      viewFood: 'Voir la gastronomie',
+      viewCatalog: 'Voir le catalogue complet'
     },
     boutiqueSection: {
       description: 'Découvrez notre collection exclusive d\'articles artisanaux des Amériques',
@@ -303,25 +322,7 @@ export const translations = {
       exclusiveCollection: 'Collection Exclusive Bientôt Disponible',
       clickToSee: 'Cliquez pour voir plus'
     },
-    regionSection: {
-      description: 'Découvrez les diverses régions des Amériques, chacune avec ses traditions uniques, ses saveurs et ses trésors artisanaux qui attendent d\'être explorés.',
-      exploreAll: 'Explorer Toutes les Régions'
-    },
     scrollDown: 'Défiler vers le Bas',
-    productDescription: {
-      drinks: 'Découvrez notre sélection de boissons artisanales uniques, du mezcal traditionnel aux boissons exotiques aux fruits.',
-      food: 'Découvrez des saveurs authentiques à travers nos plats et ingrédients traditionnels soigneusement sélectionnés.',
-      accessories: 'Chaque accessoire raconte une histoire d\'artisanat et d\'héritage culturel.',
-      art: 'Pièces contemporaines mêlant tradition et design moderne.'
-    },
-    categoryLabels: {
-      products: 'Produits',
-      drinks: 'Boissons Artisanales',
-      food: 'Gastronomie Locale',
-      accessories: 'Accessoires Exclusifs',
-      art: 'Art et Design',
-      boutique: 'Boutique Exclusive'
-    },
     categories: {
       products: 'Produits',
       foods: 'Cuisine',
