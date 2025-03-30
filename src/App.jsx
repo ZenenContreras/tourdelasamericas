@@ -164,29 +164,6 @@ function App() {
             </div>
           </motion.div>
         </div>
-        
-        {/* Indicador de desplazamiento */}
-        <motion.div 
-          className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center text-white"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5, duration: 0.3 }}
-        >
-          <span className="text-sm uppercase tracking-widest mb-2">{t('scrollDown')}</span>
-          <motion.div 
-            className="w-6 h-10 border-2 border-white rounded-full flex justify-center pt-2 cursor-pointer"
-            animate={{ y: [0, 8, 0] }}
-            transition={{ duration: 1.2, repeat: Infinity }}
-            onClick={() => {
-              const element = document.getElementById('products');
-              if (element) {
-                element.scrollIntoView({ behavior: 'smooth' });
-              }
-            }}
-          >
-            <motion.div className="w-1.5 h-1.5 bg-white rounded-full" />
-          </motion.div>
-        </motion.div>
       </div>
       
       {/* Secciones con Suspense para carga lenta */}

@@ -207,17 +207,22 @@ const Navbar = ({ scrollToRef, homeRef }) => {
             >
               <button 
                 onClick={() => handleNavClick('home')} 
-                className="flex items-center"
+                className="flex flex-row items-center"
                 aria-label="Ir al inicio"
               >
                 <img 
                   src="/america.png" 
                   alt="Logo Tour de las Americas" 
-                  className={`h-10 w-10 sm:h-10 sm:w-10 md:h-10 md:w-10 object-contain`} 
+                  className={`h-12 w-12 sm:h-7 sm:w-7 md:h-8 md:w-8 object-contain`} 
                 />
-                <span className={`ml-2 text-base sm:text-base md:text-lg font-bold truncate ${isTransparentNav ? 'text-white' : 'text-gray-900'}`}>
-                  Amériques
-                </span>
+                <div className="pl-1 flex flex-col items-center">
+                  <span className={`text-m italic font-medium text-gray-600`}>
+                    Origen
+                  </span>
+                  <span className={`text-base sm:text-base md:text-lg font-bold truncate text-gray-900`}>
+                    America
+                  </span>
+                </div>
               </button>
             </motion.div>
             

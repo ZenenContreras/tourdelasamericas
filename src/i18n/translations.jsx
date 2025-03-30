@@ -12,7 +12,10 @@ export const translations = {
       title: 'Discover the Treasures of the Americas',
       subtitle: 'Explore a unique collection of authentic products, from delicious foods to exclusive crafts from across the American continent.',
       explore: 'Explore Products',
-      learnMore: 'Learn More'
+      learnMore: 'Learn More',
+      origen: 'Origin',
+      america: 'America',
+      registerEarlyAccess: 'Register for Early Access'
     },
     sections: {
       products: 'Featured Products',
@@ -96,6 +99,11 @@ export const translations = {
       accessories: 'Exclusive Accessories',
       art: 'Art & Design',
       boutique: 'Exclusive Boutique'
+    },
+    categories: {
+      products: 'Products',
+      foods: 'Foods',
+      boutiqueSouvenirs: 'Boutique & Souvenirs'
     }
   },
   es: {
@@ -111,7 +119,10 @@ export const translations = {
       title: 'Descubre los Tesoros de las Américas',
       subtitle: 'Explora una colección única de productos auténticos, desde deliciosas comidas hasta artesanías exclusivas de todo el continente americano.',
       explore: 'Explorar Productos',
-      learnMore: 'Conoce Más'
+      learnMore: 'Conoce Más',
+      origen: 'Origen',
+      america: 'America',
+      registerEarlyAccess: 'Regístrate para acceso anticipado'
     },
     sections: {
       products: 'Productos Destacados',
@@ -199,6 +210,11 @@ export const translations = {
       accessories: 'Accesorios Exclusivos',
       art: 'Arte y Diseño',
       boutique: 'Boutique Exclusiva'
+    },
+    categories: {
+      products: 'Productos',
+      foods: 'Comidas',
+      boutiqueSouvenirs: 'Boutique & Souvenirs'
     }
   },
   fr: {
@@ -214,7 +230,10 @@ export const translations = {
       title: 'Découvrez les Trésors des Amériques',
       subtitle: 'Explorez une collection unique de produits authentiques, des délicieuses cuisines aux artisanats exclusifs de tout le continent américain.',
       explore: 'Explorer les Produits',
-      learnMore: 'En Savoir Plus'
+      learnMore: 'En Savoir Plus',
+      origen: 'Origine',
+      america: 'Amérique',
+      registerEarlyAccess: 'Inscrivez-vous pour un accès anticipé'
     },
     sections: {
       products: 'Produits Vedettes',
@@ -302,6 +321,11 @@ export const translations = {
       accessories: 'Accessoires Exclusifs',
       art: 'Art et Design',
       boutique: 'Boutique Exclusive'
+    },
+    categories: {
+      products: 'Produits',
+      foods: 'Cuisine',
+      boutiqueSouvenirs: 'Boutique & Souvenirs'
     }
   }
 };

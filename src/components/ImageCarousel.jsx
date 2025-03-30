@@ -1,255 +1,158 @@
-import React, { memo, useRef, useEffect, useState } from 'react';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, EffectFade, Pagination, Navigation, A11y } from 'swiper/modules';
-import { motion, useInView } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { useLanguage } from '../contexts/LanguageContext';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import 'swiper/css';
-import 'swiper/css/effect-fade';
-import 'swiper/css/pagination';
-import 'swiper/css/navigation';
+import { ShoppingBag, Utensils, Store } from 'lucide-react';
 
-// Optimizadas para carga rápida - tamaños diferentes para dispositivos diferentes con mejor relación de aspecto
-const images = [
-  {
-    url: {
-      mobile: "/fondoProductos.png",
-      tablet: "/fondoProductos.png",
-      desktop: "/fondoProductos.png"
-    },
-    category: "products",
-    tagline: "products",
-    color: "indigo-600"
-  },
-  {
-    url: {
-      mobile: "/fondoGastronomia.png",
-      tablet: "/fondoGastronomia.png",
-      desktop: "/fondoGastronomia.png"
-    },
-    category: "food",
-    tagline: "food",
-    color: "amber-600"
-  },
-  {
-    url: {
-      mobile: "/fondoBoutique.png",
-      tablet: "/fondoBoutique.png",
-      desktop: "/fondoBoutique.png"
-    },
-    category: "boutique",
-    tagline: "boutique",
-    color: "purple-600"
-  }
-];
-
-// Componente de diapositiva optimizado con memo para evitar rerenderizaciones innecesarias
-const CarouselSlide = memo(({ image, t, isActive }) => {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true });
+const ImageCarousel = () => {
+  const { t } = useLanguage();
   const [isImageLoaded, setIsImageLoaded] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
-  // Cargar imagen en segundo plano antes de mostrarla
+  // Detectar si es dispositivo móvil
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+    };
+  }, []);
+
+  // Precargar la imagen para mejor experiencia de usuario
   useEffect(() => {
     const img = new Image();
-    img.src = image.url.mobile;
+    img.src = "/fondoProductos.png";
     img.onload = () => setIsImageLoaded(true);
-  }, [image.url.mobile]);
+  }, []);
 
   return (
-    <div ref={ref} className="relative h-full">
-      {/* Div con color de fondo mientras carga la imagen */}
-      <div 
-        className={`absolute inset-0 bg-gradient-to-b from-gray-900 to-black transition-opacity duration-300 ${isImageLoaded ? 'opacity-0' : 'opacity-100'}`} 
-      />
-      
-      {/* Imagen principal con picture para responsividad */}
-      <picture className="h-full">
-        <source media="(min-width: 1024px)" srcSet={image.url.desktop} />
-        <source media="(min-width: 640px)" srcSet={image.url.tablet} />
-        <img
-          src={image.url.mobile}
-          alt={t(`categoryLabels.${image.category}`)}
-          className={`w-full h-full object-cover transition-opacity duration-500 ${isImageLoaded ? 'opacity-100' : 'opacity-0'}`}
-          loading={isActive ? "eager" : "lazy"}
-          fetchpriority={isActive ? "high" : "low"}
-          onLoad={() => setIsImageLoaded(true)}
+    <div className="relative w-full h-full">
+      <div className="relative h-full">
+        {/* Fondo de carga */}
+        <div 
+          className={`absolute inset-0 bg-gray-800 transition-opacity duration-500 ${isImageLoaded ? 'opacity-0' : 'opacity-100'}`} 
         />
-      </picture>
-      
-      {/* Gradiente sobre la imagen - más oscuro en móviles para mejor legibilidad */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/70 to-black/30" />
-      
-      {/* Contenido y texto del carrusel - optimizado para productos */}
-      <div className="absolute inset-0 flex flex-col justify-center items-center text-center px-4 sm:px-6 lg:px-8">
-        {inView && (
+        
+        {/* Imagen estática */}
+        <img
+          src="/fondoProductos.png"
+          alt="Origen America"
+          className="w-full h-full object-cover"
+          loading="eager"
+          fetchpriority="high"
+        />
+        
+        {/* Gradiente sobre la imagen - más claro */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/40 to-black/20" />
+        
+        {/* Contenido principal */}
+        <div className="absolute inset-0 flex flex-col justify-center items-center text-center px-4 sm:px-6 lg:px-8">
           <motion.div
             className="w-full max-w-4xl mx-auto"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: 0.5 }}
           >
-            <motion.div
-              className="mb-3 sm:mb-4 md:mb-6 inline-block"
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ type: "spring", stiffness: 300, damping: 15 }}
-            >
-              <div className="backdrop-blur-sm text-white px-6 py-3 sm:px-8 sm:py-4 rounded-xl inline-block shadow-lg">
-                <span className="text-base sm:text-lg md:text-xl uppercase tracking-wider font-bold">
-                  {t('comingSoon')}
-                </span>
-              </div>
-            </motion.div>
-            
             <motion.h2 
-              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black text-white mb-4 sm:mb-6 md:mb-8 leading-tight"
-              variants={{
-                initial: { opacity: 0, y: 20 },
-                animate: { opacity: 1, y: 0 },
-                transition: { duration: 0.4 }
-              }}
+              className="mb-3 sm:mb-5 lg:mb-6 leading-tight"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
             >
-              <span className={`text-${image.color} block text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black tracking-tight'}`}>
-                Amériques
+              <span className="block mb-0 sm:mb-1">
+                <span className="italic font-light text-indigo-300 text-5xl sm:text-4xl md:text-5xl drop-shadow-lg">{t('hero.origen')}</span>
               </span>
-              <span className="block mt-3 sm:mt-4 md:mt-6 text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-white/90 font-extrabold">
-                {t(`categoryLabels.${image.category}`)}
-              </span>
+              <span className="text-indigo-500 block text-6xl sm:text-6xl md:text-7xl lg:text-8xl font-bold drop-shadow-xl text-shadow-lg">{t('hero.america')}</span>
             </motion.h2>
             
             <motion.p 
-              className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-white/80 mb-4 sm:mb-6 md:mb-8 lg:mb-12 max-w-3xl mx-auto leading-relaxed font-medium"
-              variants={{
-                initial: { opacity: 0, y: 20 },
-                animate: { opacity: 1, y: 0 }
-              }}
-              transition={{ duration: 0.3, delay: 0.1 }}
+              className="text-sm sm:text-base md:text-lg text-gray-200 mb-5 sm:mb-6 md:mb-8 max-w-xl mx-auto"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
             >
               {t('storeDescription')}
             </motion.p>
             
+            {/* Botón de registro */}
             <motion.div
-              variants={{
-                initial: { opacity: 0, y: 20 },
-                animate: { opacity: 1, y: 0 }
-              }}
-              transition={{ duration: 0.3, delay: 0.2 }}
-              className="space-y-4 sm:space-y-0 sm:space-x-4 flex flex-col sm:flex-row justify-center items-center mb-16 sm:mb-20 md:mb-24"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.5 }}
+              className="mb-6 sm:mb-8 md:mb-10"
             >
-              <button className={`group relative inline-flex items-center justify-center bg-${image.color} text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl text-base sm:text-lg md:text-xl font-bold transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-${image.color}/30 overflow-hidden`}>
-                <span className="relative z-10">{t('storeComingSoon')}</span>
-                <div className={`absolute inset-0 bg-white/20 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left`}></div>
-              </button>
+              <motion.button
+                className="bg-indigo-600 text-white px-5 py-2.5 sm:px-6 sm:py-3 rounded-lg text-base sm:text-lg font-medium hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-500/30"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                {t('hero.registerEarlyAccess')}
+              </motion.button>
+            </motion.div>
+            
+            {/* Categorías - Layout responsivo mejorado */}
+            <motion.div 
+              className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 md:gap-6 w-full max-w-3xl mx-auto"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.6 }}
+            >
+              <motion.div 
+                className="bg-white/20 backdrop-blur-sm p-3 sm:p-4 rounded-xl flex flex-col items-center justify-center h-24 sm:h-28 md:h-32"
+                whileHover={{ scale: 1.03, backgroundColor: "rgba(255, 255, 255, 0.25)" }}
+              >
+                <ShoppingBag className="h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8 text-indigo-300 mb-2" />
+                <span className="text-white font-medium text-sm sm:text-base">{t('categories.products')}</span>
+              </motion.div>
+              
+              <motion.div 
+                className="bg-white/20 backdrop-blur-sm p-3 sm:p-4 rounded-xl flex flex-col items-center justify-center h-24 sm:h-28 md:h-32"
+                whileHover={{ scale: 1.03, backgroundColor: "rgba(255, 255, 255, 0.25)" }}
+              >
+                <Utensils className="h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8 text-amber-300 mb-2" />
+                <span className="text-white font-medium text-sm sm:text-base">{t('categories.foods')}</span>
+              </motion.div>
+              
+              <motion.div 
+                className="bg-white/20 backdrop-blur-sm p-3 sm:p-4 rounded-xl flex flex-col items-center justify-center h-24 sm:h-28 md:h-32"
+                whileHover={{ scale: 1.03, backgroundColor: "rgba(255, 255, 255, 0.25)" }}
+              >
+                <Store className="h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8 text-purple-300 mb-2" />
+                <span className="text-white font-medium text-sm sm:text-base">{t('categories.boutiqueSouvenirs')}</span>
+              </motion.div>
             </motion.div>
           </motion.div>
-        )}
-      </div>
-      
-      {/* Categoría del producto - más visible en móvil */}
-      <div className={`absolute bottom-8 sm:bottom-12 right-4 sm:right-8 text-white text-sm sm:text-base md:text-lg font-bold bg-${image.color} backdrop-blur-sm px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg sm:rounded-xl shadow-lg shadow-${image.color}/20`}>
-        {t(`categoryLabels.${image.category}`)}
-      </div>
-    </div>
-  );
-});
-
-const ImageCarousel = () => {
-  const { t } = useLanguage();
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [isEnd, setIsEnd] = useState(false);
-  const [isBeginning, setIsBeginning] = useState(true);
-  const swiperRef = useRef(null);
-
-  // Detectar si es dispositivo táctil
-  const [isTouchDevice, setIsTouchDevice] = useState(false);
-  
-  useEffect(() => {
-    setIsTouchDevice('ontouchstart' in window || navigator.maxTouchPoints > 0);
-  }, []);
-
-  const handlePrev = () => {
-    if (swiperRef.current && swiperRef.current.swiper) {
-      swiperRef.current.swiper.slidePrev();
-    }
-  };
-
-  const handleNext = () => {
-    if (swiperRef.current && swiperRef.current.swiper) {
-      swiperRef.current.swiper.slideNext();
-    }
-  };
-
-  return (
-    <div className="relative w-full h-full">
-      <Swiper
-        ref={swiperRef}
-        modules={[Autoplay, EffectFade, Pagination, Navigation, A11y]}
-        effect="fade"
-        autoplay={{
-          delay: 4000,
-          disableOnInteraction: false,
-        }}
-        pagination={{
-          clickable: true,
-          dynamicBullets: true,
-          renderBullet: function (index, className) {
-            return `<span class="${className} w-3 h-3 sm:w-4 sm:h-4" aria-label="Ir a la diapositiva ${index + 1}"></span>`;
-          },
-        }}
-        loop={true}
-        speed={800}
-        watchSlidesProgress={true}
-        className="absolute inset-0"
-        a11y={{
-          prevSlideMessage: 'Diapositiva anterior',
-          nextSlideMessage: 'Siguiente diapositiva',
-          firstSlideMessage: 'Esta es la primera diapositiva',
-          lastSlideMessage: 'Esta es la última diapositiva',
-        }}
-        onSlideChange={(swiper) => {
-          setActiveIndex(swiper.realIndex);
-          setIsBeginning(swiper.isBeginning);
-          setIsEnd(swiper.isEnd);
-        }}
-      >
-        {images.map((image, index) => (
-          <SwiperSlide key={index}>
-            <CarouselSlide 
-              image={image} 
-              t={t} 
-              isActive={index === activeIndex} 
-            />
-          </SwiperSlide>
-        ))}
-      </Swiper>
-
-      {/* Controles de navegación personalizados - solo visibles en escritorio (no táctil y no móvil) */}
-      {!isTouchDevice && window.innerWidth > 768 && (
-        <>
-          <button 
-            onClick={handlePrev}
-            className="absolute left-4 top-1/2 z-10 transform -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white rounded-full p-1 sm:p-2 backdrop-blur-sm transition-all focus:outline-none focus:ring-2 focus:ring-indigo-400 hidden md:block"
-            aria-label="Diapositiva anterior"
+        </div>
+        
+        {/* Indicador de desplazamiento centrado y mejorado para móvil */}
+        <motion.div 
+          className="absolute bottom-5 sm:bottom-8 left-0 right-0 mx-auto flex flex-col items-center text-white w-full"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.7, duration: 0.3 }}
+        >
+          <span className="text-xs sm:text-sm uppercase tracking-widest mb-1 sm:mb-2 font-light">{t('scrollDown')}</span>
+          <motion.div 
+            className="w-5 h-8 sm:w-6 sm:h-10 border-2 border-white rounded-full flex justify-center pt-2 cursor-pointer mx-auto"
+            animate={{ y: [0, 6, 0] }}
+            transition={{ duration: 1.2, repeat: Infinity }}
+            onClick={() => {
+              const element = document.getElementById('products');
+              if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+              }
+            }}
           >
-            <ChevronLeft className="h-6 w-6 sm:h-8 sm:w-8" />
-          </button>
-          <button 
-            onClick={handleNext}
-            className="absolute right-4 top-1/2 z-10 transform -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white rounded-full p-1 sm:p-2 backdrop-blur-sm transition-all focus:outline-none focus:ring-2 focus:ring-indigo-400 hidden md:block"
-            aria-label="Siguiente diapositiva"
-          >
-            <ChevronRight className="h-6 w-6 sm:h-8 sm:w-8" />
-          </button>
-        </>
-      )}
-
-      {/* Indicador de progreso mejorado para móviles */}
-      <div className="absolute bottom-6 left-0 right-0 z-10 flex justify-center">
-        <div className="swiper-pagination"></div>
+            <motion.div className="w-1 h-1 sm:w-1.5 sm:h-1.5 bg-white rounded-full" />
+          </motion.div>
+        </motion.div>
       </div>
     </div>
   );
 };
 
-export default memo(ImageCarousel);
+export default ImageCarousel;
