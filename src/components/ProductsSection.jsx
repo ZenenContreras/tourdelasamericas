@@ -13,7 +13,7 @@ const ProductsSection = () => {
       name: 'Harina y masa',
       icon: <UtensilsCrossed className="h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10 text-yellow-500" />,
       description: 'Descubre nuestras harinas de maíz, trigo y especialidades para preparar arepas, tortillas y más',
-      image: '/fondoProductos.png',
+      image: '/harinasMasas.png',
       color: 'from-yellow-600 to-yellow-400'
     },
     {
@@ -21,7 +21,7 @@ const ProductsSection = () => {
       name: 'Salsas y aderezos',
       icon: <Sandwich className="h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10 text-red-500" />,
       description: 'Explora nuestra variedad de salsas picantes, moles, chimichurris y condimentos auténticos',
-      image: '/fondoGastronomia.png',
+      image: '/salsasAderezos.png',
       color: 'from-red-600 to-red-400'
     },
     {
@@ -29,7 +29,7 @@ const ProductsSection = () => {
       name: 'Paquetes y snacks',
       icon: <Package className="h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10 text-green-500" />,
       description: 'Disfruta de nuestros chips de tortilla, bocadillos, galletas y dulces tradicionales',
-      image: '/fondoBoutique.png',
+      image: '/paquetesSnacks.png',
       color: 'from-green-600 to-green-400'
     }
   ];

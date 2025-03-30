@@ -42,15 +42,6 @@ const BoutiqueSection = () => {
       price: '$159.99',
       origin: 'Ecuador',
       isFeatured: true
-    },
-    {
-      id: 4,
-      name: 'Bolso Wayuu',
-      image: '/bolso.png',
-      category: 'accessories',
-      price: '$84.99',
-      origin: 'Colombia',
-      isFeatured: false
     }
   ];
 
@@ -122,7 +113,7 @@ const BoutiqueSection = () => {
           <AnimatePresence mode="wait">
             <motion.div
               key={activeCategory}
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8"
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
