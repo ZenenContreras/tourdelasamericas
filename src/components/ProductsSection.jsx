@@ -93,7 +93,7 @@ const ProductsSection = () => {
           {categories.map((category) => (
             <motion.div
               key={category.id}
-              className="relative overflow-hidden rounded-xl shadow-lg cursor-pointer group h-64 sm:h-72 md:h-80"
+              className="relative overflow-hidden rounded-xl shadow-lg cursor-pointer group h-52 sm:h-56 md:h-64"
               variants={itemVariants}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
