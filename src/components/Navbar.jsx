@@ -89,11 +89,10 @@ const Navbar = ({ scrollToRef, homeRef }) => {
   };
 
   const navLinks = [
-    { id: 'home', name: t('nav.home') },
-    { id: 'products', name: t('nav.products') },
-    { id: 'foods', name: t('nav.foods') },
-    { id: 'boutique', name: t('nav.boutique') },
-    { id: 'regions', name: t('nav.regions') }
+    { id: 'home', label: t('nav.home') },
+    { id: 'products', label: t('nav.products') },
+    { id: 'foods', label: t('nav.foods') },
+    { id: 'boutique', label: t('nav.boutique') }
   ];
 
   const activeNavLinkClass = "text-indigo-600 font-medium";
@@ -213,7 +212,7 @@ const Navbar = ({ scrollToRef, homeRef }) => {
                 <img 
                   src="/america.png" 
                   alt="Logo Tour de las Americas" 
-                  className={`h-12 w-12 sm:h-7 sm:w-7 md:h-8 md:w-8 object-contain`} 
+                  className={`h-12 w-12 sm:h-7 sm:w-7 md:h-14 md:w-14 object-contain`} 
                 />
                 <div className="pl-1 flex flex-col items-center">
                   <span className={`text-m italic font-medium text-gray-600`}>
@@ -242,7 +241,7 @@ const Navbar = ({ scrollToRef, homeRef }) => {
                   whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.97 }}
                 >
-                  {link.name}
+                  {link.label}
                 </motion.button>
               ))}
               <LanguageSelector isTransparent={isTransparentNav} />
@@ -315,7 +314,7 @@ const Navbar = ({ scrollToRef, homeRef }) => {
                       } transition-colors fast-transition animate-gpu`}
                       onClick={() => handleNavClick(link.id)}
                     >
-                      <span>{link.name}</span>
+                      <span>{link.label}</span>
                       <ChevronRight className={`h-5 w-5 ${activeLink === link.id ? 'text-indigo-500' : 'text-gray-400'}`} />
                     </button>
                   </motion.div>

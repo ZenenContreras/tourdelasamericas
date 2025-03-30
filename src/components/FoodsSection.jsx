@@ -1,39 +1,43 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Utensils, Flame, ArrowRight } from 'lucide-react';
+import React from 'react';
+import { motion } from 'framer-motion';
+import { Utensils, ArrowRight, Globe2, MapPin } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 
 const FoodsSection = () => {
   const { t } = useLanguage();
-  const [clickedFood, setClickedFood] = useState(null);
 
-  const foods = [
+  // Regiones gastronómicas de América
+  const regions = [
     {
-      id: 1,
-      name: 'Arepas Venezolanas',
-      image: '/arepas.png',
-      country: 'Venezuela',
-      category: 'Plato Principal',
-      spicyLevel: 1
+      id: 'norte-america',
+      name: 'Norte América',
+      icon: <MapPin className="h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10 text-red-500" />,
+      description: 'Descubre los sabores de Estados Unidos, Canadá y México, desde hamburguesas y pizza hasta tacos y poutine',
+      image: '/norteamerica.jpg',
+      color: 'from-red-600 to-red-400',
+      countries: ['Estados Unidos', 'Canadá', 'México']
     },
     {
-      id: 2,
-      name: 'Tacos al Pastor',
-      image: '/tacos.png',
-      country: 'México',
-      category: 'Antojitos',
-      spicyLevel: 3
+      id: 'centro-america',
+      name: 'Centro América',
+      icon: <MapPin className="h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10 text-green-500" />,
+      description: 'Explora la gastronomía colorida de Guatemala, Costa Rica, Panamá, Honduras y más países centroamericanos',
+      image: '/centroamerica.jpg',
+      color: 'from-green-600 to-green-400',
+      countries: ['Guatemala', 'Costa Rica', 'Panamá', 'Honduras']
     },
     {
-      id: 3,
-      name: 'Ceviche Peruano',
-      image: '/ceviche.png',
-      country: 'Perú',
-      category: 'Entradas',
-      spicyLevel: 2
+      id: 'sur-america',
+      name: 'Sur América',
+      icon: <MapPin className="h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10 text-yellow-500" />,
+      description: 'Disfruta de los platos típicos de Argentina, Brasil, Perú, Colombia y otros países sudamericanos',
+      image: '/sudamerica.jpg',
+      color: 'from-yellow-600 to-yellow-400',
+      countries: ['Argentina', 'Brasil', 'Perú', 'Colombia', 'Chile']
     }
   ];
 
+  // Animación para entrada escalonada de elementos
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -44,162 +48,128 @@ const FoodsSection = () => {
     }
   };
 
-  const cardVariants = {
-    hidden: { x: -50, opacity: 0 },
+  // Animación para cada región
+  const itemVariants = {
+    hidden: { 
+      opacity: 0, 
+      y: 50 
+    },
     visible: { 
-      x: 0, 
-      opacity: 1,
+      opacity: 1, 
+      y: 0,
       transition: { 
         type: "spring",
-        stiffness: 100 
+        stiffness: 100,
+        damping: 15,
+        duration: 0.5
       }
     }
   };
 
-  const SpicyLevel = ({ level }) => {
-    return (
-      <div className="flex items-center">
-        {[...Array(5)].map((_, index) => (
-          <Flame 
-            key={index} 
-            className={`h-4 w-4 ${index < level ? 'text-red-500' : 'text-gray-300'}`}
-            fill={index < level ? 'currentColor' : 'none'}
-          />
-        ))}
-      </div>
-    );
-  };
-
-  const handleFoodClick = (foodId) => {
-    setClickedFood(foodId);
-    setTimeout(() => setClickedFood(null), 2000); // Reset after 2 seconds
-  };
-
   return (
-    <section className="py-12 sm:py-16 md:py-20 bg-gradient-to-br from-amber-50 to-orange-50">
+    <section className="py-10 sm:py-16 md:py-20 bg-gradient-to-br from-amber-50 to-orange-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="text-center mb-12 sm:mb-16"
+          className="text-center mb-10 sm:mb-16"
         >
           <div className="inline-flex items-center justify-center mb-4 sm:mb-6">
             <Utensils className="h-6 w-6 sm:h-8 sm:w-8 text-amber-600 mr-2 sm:mr-3" />
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900">{t('sections.foods')}</h2>
           </div>
-          <p className="mt-3 sm:mt-4 text-lg sm:text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            {t('foodSection.description')}
+          <p className="mt-3 sm:mt-4 text-base sm:text-lg md:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+            Explora nuestra colección de platos auténticos y sabores tradicionales de las diversas regiones de América.
           </p>
         </motion.div>
 
-        <div className="relative">
-          <motion.div
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8"
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-          >
-            {foods.map((food) => (
-              <motion.div
-                key={food.id}
-                className="relative bg-white rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-shadow duration-300 cursor-pointer"
-                variants={cardVariants}
-                onClick={() => handleFoodClick(food.id)}
-              >
-                <div className="relative h-64 sm:h-72 overflow-hidden">
-                  <motion.img
-                    src={food.image}
-                    alt={food.name}
-                    className="w-full h-full object-cover"
-                    transition={{ duration: 0.3 }}
-                  />
-                  <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-full text-sm font-medium text-amber-700">
-                    {food.country}
-                  </div>
-                </div>
+        {/* Regiones gastronómicas */}
+        <motion.div
+          className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 md:gap-6 lg:gap-8"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+        >
+          {regions.map((region) => (
+            <motion.div
+              key={region.id}
+              className="relative overflow-hidden rounded-xl shadow-lg cursor-pointer group h-64 sm:h-72 md:h-80"
+              variants={itemVariants}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => window.location.href = `/gastronomia/${region.id}`}
+            >
+              {/* Fondo de la región con imagen y overlay */}
+              <div className="absolute inset-0 w-full h-full overflow-hidden">
+                <img 
+                  src={region.image} 
+                  alt={region.name}
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                />
                 
-                <div className="p-5 sm:p-6">
-                  <div className="flex justify-between items-start mb-4">
-                    <div>
-                      <span className="text-xs uppercase tracking-wider text-amber-600 font-semibold bg-amber-100 px-2.5 py-1 rounded-full">
-                        {food.category}
-                      </span>
-                      <h3 className="mt-2 text-lg sm:text-xl font-bold text-gray-900">{food.name}</h3>
-                    </div>
-                    <div className="text-2xl sm:text-3xl">
-                      {food.id === 1 ? '🇻🇪' : food.id === 2 ? '🇲🇽' : '🇵🇪'}
-                    </div>
+                {/* Gradiente para mejor legibilidad - opacidad reducida */}
+                <div className={`absolute inset-0 bg-gradient-to-r ${region.color} opacity-40 transition-opacity duration-300 group-hover:opacity-50`}></div>
+              
+                {/* Contenido de la región */}
+                <div className="absolute inset-0 flex flex-col justify-center p-6 sm:p-8">
+                  <div className="flex items-center mb-3 sm:mb-4 bg-black/10 backdrop-blur-sm p-2 rounded-lg inline-block">
+                    {region.icon}
+                    <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-white ml-3 sm:ml-4 drop-shadow-md" style={{ textShadow: '0 1px 3px rgba(0,0,0,0.5)' }}>
+                      {region.name}
+                    </h3>
                   </div>
                   
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <p className="text-sm text-gray-500 mb-1">{t('foodSection.spicyLevel')}:</p>
-                      <SpicyLevel level={food.spicyLevel} />
-                    </div>
-                    <ArrowRight className="h-5 w-5 text-gray-400" />
+                  <p className="text-sm sm:text-base text-white mb-4 sm:mb-6 max-w-2xl drop-shadow-md bg-black/10 backdrop-blur-sm p-2 rounded-lg" style={{ textShadow: '0 1px 3px rgba(0,0,0,0.5)' }}>
+                    {region.description}
+                  </p>
+                  
+                  {/* Etiquetas de países */}
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {region.countries.map((country, index) => (
+                      <span 
+                        key={index}
+                        className="bg-white/20 backdrop-blur-sm text-white text-xs uppercase tracking-wider font-medium px-2 py-1 rounded-full border border-white/10 shadow-sm"
+                        style={{ textShadow: '0 1px 2px rgba(0,0,0,0.3)' }}
+                      >
+                        {country}
+                      </span>
+                    ))}
+                  </div>
+                  
+                  <div className="flex items-center text-white mt-auto bg-black/20 backdrop-blur-sm px-3 py-2 rounded-lg inline-flex">
+                    <span className="text-sm sm:text-base font-medium">Ver gastronomía</span>
+                    <motion.div 
+                      className="ml-2"
+                      initial={{ x: 0 }}
+                      whileHover={{ x: 5 }}
+                    >
+                      <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5" />
+                    </motion.div>
                   </div>
                 </div>
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
 
-                {/* Coming Soon Overlay */}
-                <AnimatePresence>
-                  {clickedFood === food.id && (
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      className="absolute inset-0 bg-amber-600/90 backdrop-blur-sm flex items-center justify-center"
-                    >
-                      <motion.div
-                        initial={{ scale: 0.8, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        exit={{ scale: 0.8, opacity: 0 }}
-                        className="text-center p-6"
-                      >
-                        <span className="text-white text-xl font-bold block mb-2">{t('foodSection.comingSoon')}</span>
-                        <span className="text-white/80 text-sm">{t('foodSection.clickToSee')}</span>
-                      </motion.div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </motion.div>
-            ))}
-          </motion.div>
-
-          {/* Decoración */}
-          <motion.div 
-            className="absolute -top-12 -left-12 h-24 w-24 bg-amber-200 rounded-full opacity-20"
-            animate={{ 
-              scale: [1, 1.2, 1],
-              rotate: [0, 90, 180, 270, 360]
-            }}
-            transition={{ duration: 15, repeat: Infinity }}
-          />
-          <motion.div 
-            className="absolute -bottom-12 -right-12 h-32 w-32 bg-orange-200 rounded-full opacity-30"
-            animate={{ 
-              scale: [1, 1.3, 1],
-              rotate: [360, 270, 180, 90, 0]
-            }}
-            transition={{ duration: 20, repeat: Infinity }}
-          />
-        </div>
-
+        {/* Botón para ver todo el catálogo */}
         <motion.div
-          className="mt-16 text-center"
+          className="mt-10 sm:mt-16 text-center"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ delay: 0.5 }}
         >
           <motion.button
-            className="inline-flex items-center bg-amber-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-amber-700 transition-colors"
+            className="inline-flex items-center bg-amber-600 text-white px-5 py-2.5 sm:px-6 sm:py-3 rounded-lg text-base sm:text-lg font-medium hover:bg-amber-700 transition-colors shadow-lg shadow-amber-500/30"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
+            onClick={() => window.location.href = '/gastronomia'}
           >
-            {t('foodSection.viewAll')}
+            Ver catálogo completo
             <ArrowRight className="ml-2 h-5 w-5" />
           </motion.button>
         </motion.div>

@@ -10,7 +10,6 @@ import ImageCarousel from './components/ImageCarousel';
 const ProductsSection = lazy(() => import('./components/ProductsSection'));
 const FoodsSection = lazy(() => import('./components/FoodsSection'));
 const BoutiqueSection = lazy(() => import('./components/BoutiqueSection'));
-const RegionsSection = lazy(() => import('./components/RegionsSection'));
 
 // Componente de carga mientras se cargan las secciones
 const Loading = () => (
@@ -34,7 +33,6 @@ function App() {
   const productsRef = useRef(null);
   const foodsRef = useRef(null);
   const boutiqueRef = useRef(null);
-  const regionsRef = useRef(null);
 
   // Función para desplazamiento suave
   const scrollToRef = (ref) => {
@@ -197,16 +195,6 @@ function App() {
         >
           <BoutiqueSection />
         </div>
-        
-        {/* Regiones */}
-        <div 
-          ref={regionsRef} 
-          id="regions" 
-          className="section-container"
-          style={{ scrollMarginTop: '80px' }}
-        >
-          <RegionsSection />
-        </div>
       </Suspense>
       
       <Footer />
@@ -218,7 +206,6 @@ function App() {
         <Route path="/products" element={<></>} />
         <Route path="/foods" element={<></>} />
         <Route path="/boutique" element={<></>} />
-        <Route path="/regions" element={<></>} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </div>

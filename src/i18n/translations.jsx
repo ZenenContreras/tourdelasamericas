@@ -18,7 +18,7 @@ export const translations = {
       registerEarlyAccess: 'Register for Early Access'
     },
     sections: {
-      products: 'Featured Products',
+      products: 'Products',
       foods: 'Traditional Foods',
       boutique: 'Boutique Collection',
       regions: 'Explore by Region'
@@ -125,7 +125,7 @@ export const translations = {
       registerEarlyAccess: 'Regístrate para acceso anticipado'
     },
     sections: {
-      products: 'Productos Destacados',
+      products: 'Productos',
       foods: 'Comidas Tradicionales',
       boutique: 'Colección Boutique',
       regions: 'Explora por Región'
@@ -236,7 +236,7 @@ export const translations = {
       registerEarlyAccess: 'Inscrivez-vous pour un accès anticipé'
     },
     sections: {
-      products: 'Produits Vedettes',
+      products: 'Produits',
       foods: 'Cuisines Traditionnelles',
       boutique: 'Collection Boutique',
       regions: 'Explorer par Région'
