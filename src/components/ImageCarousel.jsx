@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useLanguage } from '../contexts/LanguageContext';
-import { ShoppingBag, Utensils, Store } from 'lucide-react';
+import { ShoppingBag, Utensils, Store, ChevronDown } from 'lucide-react';
 
 const ImageCarousel = () => {
   const { t } = useLanguage();
@@ -24,37 +24,37 @@ const ImageCarousel = () => {
 
   // Precargar la imagen para mejor experiencia de usuario
   useEffect(() => {
-    const imagePath = isMobile ? "/fondoMobile2.png" : "/america1.png";
+    const imagePath = isMobile ? "/fondoMobile2.png" : "/fondoEscritorio.png";
     const img = new Image();
     img.src = imagePath;
     img.onload = () => setIsImageLoaded(true);
   }, [isMobile]);
 
   return (
-    <div className="relative w-full h-screen min-h-[600px] max-h-[900px]">
+    <div className="relative w-full h-screen min-h-[600px] max-h-[900px] overflow-hidden">
       <div className="relative h-full">
-        {/* Fondo de carga */}
+        {/* Fondo de carga con animación suave */}
         <div 
-          className={`absolute inset-0 bg-indigo-50 transition-opacity duration-500 ${isImageLoaded ? 'opacity-0' : 'opacity-100'}`} 
+          className={`absolute inset-0 bg-gradient-to-br from-indigo-50 to-purple-50 transition-opacity duration-700 ${isImageLoaded ? 'opacity-0' : 'opacity-100'}`} 
         />
         
-        {/* Imagen de fondo */}
+        {/* Imagen de fondo con optimización */}
         <picture>
-          <source media="(min-width: 768px)" srcSet="/america1.png" />
+          <source media="(min-width: 768px)" srcSet="/fondoEscritorio.png" />
           <source media="(max-width: 767px)" srcSet="/fondoMobile2.png" />
           <img
-            src={isMobile ? "/fondoMobile2.png" : "/america1.png"}
+            src={isMobile ? "/fondoMobile2.png" : "/fondoEscritorio.png"}
             alt="Origen America"
-            className="w-full h-full object-cover filter blur-[0.8px]"
+            className="w-full h-full object-cover filter blur-[0.5px]"
             loading="eager"
             fetchpriority="high"
           />
         </picture>
         
-        {/* Gradiente mejorado */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/20 to-transparent" />
+        {/* Gradiente mejorado para mejor legibilidad */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent" />
         
-        {/* Contenido principal */}
+        {/* Contenido principal con mejor organización */}
         <div className="absolute inset-0 flex flex-col justify-center px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto w-full">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
@@ -63,14 +63,14 @@ const ImageCarousel = () => {
                 className="text-left"
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6 }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
               >
-                {/* Título con mejor espaciado y tipografía */}
+                {/* Título con tipografía mejorada */}
                 <motion.div 
                   className="mb-6 sm:mb-8 md:mb-10"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  transition={{ duration: 0.7, delay: 0.1 }}
+                  transition={{ duration: 0.8, delay: 0.2 }}
                 >
                   <span className="block mb-2 sm:mb-3">
                     <span className="italic font-light text-white text-4xl sm:text-5xl md:text-6xl lg:text-7xl drop-shadow-xl" 
@@ -84,12 +84,12 @@ const ImageCarousel = () => {
                   </span>
                 </motion.div>
 
-                {/* Descripción mejorada */}
+                {/* Descripción con mejor legibilidad */}
                 <motion.p 
                   className="text-base sm:text-lg md:text-xl text-white/90 mb-8 max-w-xl leading-relaxed"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  transition={{ duration: 0.7, delay: 0.3 }}
+                  transition={{ duration: 0.8, delay: 0.4 }}
                   style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)' }}
                 >
                   {t('storeDescription')}
@@ -99,7 +99,7 @@ const ImageCarousel = () => {
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  transition={{ duration: 0.5, delay: 0.5 }}
+                  transition={{ duration: 0.8, delay: 0.6 }}
                   className="mb-8 sm:mb-0"
                 >
                   <motion.button
@@ -117,7 +117,7 @@ const ImageCarousel = () => {
                 className="hidden md:block"
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
+                transition={{ duration: 0.8, delay: 0.3 }}
               >
                 <div className="grid grid-cols-1 gap-6 max-w-md mx-auto">
                   <motion.div 
@@ -166,7 +166,7 @@ const ImageCarousel = () => {
                 className="grid grid-cols-3 gap-4 w-full md:hidden"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.6 }}
+                transition={{ duration: 0.8, delay: 0.7 }}
               >
                 <motion.div 
                   className="bg-indigo-600/10 p-4 rounded-xl flex flex-col items-center justify-center h-24 border border-white/10 backdrop-blur-sm hover:bg-indigo-600/20 transition-all duration-300"
@@ -210,7 +210,7 @@ const ImageCarousel = () => {
           className="absolute bottom-8 left-0 right-0 mx-auto flex flex-col items-center text-white w-full pointer-events-none"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.8, duration: 0.5 }}
+          transition={{ delay: 1, duration: 0.8 }}
         >
           <span className="text-sm uppercase tracking-widest mb-3 font-light drop-shadow-md" style={{ textShadow: '0 1px 3px rgba(0, 0, 0, 0.4)' }}>
             {t('scrollDown')}
