@@ -24,35 +24,35 @@ const ImageCarousel = () => {
 
   // Precargar la imagen para mejor experiencia de usuario
   useEffect(() => {
-    const imagePath = isMobile ? "/america1.png" : "/fondoProductos.png";
+    const imagePath = isMobile ? "/fondoMobile2.png" : "/america1.png";
     const img = new Image();
     img.src = imagePath;
     img.onload = () => setIsImageLoaded(true);
   }, [isMobile]);
 
   return (
-    <div className="relative w-full h-full">
+    <div className="relative w-full h-screen min-h-[600px] max-h-[900px]">
       <div className="relative h-full">
         {/* Fondo de carga */}
         <div 
           className={`absolute inset-0 bg-indigo-50 transition-opacity duration-500 ${isImageLoaded ? 'opacity-0' : 'opacity-100'}`} 
         />
         
-        {/* Imagen específica según el dispositivo */}
+        {/* Imagen de fondo */}
         <picture>
-          <source media="(min-width: 768px)" srcSet="/fondoProductos.png" />
-          <source media="(max-width: 767px)" srcSet="/america1.png" />
+          <source media="(min-width: 768px)" srcSet="/america1.png" />
+          <source media="(max-width: 767px)" srcSet="/fondoMobile2.png" />
           <img
-            src={isMobile ? "/america1.png" : "/america.png"}
+            src={isMobile ? "/fondoMobile2.png" : "/america1.png"}
             alt="Origen America"
-            className="w-full h-full object-cover filter blur-[2px]"
+            className="w-full h-full object-cover filter blur-[0.8px]"
             loading="eager"
             fetchpriority="high"
           />
         </picture>
         
-        {/* Gradiente más sutil sobre la imagen */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-black/5 to-transparent" />
+        {/* Gradiente mejorado */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/20 to-transparent" />
         
         {/* Contenido principal */}
         <div className="absolute inset-0 flex flex-col justify-center px-4 sm:px-6 lg:px-8">
@@ -65,28 +65,28 @@ const ImageCarousel = () => {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.6 }}
               >
-                {/* Título con mejor espaciado */}
+                {/* Título con mejor espaciado y tipografía */}
                 <motion.div 
-                  className="mb-8 sm:mb-10 md:mb-12"
+                  className="mb-6 sm:mb-8 md:mb-10"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.7, delay: 0.1 }}
                 >
-                  <span className="block mb-1 sm:mb-2">
-                    <span className="italic font-light text-white text-4xl sm:text-5xl md:text-7xl drop-shadow-xl" 
+                  <span className="block mb-2 sm:mb-3">
+                    <span className="italic font-light text-white text-4xl sm:text-5xl md:text-6xl lg:text-7xl drop-shadow-xl" 
                           style={{ fontFamily: "'Playfair Display', serif", letterSpacing: '2px', textShadow: '0 4px 12px rgba(0, 0, 0, 0.4)' }}>
                       {t('hero.origen')}
                     </span>
                   </span>
-                  <span className="text-white block text-5xl sm:text-6xl md:text-8xl font-bold drop-shadow-xl" 
+                  <span className="text-white block text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold drop-shadow-xl" 
                         style={{ textShadow: '0 4px 16px rgba(0, 0, 0, 0.5)' }}>
                     {t('hero.america')}
                   </span>
                 </motion.div>
 
-                {/* Descripción - Sin caja blur */}
+                {/* Descripción mejorada */}
                 <motion.p 
-                  className="text-sm sm:text-base md:text-lg text-white mb-8 max-w-xl"
+                  className="text-base sm:text-lg md:text-xl text-white/90 mb-8 max-w-xl leading-relaxed"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.7, delay: 0.3 }}
@@ -95,7 +95,7 @@ const ImageCarousel = () => {
                   {t('storeDescription')}
                 </motion.p>
                 
-                {/* Botón de registro */}
+                {/* Botón de registro mejorado */}
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -103,7 +103,7 @@ const ImageCarousel = () => {
                   className="mb-8 sm:mb-0"
                 >
                   <motion.button
-                    className="bg-indigo-600 text-white px-6 py-3 sm:px-8 sm:py-3.5 rounded-lg text-base sm:text-lg font-medium hover:bg-indigo-500 transition-colors shadow-xl border border-indigo-400/30"
+                    className="bg-indigo-600 text-white px-8 py-4 sm:px-10 sm:py-4.5 rounded-xl text-lg sm:text-xl font-medium hover:bg-indigo-500 transition-all duration-300 shadow-xl border border-indigo-400/30 hover:shadow-2xl hover:shadow-indigo-500/30"
                     whileHover={{ scale: 1.03, backgroundColor: "#4F46E5" }}
                     whileTap={{ scale: 0.97 }}
                   >
@@ -119,84 +119,84 @@ const ImageCarousel = () => {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
               >
-                <div className="grid grid-cols-1 gap-5 max-w-md mx-auto">
+                <div className="grid grid-cols-1 gap-6 max-w-md mx-auto">
                   <motion.div 
-                    className="bg-indigo-600/10 p-5 rounded-xl flex items-center h-24 border border-white/10 shadow-lg group backdrop-blur-sm"
+                    className="bg-indigo-600/10 p-6 rounded-2xl flex items-center h-28 border border-white/10 shadow-lg group backdrop-blur-sm hover:bg-indigo-600/20 transition-all duration-300"
                     whileHover={{ scale: 1.02, backgroundColor: "rgba(79, 70, 229, 0.15)" }}
                   >
-                    <ShoppingBag className="h-8 w-8 text-white mr-4 group-hover:scale-110 transition-transform" />
+                    <ShoppingBag className="h-10 w-10 text-white mr-4 group-hover:scale-110 transition-transform" />
                     <div>
-                      <h3 className="text-white font-semibold text-lg drop-shadow-md" style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.4)' }}>
+                      <h3 className="text-white font-semibold text-xl drop-shadow-md" style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.4)' }}>
                         {t('categories.products')}
                       </h3>
-                      <p className="text-white/90 text-sm drop-shadow-md" style={{ textShadow: '0 1px 3px rgba(0, 0, 0, 0.4)' }}>{t('productSection.description')}</p>
+                      <p className="text-white/90 text-base drop-shadow-md" style={{ textShadow: '0 1px 3px rgba(0, 0, 0, 0.4)' }}>{t('productSection.description')}</p>
                     </div>
                   </motion.div>
                   
                   <motion.div 
-                    className="bg-amber-500/10 p-5 rounded-xl flex items-center h-24 border border-white/10 shadow-lg group backdrop-blur-sm"
+                    className="bg-amber-500/10 p-6 rounded-2xl flex items-center h-28 border border-white/10 shadow-lg group backdrop-blur-sm hover:bg-amber-500/20 transition-all duration-300"
                     whileHover={{ scale: 1.02, backgroundColor: "rgba(245, 158, 11, 0.15)" }}
                   >
-                    <Utensils className="h-8 w-8 text-white mr-4 group-hover:scale-110 transition-transform" />
+                    <Utensils className="h-10 w-10 text-white mr-4 group-hover:scale-110 transition-transform" />
                     <div>
-                      <h3 className="text-white font-semibold text-lg drop-shadow-md" style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.4)' }}>
+                      <h3 className="text-white font-semibold text-xl drop-shadow-md" style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.4)' }}>
                         {t('categories.foods')}
                       </h3>
-                      <p className="text-white/90 text-sm drop-shadow-md" style={{ textShadow: '0 1px 3px rgba(0, 0, 0, 0.4)' }}>{t('foodSection.description')}</p>
+                      <p className="text-white/90 text-base drop-shadow-md" style={{ textShadow: '0 1px 3px rgba(0, 0, 0, 0.4)' }}>{t('foodSection.description')}</p>
                     </div>
                   </motion.div>
                   
                   <motion.div 
-                    className="bg-purple-500/15 p-5 rounded-xl flex items-center h-24 border border-white/10 shadow-lg group backdrop-blur-sm"
+                    className="bg-purple-500/15 p-6 rounded-2xl flex items-center h-28 border border-white/10 shadow-lg group backdrop-blur-sm hover:bg-purple-500/25 transition-all duration-300"
                     whileHover={{ scale: 1.02, backgroundColor: "rgba(168, 85, 247, 0.2)" }}
                   >
-                    <Store className="h-8 w-8 text-white mr-4 group-hover:scale-110 transition-transform" />
+                    <Store className="h-10 w-10 text-white mr-4 group-hover:scale-110 transition-transform" />
                     <div>
-                      <h3 className="text-white font-semibold text-lg drop-shadow-md" style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.4)' }}>
+                      <h3 className="text-white font-semibold text-xl drop-shadow-md" style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.4)' }}>
                         {t('categories.boutiqueSouvenirs')}
                       </h3>
-                      <p className="text-white/90 text-sm drop-shadow-md" style={{ textShadow: '0 1px 3px rgba(0, 0, 0, 0.4)' }}>{t('boutiqueSection.description')}</p>
+                      <p className="text-white/90 text-base drop-shadow-md" style={{ textShadow: '0 1px 3px rgba(0, 0, 0, 0.4)' }}>{t('boutiqueSection.description')}</p>
                     </div>
                   </motion.div>
                 </div>
               </motion.div>
               
-              {/* Categorías version móvil */}
+              {/* Categorías versión móvil mejorada */}
               <motion.div 
-                className="grid grid-cols-3 gap-3 w-full md:hidden"
+                className="grid grid-cols-3 gap-4 w-full md:hidden"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.6 }}
               >
                 <motion.div 
-                  className="bg-indigo-600/10 p-3 rounded-xl flex flex-col items-center justify-center h-20 border border-white/10 backdrop-blur-sm"
+                  className="bg-indigo-600/10 p-4 rounded-xl flex flex-col items-center justify-center h-24 border border-white/10 backdrop-blur-sm hover:bg-indigo-600/20 transition-all duration-300"
                   whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.97 }}
                 >
-                  <ShoppingBag className="h-6 w-6 text-white mb-1" />
-                  <span className="text-white font-medium text-xs text-center drop-shadow-md" style={{ textShadow: '0 1px 2px rgba(0, 0, 0, 0.4)' }}>
+                  <ShoppingBag className="h-8 w-8 text-white mb-2" />
+                  <span className="text-white font-medium text-sm text-center drop-shadow-md" style={{ textShadow: '0 1px 2px rgba(0, 0, 0, 0.4)' }}>
                     {t('categories.products')}
                   </span>
                 </motion.div>
                 
                 <motion.div 
-                  className="bg-amber-500/10 p-3 rounded-xl flex flex-col items-center justify-center h-20 border border-white/10 backdrop-blur-sm"
+                  className="bg-amber-500/10 p-4 rounded-xl flex flex-col items-center justify-center h-24 border border-white/10 backdrop-blur-sm hover:bg-amber-500/20 transition-all duration-300"
                   whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.97 }}
                 >
-                  <Utensils className="h-6 w-6 text-white mb-1" />
-                  <span className="text-white font-medium text-xs text-center drop-shadow-md" style={{ textShadow: '0 1px 2px rgba(0, 0, 0, 0.4)' }}>
+                  <Utensils className="h-8 w-8 text-white mb-2" />
+                  <span className="text-white font-medium text-sm text-center drop-shadow-md" style={{ textShadow: '0 1px 2px rgba(0, 0, 0, 0.4)' }}>
                     {t('categories.foods')}
                   </span>
                 </motion.div>
                 
                 <motion.div 
-                  className="bg-purple-500/15 p-3 rounded-xl flex flex-col items-center justify-center h-20 border border-white/10 backdrop-blur-sm"
+                  className="bg-purple-500/15 p-4 rounded-xl flex flex-col items-center justify-center h-24 border border-white/10 backdrop-blur-sm hover:bg-purple-500/25 transition-all duration-300"
                   whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.97 }}
                 >
-                  <Store className="h-6 w-6 text-white mb-1" />
-                  <span className="text-white font-medium text-xs text-center drop-shadow-md" style={{ textShadow: '0 1px 2px rgba(0, 0, 0, 0.4)' }}>
+                  <Store className="h-8 w-8 text-white mb-2" />
+                  <span className="text-white font-medium text-sm text-center drop-shadow-md" style={{ textShadow: '0 1px 2px rgba(0, 0, 0, 0.4)' }}>
                     {t('categories.boutiqueSouvenirs')}
                   </span>
                 </motion.div>
@@ -205,18 +205,18 @@ const ImageCarousel = () => {
           </div>
         </div>
         
-        {/* Indicador de desplazamiento - Sin caja blur */}
+        {/* Indicador de desplazamiento mejorado */}
         <motion.div 
           className="absolute bottom-8 left-0 right-0 mx-auto flex flex-col items-center text-white w-full pointer-events-none"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.8, duration: 0.5 }}
         >
-          <span className="text-xs uppercase tracking-widest mb-2 font-light drop-shadow-md" style={{ textShadow: '0 1px 3px rgba(0, 0, 0, 0.4)' }}>
+          <span className="text-sm uppercase tracking-widest mb-3 font-light drop-shadow-md" style={{ textShadow: '0 1px 3px rgba(0, 0, 0, 0.4)' }}>
             {t('scrollDown')}
           </span>
           <motion.div 
-            className="w-6 h-10 border border-white/50 rounded-full flex justify-center pt-2 mx-auto bg-black/5 shadow-lg pointer-events-auto cursor-pointer"
+            className="w-6 h-10 border border-white/50 rounded-full flex justify-center pt-2 mx-auto bg-black/5 shadow-lg pointer-events-auto cursor-pointer hover:bg-black/10 transition-colors"
             animate={{ y: [0, 6, 0] }}
             transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
             onClick={() => {
