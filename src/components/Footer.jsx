@@ -3,6 +3,10 @@ import { motion } from 'framer-motion';
 import { useLanguage } from '../contexts/LanguageContext';
 import { Globe2, Mail, MapPin, Phone } from 'lucide-react';
 
+/**
+ * Componente Footer optimizado para SEO y accesibilidad
+ * @returns {JSX.Element} Componente de pie de página
+ */
 const Footer = () => {
   const { t } = useLanguage();
   const currentYear = new Date().getFullYear();
@@ -31,20 +35,21 @@ const Footer = () => {
   };
 
   return (
-    <footer className="bg-gray-900 text-white pt-12 pb-6">
+    <footer className="bg-gray-900 text-white pt-12 pb-6" role="contentinfo" aria-labelledby="footer-heading">
+      <h2 id="footer-heading" className="sr-only">Pie de página</h2>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Columna 1: Acerca de */}
           <motion.div {...fadeIn}>
             <div className="flex items-center mb-4">
-              <Globe2 className="h-6 w-6 text-indigo-400 mr-2" />
+              <Globe2 className="h-6 w-6 text-indigo-400 mr-2" aria-hidden="true" />
               <h3 className="text-xl font-bold">Amériques</h3>
             </div>
             <p className="text-gray-400 text-sm md:text-base mb-4">{t('footer.about')}</p>
             <div className="flex space-x-4">
-              {/* Iconos sociales con tamaño adaptativo */}
+              {/* Iconos sociales con tamaño adaptativo y mejoras de accesibilidad */}
               <motion.a 
-                href="https://twitter.com" 
+                href="https://twitter.com/touramericas" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="bg-gray-800 hover:bg-indigo-600 p-2 rounded-full transition-colors duration-200"
@@ -57,7 +62,7 @@ const Footer = () => {
                 </svg>
               </motion.a>
               <motion.a 
-                href="https://instagram.com" 
+                href="https://instagram.com/touramericas" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="bg-gray-800 hover:bg-indigo-600 p-2 rounded-full transition-colors duration-200"
@@ -75,58 +80,66 @@ const Footer = () => {
           {/* Columna 2: Enlaces rápidos */}
           <motion.div {...fadeIn} transition={{ delay: 0.1 }}>
             <h3 className="text-lg font-semibold mb-4 text-indigo-300">{t('footer.quickLinks')}</h3>
-            <ul className="space-y-2">
-              {links.quickLinks.map((link, index) => (
-                <li key={index}>
-                  <motion.a 
-                    href={link.href} 
-                    className="text-gray-400 hover:text-white text-sm md:text-base transition-colors duration-200 inline-flex items-center"
-                    whileHover={{ x: 3 }}
-                  >
-                    <span className="mr-1">›</span> {link.name}
-                  </motion.a>
-                </li>
-              ))}
-            </ul>
+            <nav aria-label="Enlaces rápidos">
+              <ul className="space-y-2">
+                {links.quickLinks.map((link, index) => (
+                  <li key={index}>
+                    <motion.a 
+                      href={link.href} 
+                      className="text-gray-400 hover:text-white text-sm md:text-base transition-colors duration-200 inline-flex items-center"
+                      whileHover={{ x: 3 }}
+                    >
+                      <span className="mr-1" aria-hidden="true">›</span> {link.name}
+                    </motion.a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
           </motion.div>
 
           {/* Columna 3: Categorías */}
           <motion.div {...fadeIn} transition={{ delay: 0.2 }}>
             <h3 className="text-lg font-semibold mb-4 text-indigo-300">{t('footer.categories')}</h3>
-            <ul className="space-y-2">
-              {links.categories.map((category, index) => (
-                <li key={index}>
-                  <motion.a 
-                    href={category.href} 
-                    className="text-gray-400 hover:text-white text-sm md:text-base transition-colors duration-200 inline-flex items-center"
-                    whileHover={{ x: 3 }}
-                  >
-                    <span className="mr-1">›</span> {category.name}
-                  </motion.a>
-                </li>
-              ))}
-            </ul>
+            <nav aria-label="Categorías">
+              <ul className="space-y-2">
+                {links.categories.map((category, index) => (
+                  <li key={index}>
+                    <motion.a 
+                      href={category.href} 
+                      className="text-gray-400 hover:text-white text-sm md:text-base transition-colors duration-200 inline-flex items-center"
+                      whileHover={{ x: 3 }}
+                    >
+                      <span className="mr-1" aria-hidden="true">›</span> {category.name}
+                    </motion.a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
           </motion.div>
 
           {/* Columna 4: Contacto */}
           <motion.div {...fadeIn} transition={{ delay: 0.3 }}>
             <h3 className="text-lg font-semibold mb-4 text-indigo-300">{t('footer.contact')}</h3>
-            <ul className="space-y-2">
-              <li className="flex items-start text-sm md:text-base">
-                <MapPin className="h-5 w-5 text-indigo-400 mr-2 mt-0.5 flex-shrink-0" />
-                <span className="text-gray-400">123 Tour Street, Americas City, AC 12345</span>
-              </li>
-              <li className="flex items-center text-sm md:text-base">
-                <Phone className="h-5 w-5 text-indigo-400 mr-2 flex-shrink-0" />
-                <span className="text-gray-400">+1 (234) 567-8901</span>
-              </li>
-              <li className="flex items-center text-sm md:text-base">
-                <Mail className="h-5 w-5 text-indigo-400 mr-2 flex-shrink-0" />
-                <a href="mailto:info@tourdelasamericas.com" className="text-gray-400 hover:text-white transition-colors duration-200">
-                  info@tourdelasamericas.com
-                </a>
-              </li>
-            </ul>
+            <address className="not-italic">
+              <ul className="space-y-2">
+                <li className="flex items-start text-sm md:text-base">
+                  <MapPin className="h-5 w-5 text-indigo-400 mr-2 mt-0.5 flex-shrink-0" aria-hidden="true" />
+                  <span className="text-gray-400">123 Tour Street, Americas City, AC 12345</span>
+                </li>
+                <li className="flex items-center text-sm md:text-base">
+                  <Phone className="h-5 w-5 text-indigo-400 mr-2 flex-shrink-0" aria-hidden="true" />
+                  <a href="tel:+12345678901" className="text-gray-400 hover:text-white transition-colors duration-200">
+                    +1 (234) 567-8901
+                  </a>
+                </li>
+                <li className="flex items-center text-sm md:text-base">
+                  <Mail className="h-5 w-5 text-indigo-400 mr-2 flex-shrink-0" aria-hidden="true" />
+                  <a href="mailto:info@tourdelasamericas.com" className="text-gray-400 hover:text-white transition-colors duration-200">
+                    info@tourdelasamericas.com
+                  </a>
+                </li>
+              </ul>
+            </address>
           </motion.div>
         </div>
 
@@ -141,11 +154,11 @@ const Footer = () => {
           <div className="flex flex-col sm:flex-row justify-between items-center">
             <p className="text-gray-500 text-xs md:text-sm">&copy; {currentYear} Amériques. {t('footer.rights')}</p>
             <div className="mt-4 sm:mt-0 flex space-x-4 text-xs md:text-sm">
-              <a href="#" className="text-gray-500 hover:text-white transition-colors duration-200">
+              <a href="/terminos-de-servicio" className="text-gray-500 hover:text-white transition-colors duration-200">
                 Términos de Servicio
               </a>
-              <span className="text-gray-700">|</span>
-              <a href="#" className="text-gray-500 hover:text-white transition-colors duration-200">
+              <span className="text-gray-700" aria-hidden="true">|</span>
+              <a href="/politica-de-privacidad" className="text-gray-500 hover:text-white transition-colors duration-200">
                 Política de Privacidad
               </a>
             </div>

@@ -1,10 +1,11 @@
-import React, { useEffect, useRef, Suspense, lazy } from 'react';
+import React, { useEffect, useRef, Suspense, lazy, useState } from 'react';
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { motion, useScroll, useSpring } from 'framer-motion';
 import { useLanguage } from './contexts/LanguageContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ImageCarousel from './components/ImageCarousel';
+import SEO from './components/SEO';
 
 // Carga perezosa para mejorar el rendimiento inicial
 const ProductsSection = lazy(() => import('./components/ProductsSection'));
@@ -19,9 +20,11 @@ const Loading = () => (
 );
 
 function App() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const location = useLocation();
   const { scrollYProgress } = useScroll();
+  const [currentSection, setCurrentSection] = useState('home');
+  
   const scaleX = useSpring(scrollYProgress, {
     stiffness: 200,
     damping: 15,
@@ -33,6 +36,30 @@ function App() {
   const productsRef = useRef(null);
   const foodsRef = useRef(null);
   const boutiqueRef = useRef(null);
+
+  // Configuración de SEO para cada sección
+  const seoConfig = {
+    home: {
+      title: `${t('hero.origen')} ${t('hero.america')} | ${t('nav.home')}`,
+      description: t('storeDescription'),
+      ogImage: '/og-home.png'
+    },
+    products: {
+      title: `${t('sections.products')} | ${t('hero.origen')} ${t('hero.america')}`,
+      description: t('productSection.description'),
+      ogImage: '/og-products.png'
+    },
+    foods: {
+      title: `${t('sections.foods')} | ${t('hero.origen')} ${t('hero.america')}`,
+      description: t('foodSection.description'),
+      ogImage: '/og-foods.png'
+    },
+    boutique: {
+      title: `${t('sections.boutique')} | ${t('hero.origen')} ${t('hero.america')}`,
+      description: t('boutiqueSection.description'),
+      ogImage: '/og-boutique.png'
+    }
+  };
 
   // Función para desplazamiento suave
   const scrollToRef = (ref) => {
@@ -57,8 +84,11 @@ function App() {
     if (path === '/' || path === '/home' || !sectionId) {
       // Si estamos en la página de inicio, desplazarse a la parte superior
       window.scrollTo({ top: 0, behavior: 'auto' });
+      setCurrentSection('home');
       return;
     }
+
+    setCurrentSection(sectionId);
 
     // Intentar encontrar y desplazarse al elemento correspondiente
     const timer = setTimeout(() => {
@@ -71,7 +101,7 @@ function App() {
     return () => clearTimeout(timer);
   }, [location.pathname]);
 
-  // Observer para detectar secciones visibles y actualizar URL
+  // Observer para detectar secciones visibles y actualizar URL y SEO
   useEffect(() => {
     const options = {
       root: null,
@@ -88,6 +118,9 @@ function App() {
           if (location.pathname !== path) {
             window.history.replaceState(null, '', path);
           }
+          
+          // Actualizar sección actual para SEO
+          setCurrentSection(id);
         }
       });
     };
@@ -104,13 +137,21 @@ function App() {
 
   return (
     <div className="min-h-screen bg-white overflow-x-hidden">
+      {/* SEO Dinámico */}
+      <SEO 
+        title={seoConfig[currentSection].title}
+        description={seoConfig[currentSection].description}
+        ogImage={seoConfig[currentSection].ogImage}
+        section={currentSection}
+      />
+      
       {/* Barra de progreso */}
       <motion.div
         className="fixed top-0 left-0 right-0 h-1 bg-indigo-600 z-50 origin-left"
         style={{ scaleX }}
       />
       
-      <Navbar scrollToRef={scrollToRef} homeRef={homeRef} />
+      <Navbar scrollToRef={scrollToRef} homeRef={homeRef} currentSection={currentSection} />
       
       {/* Sección de inicio */}
       <div 

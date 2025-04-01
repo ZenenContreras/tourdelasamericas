@@ -1,13 +1,78 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/america.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Amériques</title>
+    
+    <!-- Favicon y recursos gráficos -->
+    <link rel="icon" type="image/png" href="/america.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    
+    <!-- Metadatos primarios para SEO -->
+    <title>Origen America | Descubre los Tesoros de las Américas</title>
+    <meta name="description" content="Explora nuestra colección única de productos auténticos, deliciosas comidas y artesanías de todo el continente americano." />
+    <meta name="keywords" content="América, productos americanos, comida tradicional, artesanías, boutique, gastronomía, Norte América, Centro América, Sur América" />
+    <meta name="author" content="Tour de las Américas" />
+    
+    <!-- Metadatos Open Graph para redes sociales -->
+    <meta property="og:title" content="Origen America | Tesoros de las Américas" /> 
+    <meta property="og:description" content="Explora nuestra colección única de productos auténticos, deliciosas comidas y artesanías de todo el continente americano." />
+    <meta property="og:image" content="https://tourdelasamericas.com/og-image.png" />
+    <meta property="og:url" content="https://tourdelasamericas.com" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Tour de las Américas" />
+    
+    <!-- Metadatos Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Origen America | Tesoros de las Américas" />
+    <meta name="twitter:description" content="Explora nuestra colección única de productos auténticos, deliciosas comidas y artesanías de todo el continente americano." />
+    <meta name="twitter:image" content="https://tourdelasamericas.com/og-image.png" />
+    
+    <!-- Enlaces canónicos y alternativas de idioma -->
+    <link rel="canonical" href="https://tourdelasamericas.com/" />
+    <link rel="alternate" hreflang="es" href="https://tourdelasamericas.com/" />
+    <link rel="alternate" hreflang="en" href="https://tourdelasamericas.com/en/" />
+    <link rel="alternate" hreflang="fr" href="https://tourdelasamericas.com/fr/" />
+    
+    <!-- Precarga de fuentes para mejorar rendimiento -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Metadatos para SEO técnico -->
+    <meta name="robots" content="index, follow" />
+    <meta name="googlebot" content="index, follow" />
+    <meta name="theme-color" content="#4f46e5" />
+    <meta name="rating" content="general" />
   </head>
   <body>
     <div id="root"></div>
+    <!-- Preloader minimalista en caso de que la carga de JavaScript tome tiempo -->
+    <noscript>
+      <div style="padding: 20px; text-align: center;">
+        <p>Esta aplicación requiere JavaScript para funcionar. Por favor, habilita JavaScript en tu navegador.</p>
+      </div>
+    </noscript>
     <script type="module" src="/src/main.jsx"></script>
+    
+    <!-- Marcado estructurado JSON-LD para mejor indexación en Google -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "url": "https://tourdelasamericas.com/",
+        "name": "Tour de las Américas",
+        "description": "Explora nuestra colección única de productos auténticos, deliciosas comidas y artesanías de todo el continente americano.",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "https://tourdelasamericas.com/search?q={search_term_string}",
+          "query-input": "required name=search_term_string"
+        }
+      }
+    </script>
   </body>
 </html>
