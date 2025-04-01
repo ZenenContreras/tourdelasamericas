@@ -6,7 +6,8 @@ export const translations = {
       foods: 'Foods',
       boutique: 'Boutique',
       regions: 'Regions',
-      about: 'About Us'
+      about: 'About Us',
+      language: 'Language'
     },
     hero: {
       title: 'Discover the Treasures of the Americas',
@@ -120,7 +121,8 @@ export const translations = {
       foods: 'Comidas',
       boutique: 'Boutique',
       regions: 'Regiones',
-      about: 'Sobre Nosotros'
+      about: 'Sobre Nosotros',
+      language: 'Idioma'
     },
     hero: {
       title: 'Descubre los Tesoros de las Américas',
@@ -231,10 +233,11 @@ export const translations = {
     nav: {
       home: 'Accueil',
       products: 'Produits',
-      foods: 'Cuisine',
+      foods: 'Aliments',
       boutique: 'Boutique',
       regions: 'Régions',
-      about: 'À Propos'
+      about: 'À Propos',
+      language: 'Langue'
     },
     hero: {
       title: 'Découvrez les Trésors des Amériques',
@@ -337,7 +340,7 @@ export const translations = {
     scrollDown: 'Défiler vers le Bas',
     categories: {
       products: 'Produits',
-      foods: 'Cuisine',
+      foods: 'Aliments',
       boutiqueSouvenirs: 'Boutique & Souvenirs'
     }
   }

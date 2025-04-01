@@ -41,7 +41,7 @@ const LanguageSelector = ({ inverted = false, isMobile = false, isTransparent = 
     }
   };
   
-  // Variante más grande para dispositivos móviles
+  // Versión compacta para móvil pero con el mismo estilo que escritorio
   if (isMobile) {
     return (
       <motion.div 
@@ -52,22 +52,26 @@ const LanguageSelector = ({ inverted = false, isMobile = false, isTransparent = 
         ref={ref}
       >
         <motion.button
-          className={`flex items-center justify-center rounded-full w-10 h-10 ${
-            false // Nunca usar modo transparente
-              ? 'bg-white/10 backdrop-blur-sm border border-white/20 text-white hover:bg-white/20' 
-              : 'bg-indigo-50 border border-indigo-100 text-indigo-600 hover:bg-indigo-100'
-          } transition-all fast-transition animate-gpu`}
+          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-white/10 border border-indigo-100 text-indigo-600 hover:bg-indigo-50 transition-all shadow-sm duration-200"
           onClick={() => setIsOpen(!isOpen)}
           whileTap={{ scale: 0.95 }}
           aria-label="Seleccionar idioma"
         >
-          <Globe2 className="h-6 w-6" />
+          <Globe2 className="h-5 w-5" />
+          <span className="font-medium text-base">{currentLanguage?.flag}</span>
+          <motion.span
+            animate={{ rotate: isOpen ? 180 : 0 }}
+            transition={{ duration: 0.3 }}
+            className="text-indigo-600 text-sm"
+          >
+            ▼
+          </motion.span>
         </motion.button>
 
         <AnimatePresence>
           {isOpen && (
             <motion.div 
-              className="absolute mt-2 right-0 w-48 bg-white rounded-lg shadow-lg overflow-hidden z-50 border border-gray-100"
+              className="absolute mt-2 right-0 w-36 bg-white rounded-lg shadow-lg overflow-hidden z-50 border border-gray-100"
               initial={{ opacity: 0, y: -5, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -5, scale: 0.95 }}
@@ -76,7 +80,7 @@ const LanguageSelector = ({ inverted = false, isMobile = false, isTransparent = 
               {languageOptions.map((option) => (
                 <motion.button
                   key={option.value}
-                  className={`w-full text-left px-4 py-3 flex items-center gap-3 text-base ${
+                  className={`w-full text-left px-3.5 py-2.5 flex items-center gap-2.5 text-base ${
                     language === option.value ? 'bg-indigo-50 text-indigo-600' : 'text-gray-700 hover:bg-gray-50'
                   }`}
                   onClick={() => handleLanguageChange(option.value)}
@@ -85,16 +89,6 @@ const LanguageSelector = ({ inverted = false, isMobile = false, isTransparent = 
                 >
                   <span className="text-lg">{option.flag}</span>
                   <span>{option.label}</span>
-                  {language === option.value && (
-                    <motion.span 
-                      className="ml-auto text-indigo-600 text-lg"
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      transition={{ type: "spring", stiffness: 300, damping: 10 }}
-                    >
-                      ✓
-                    </motion.span>
-                  )}
                 </motion.button>
               ))}
             </motion.div>
@@ -104,7 +98,7 @@ const LanguageSelector = ({ inverted = false, isMobile = false, isTransparent = 
     );
   }
 
-  // Versión original para escritorio
+  // Versión para escritorio
   return (
     <motion.div 
       className="relative"
@@ -114,16 +108,12 @@ const LanguageSelector = ({ inverted = false, isMobile = false, isTransparent = 
       ref={ref}
     >
       <motion.button
-        className={`flex items-center gap-2 px-3 py-2 rounded-full ${
-          false // Nunca usar modo transparente
-            ? 'bg-white/10 backdrop-blur-sm border border-white/20 text-white hover:bg-white/20' 
-            : 'bg-white/10 border border-indigo-100 text-indigo-600 hover:bg-indigo-50'
-        } transition-all shadow-sm swift-transition`}
+        className="flex items-center gap-2 px-3.5 py-2 rounded-full bg-white/10 border border-indigo-100 text-indigo-600 hover:bg-indigo-50 transition-all shadow-sm duration-200"
         onClick={() => setIsOpen(!isOpen)}
         whileTap={{ scale: 0.95 }}
       >
-        <Globe2 className="h-4 w-4" />
-        <span className="font-medium">{currentLanguage?.flag} {currentLanguage?.label}</span>
+        <Globe2 className="h-5 w-5" />
+        <span className="font-medium text-base">{currentLanguage?.flag} {currentLanguage?.label}</span>
         <motion.span
           animate={{ rotate: isOpen ? 180 : 0 }}
           transition={{ duration: 0.3 }}
@@ -136,7 +126,7 @@ const LanguageSelector = ({ inverted = false, isMobile = false, isTransparent = 
       <AnimatePresence>
         {isOpen && (
           <motion.div 
-            className="absolute mt-2 right-0 w-40 bg-white rounded-lg shadow-lg overflow-hidden z-50 border border-gray-100"
+            className="absolute mt-2 right-0 w-44 bg-white rounded-lg shadow-lg overflow-hidden z-50 border border-gray-100"
             initial={{ opacity: 0, y: -10, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -10, scale: 0.95 }}
@@ -145,15 +135,15 @@ const LanguageSelector = ({ inverted = false, isMobile = false, isTransparent = 
             {languageOptions.map((option) => (
               <motion.button
                 key={option.value}
-                className={`w-full text-left px-4 py-2 flex items-center gap-2 ${language === option.value ? 'bg-indigo-50 text-indigo-600' : 'text-gray-700 hover:bg-gray-50'}`}
+                className={`w-full text-left px-4 py-2.5 flex items-center gap-2.5 text-base ${language === option.value ? 'bg-indigo-50 text-indigo-600' : 'text-gray-700 hover:bg-gray-50'}`}
                 onClick={() => handleLanguageChange(option.value)}
                 whileHover={{ x: 5 }}
               >
-                <span>{option.flag}</span>
+                <span className="text-lg">{option.flag}</span>
                 <span>{option.label}</span>
                 {language === option.value && (
                   <motion.span 
-                    className="ml-auto text-indigo-600"
+                    className="ml-auto text-indigo-600 text-lg"
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     transition={{ type: "spring", stiffness: 500, damping: 10 }}
