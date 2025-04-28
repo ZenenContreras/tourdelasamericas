@@ -6,6 +6,9 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ImageCarousel from './components/ImageCarousel';
 import SEO from './components/SEO';
+import ProfilePage from './pages/ProfilePage';
+import OrdersPage from './pages/OrdersPage';
+import LoadingScreen from './components/LoadingScreen';
 
 // Carga perezosa para mejorar el rendimiento inicial
 const ProductsSection = lazy(() => import('./components/ProductsSection'));
@@ -24,6 +27,7 @@ function App() {
   const location = useLocation();
   const { scrollYProgress } = useScroll();
   const [currentSection, setCurrentSection] = useState('home');
+  const [isLoading, setIsLoading] = useState(true);
   
   const scaleX = useSpring(scrollYProgress, {
     stiffness: 200,
@@ -138,6 +142,21 @@ function App() {
     return () => observer.disconnect();
   }, [location.pathname]);
 
+  useEffect(() => {
+    // Simular tiempo de carga
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  const isProfilePage = location.pathname === '/perfil';
+
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
+
   return (
     <div className="min-h-screen bg-white overflow-x-hidden">
       {/* SEO Dinámico */}
@@ -156,100 +175,103 @@ function App() {
       
       <Navbar scrollToRef={scrollToRef} homeRef={homeRef} currentSection={currentSection} />
       
-      {/* Sección de inicio */}
-      <div 
-        ref={homeRef} 
-        id="home" 
-        className="relative h-screen w-full section-container"
-        style={{ scrollMarginTop: '80px' }}
-      >
-        <ImageCarousel />
-        
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
-          <motion.div 
-            className="flex flex-col justify-center h-full pt-20"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
+      {/* Si es la página de perfil, solo renderiza el perfil */}
+      {isProfilePage ? (
+        <ProfilePage />
+      ) : (
+        <>
+          {/* Sección de inicio */}
+          <div 
+            ref={homeRef} 
+            id="home" 
+            className="relative h-screen w-full section-container"
+            style={{ scrollMarginTop: '80px' }}
           >
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white max-w-3xl">
-              {t('hero.title')}
-            </h1>
-            <p className="mt-4 md:mt-6 text-base sm:text-lg md:text-xl text-gray-200 max-w-2xl">
-              {t('hero.subtitle')}
-            </p>
-            <div className="mt-6 md:mt-10 flex flex-wrap gap-4">
-              <motion.button 
-                className="bg-indigo-600 text-white px-6 sm:px-8 py-2 sm:py-3 rounded-lg text-base sm:text-lg font-semibold hover:bg-indigo-700 transition-colors flex items-center"
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
-                onClick={() => {
-                  const element = document.getElementById('products');
-                  if (element) {
-                    element.scrollIntoView({ behavior: 'smooth' });
-                  }
-                }}
+            <ImageCarousel />
+            
+            <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
+              <motion.div 
+                className="flex flex-col justify-center h-full pt-20"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
               >
-                {t('hero.explore')}
-                <svg xmlns="http://www.w3.org/2000/svg" className="ml-2 h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="5" y1="12" x2="19" y2="12"></line>
-                  <polyline points="12 5 19 12 12 19"></polyline>
-                </svg>
-              </motion.button>
-              <motion.button 
-                className="bg-white/10 backdrop-blur-sm text-white border-2 border-white px-6 sm:px-8 py-2 sm:py-3 rounded-lg text-base sm:text-lg font-semibold hover:bg-white/20 transition-colors"
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
-              >
-                {t('hero.learnMore')}
-              </motion.button>
+                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white max-w-3xl">
+                  {t('hero.title')}
+                </h1>
+                <p className="mt-4 md:mt-6 text-base sm:text-lg md:text-xl text-gray-200 max-w-2xl">
+                  {t('hero.subtitle')}
+                </p>
+                <div className="mt-6 md:mt-10 flex flex-wrap gap-4">
+                  <motion.button 
+                    className="bg-indigo-600 text-white px-6 sm:px-8 py-2 sm:py-3 rounded-lg text-base sm:text-lg font-semibold hover:bg-indigo-700 transition-colors flex items-center"
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
+                    onClick={() => {
+                      const element = document.getElementById('products');
+                      if (element) {
+                        element.scrollIntoView({ behavior: 'smooth' });
+                      }
+                    }}
+                  >
+                    {t('hero.explore')}
+                    <svg xmlns="http://www.w3.org/2000/svg" className="ml-2 h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="5" y1="12" x2="19" y2="12"></line>
+                      <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                  </motion.button>
+                  <motion.button 
+                    className="bg-white/10 backdrop-blur-sm text-white border-2 border-white px-6 sm:px-8 py-2 sm:py-3 rounded-lg text-base sm:text-lg font-semibold hover:bg-white/20 transition-colors"
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
+                  >
+                    {t('hero.learnMore')}
+                  </motion.button>
+                </div>
+              </motion.div>
             </div>
-          </motion.div>
-        </div>
-      </div>
-      
-      {/* Secciones con Suspense para carga lenta */}
-      <Suspense fallback={<Loading />}>
-        {/* Productos */}
-        <div 
-          ref={productsRef} 
-          id="products" 
-          className="section-container"
-          style={{ scrollMarginTop: '80px' }}
-        >
-          <ProductsSection />
-        </div>
-        
-        {/* Comidas */}
-        <div 
-          ref={foodsRef} 
-          id="foods" 
-          className="section-container"
-          style={{ scrollMarginTop: '80px' }}
-        >
-          <FoodsSection />
-        </div>
-        
-        {/* Boutique */}
-        <div 
-          ref={boutiqueRef} 
-          id="boutique" 
-          className="section-container"
-          style={{ scrollMarginTop: '80px' }}
-        >
-          <BoutiqueSection />
-        </div>
-      </Suspense>
+          </div>
+          
+          {/* Secciones con Suspense para carga lenta */}
+          <Suspense fallback={<Loading />}>
+            {/* Productos */}
+            <div 
+              ref={productsRef} 
+              id="products" 
+              className="section-container"
+              style={{ scrollMarginTop: '80px' }}
+            >
+              <ProductsSection />
+            </div>
+            
+            {/* Comidas */}
+            <div 
+              ref={foodsRef} 
+              id="foods" 
+              className="section-container"
+              style={{ scrollMarginTop: '80px' }}
+            >
+              <FoodsSection />
+            </div>
+            
+            {/* Boutique */}
+            <div 
+              ref={boutiqueRef} 
+              id="boutique" 
+              className="section-container"
+              style={{ scrollMarginTop: '80px' }}
+            >
+              <BoutiqueSection />
+            </div>
+          </Suspense>
+        </>
+      )}
       
       <Footer />
       
-      {/* Rutas */}
+      {/* Rutas para otras páginas independientes */}
       <Routes>
-        <Route path="/" element={<></>} />
-        <Route path="/home" element={<Navigate to="/" replace />} />
-        <Route path="/products" element={<></>} />
-        <Route path="/foods" element={<></>} />
-        <Route path="/boutique" element={<></>} />
+        <Route path="/pedidos" element={<OrdersPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </div>

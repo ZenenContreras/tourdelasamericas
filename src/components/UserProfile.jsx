@@ -4,6 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { updateProfile, getProfile } from '../services/authService';
 import { User, Mail, Phone, MapPin, Edit2, Save, X } from 'lucide-react';
+import { toast } from 'react-hot-toast';
 
 const UserProfile = () => {
   const { t } = useLanguage();
@@ -22,30 +23,27 @@ const UserProfile = () => {
   });
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     const loadProfile = async () => {
-      if (user) {
-        const { data, error } = await getProfile(user.id);
-        if (error) {
-          setError(error.message);
-        } else {
-          setProfile(data);
-          setFormData({
-            nombre: data.nombre || '',
-            email: data.email || '',
-            telefono: data.telefono || '',
-            direccion: data.direccion || '',
-            ciudad: data.ciudad || '',
-            estado: data.estado || '',
-            codigo_postal: data.codigo_postal || '',
-            pais: data.pais || ''
-          });
+      setIsLoading(true);
+      try {
+        const { data: profile } = await getProfile();
+        if (profile) {
+          setFormData(profile);
         }
+      } catch (error) {
+        console.error('Error loading profile:', error);
+        toast.error('Error al cargar el perfil');
+      } finally {
+        setIsLoading(false);
       }
     };
     loadProfile();
-  }, [user]);
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -55,22 +53,52 @@ const UserProfile = () => {
     }));
   };
 
+  const validateForm = () => {
+    const newErrors = {};
+    if (!formData.nombre?.trim()) {
+      newErrors.nombre = 'El nombre es requerido';
+    }
+    if (!formData.email?.trim()) {
+      newErrors.email = 'El email es requerido';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = 'Email inválido';
+    }
+    if (formData.telefono && !/^\+?[\d\s-]{8,}$/.test(formData.telefono)) {
+      newErrors.telefono = 'Teléfono inválido';
+    }
+    if (formData.codigo_postal && !/^\d{4,10}$/.test(formData.codigo_postal)) {
+      newErrors.codigo_postal = 'Código postal inválido';
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null);
-    setSuccess(null);
-
+    if (!validateForm()) {
+      toast.error('Por favor corrige los errores en el formulario');
+      return;
+    }
+    setIsSaving(true);
     try {
-      const { data, error } = await updateProfile(user.id, formData);
-      if (error) throw error;
-      
-      setProfile(data);
-      setSuccess(t('profile.updateSuccess'));
+      await updateProfile(formData);
       setIsEditing(false);
+      toast.success('Perfil actualizado exitosamente');
     } catch (error) {
-      setError(error.message);
+      console.error('Error updating profile:', error);
+      toast.error('Error al actualizar el perfil');
+    } finally {
+      setIsSaving(false);
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
+      </div>
+    );
+  }
 
   if (!user) {
     return (
@@ -89,22 +117,45 @@ const UserProfile = () => {
       >
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold text-gray-900">{t('profile.title')}</h1>
-          <button
-            onClick={() => setIsEditing(!isEditing)}
-            className="flex items-center space-x-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
-          >
+          <div className="flex justify-end space-x-4">
             {isEditing ? (
               <>
-                <X className="h-5 w-5" />
-                <span>{t('profile.cancel')}</span>
+                <button
+                  type="button"
+                  onClick={() => setIsEditing(false)}
+                  disabled={isSaving}
+                  className="inline-flex justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSaving}
+                  className="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                >
+                  {isSaving ? (
+                    <>
+                      <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Guardando...
+                    </>
+                  ) : (
+                    'Guardar cambios'
+                  )}
+                </button>
               </>
             ) : (
-              <>
-                <Edit2 className="h-5 w-5" />
-                <span>{t('profile.edit')}</span>
-              </>
+              <button
+                type="button"
+                onClick={() => setIsEditing(true)}
+                className="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+              >
+                Editar perfil
+              </button>
             )}
-          </button>
+          </div>
         </div>
 
         {error && (
@@ -122,20 +173,23 @@ const UserProfile = () => {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                {t('profile.name')}
+              <label htmlFor="nombre" className="block text-sm font-medium text-gray-700">
+                Nombre *
               </label>
-              <div className="relative">
-                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-                <input
-                  type="text"
-                  name="nombre"
-                  value={formData.nombre}
-                  onChange={handleInputChange}
-                  disabled={!isEditing}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-gray-50"
-                />
-              </div>
+              <input
+                type="text"
+                name="nombre"
+                id="nombre"
+                value={formData.nombre || ''}
+                onChange={handleInputChange}
+                disabled={!isEditing}
+                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm ${
+                  errors.nombre ? 'border-red-500' : ''
+                } ${!isEditing ? 'bg-gray-50' : ''}`}
+              />
+              {errors.nombre && (
+                <p className="mt-1 text-sm text-red-600">{errors.nombre}</p>
+              )}
             </div>
 
             <div>
@@ -245,18 +299,6 @@ const UserProfile = () => {
               />
             </div>
           </div>
-
-          {isEditing && (
-            <div className="flex justify-end">
-              <button
-                type="submit"
-                className="flex items-center space-x-2 px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
-              >
-                <Save className="h-5 w-5" />
-                <span>{t('profile.save')}</span>
-              </button>
-            </div>
-          )}
         </form>
       </motion.div>
     </div>

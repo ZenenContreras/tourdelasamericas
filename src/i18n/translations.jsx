@@ -170,7 +170,42 @@ export const translations = {
       pleaseLogin: 'Please log in to view your profile',
       deleteAccount: 'Delete Account',
       deleteConfirmation: 'Are you sure you want to delete your account? This action cannot be undone.',
-      deleteSuccess: 'Account deleted successfully'
+      deleteSuccess: 'Account deleted successfully',
+      tabs: {
+        personal: 'Personal Information',
+        security: 'Security',
+        payments: 'Payments',
+        notifications: 'Notifications'
+      },
+      security: {
+        warning: 'Keep your account secure by regularly updating your password and enabling two-factor authentication.',
+        changePassword: 'Change Password',
+        twoFactor: 'Two-Factor Authentication'
+      },
+      payments: {
+        info: 'Manage your payment methods and review your transaction history.',
+        addCard: 'Add Card',
+        paymentHistory: 'Payment History'
+      },
+      notifications: {
+        info: 'Configure how you want to receive notifications.',
+        email: 'Email Notifications',
+        sms: 'SMS Notifications'
+      }
+    },
+    orders: {
+      title: 'My Orders',
+      pleaseLogin: 'Please log in to view your orders',
+      noOrders: 'You have no orders yet',
+      orderNumber: 'Order',
+      quantity: 'Quantity',
+      total: 'Total',
+      status: {
+        delivered: 'Delivered',
+        processing: 'Processing',
+        cancelled: 'Cancelled',
+        shipped: 'Shipped'
+      }
     }
   },
   es: {
@@ -344,7 +379,42 @@ export const translations = {
       pleaseLogin: 'Por favor, inicia sesión para ver tu perfil',
       deleteAccount: 'Eliminar Cuenta',
       deleteConfirmation: '¿Estás seguro de que quieres eliminar tu cuenta? Esta acción no se puede deshacer.',
-      deleteSuccess: 'Cuenta eliminada exitosamente'
+      deleteSuccess: 'Cuenta eliminada exitosamente',
+      tabs: {
+        personal: 'Información Personal',
+        security: 'Seguridad',
+        payments: 'Pagos',
+        notifications: 'Notificaciones'
+      },
+      security: {
+        warning: 'Mantén tu cuenta segura actualizando regularmente tu contraseña y habilitando la autenticación de dos factores.',
+        changePassword: 'Cambiar Contraseña',
+        twoFactor: 'Autenticación de Dos Factores'
+      },
+      payments: {
+        info: 'Gestiona tus métodos de pago y revisa tu historial de transacciones.',
+        addCard: 'Añadir Tarjeta',
+        paymentHistory: 'Historial de Pagos'
+      },
+      notifications: {
+        info: 'Configura cómo quieres recibir las notificaciones.',
+        email: 'Notificaciones por Email',
+        sms: 'Notificaciones por SMS'
+      }
+    },
+    orders: {
+      title: 'Mis Pedidos',
+      pleaseLogin: 'Por favor, inicia sesión para ver tus pedidos',
+      noOrders: 'No tienes pedidos aún',
+      orderNumber: 'Pedido',
+      quantity: 'Cantidad',
+      total: 'Total',
+      status: {
+        delivered: 'Entregado',
+        processing: 'En proceso',
+        cancelled: 'Cancelado',
+        shipped: 'Enviado'
+      }
     }
   },
   fr: {
@@ -518,7 +588,42 @@ export const translations = {
       pleaseLogin: 'Veuillez vous connecter pour voir votre profil',
       deleteAccount: 'Supprimer le Compte',
       deleteConfirmation: 'Êtes-vous sûr de vouloir supprimer votre compte ? Cette action ne peut pas être annulée.',
-      deleteSuccess: 'Compte supprimé avec succès'
+      deleteSuccess: 'Compte supprimé avec succès',
+      tabs: {
+        personal: 'Informations Personnelles',
+        security: 'Sécurité',
+        payments: 'Paiements',
+        notifications: 'Notifications'
+      },
+      security: {
+        warning: 'Gardez votre compte sûr en mettant régulièrement à jour votre mot de passe et en activant l\'authentification à deux facteurs.',
+        changePassword: 'Changer le Mot de Passe',
+        twoFactor: 'Authentification à Deux Facteurs'
+      },
+      payments: {
+        info: 'Gérez vos moyens de paiement et consultez votre historique des transactions.',
+        addCard: 'Ajouter une Carte',
+        paymentHistory: 'Historique des Paiements'
+      },
+      notifications: {
+        info: 'Configurez comment vous souhaitez recevoir les notifications.',
+        email: 'Notifications par Email',
+        sms: 'Notifications par SMS'
+      }
+    },
+    orders: {
+      title: 'Mes Commandes',
+      pleaseLogin: 'Veuillez vous connecter pour voir vos commandes',
+      noOrders: 'Vous n\'avez pas encore de commandes',
+      orderNumber: 'Commande',
+      quantity: 'Quantité',
+      total: 'Total',
+      status: {
+        delivered: 'Livré',
+        processing: 'En cours de traitement',
+        cancelled: 'Annulé',
+        shipped: 'Expédié'
+      }
     }
   }
 };
