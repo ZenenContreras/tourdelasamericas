@@ -112,6 +112,65 @@ export const translations = {
       products: 'Products',
       foods: 'Foods',
       boutiqueSouvenirs: 'Boutique & Souvenirs'
+    },
+    auth: {
+      login: {
+        title: 'Sign In',
+        subtitle: 'Access your account to continue',
+        email: 'Email',
+        password: 'Password',
+        rememberMe: 'Remember me',
+        forgotPassword: 'Forgot your password?',
+        submit: 'Sign In',
+        orContinueWith: 'Or continue with',
+        noAccount: "Don't have an account?",
+        register: 'Register'
+      },
+      register: {
+        title: 'Create Account',
+        subtitle: 'Join our community',
+        email: 'Email',
+        password: 'Password',
+        confirmPassword: 'Confirm Password',
+        submit: 'Create Account',
+        orContinueWith: 'Or continue with',
+        haveAccount: 'Already have an account?',
+        login: 'Sign In'
+      },
+      userMenu: {
+        profile: 'My Profile',
+        orders: 'My Orders',
+        favorites: 'Favorites',
+        logout: 'Sign Out',
+        greeting: 'Hello again, {name}!'
+      },
+      errors: {
+        invalidEmail: 'Invalid email address',
+        invalidPassword: 'Password must be at least 6 characters',
+        passwordsDontMatch: 'Passwords do not match',
+        emailInUse: 'Email already in use',
+        invalidCredentials: 'Invalid email or password',
+        genericError: 'An error occurred. Please try again.'
+      }
+    },
+    profile: {
+      title: 'My Profile',
+      edit: 'Edit Profile',
+      save: 'Save Changes',
+      cancel: 'Cancel',
+      name: 'Name',
+      email: 'Email',
+      phone: 'Phone',
+      address: 'Address',
+      city: 'City',
+      state: 'State',
+      postalCode: 'Postal Code',
+      country: 'Country',
+      updateSuccess: 'Profile updated successfully',
+      pleaseLogin: 'Please log in to view your profile',
+      deleteAccount: 'Delete Account',
+      deleteConfirmation: 'Are you sure you want to delete your account? This action cannot be undone.',
+      deleteSuccess: 'Account deleted successfully'
     }
   },
   es: {
@@ -227,6 +286,65 @@ export const translations = {
       products: 'Productos',
       foods: 'Comidas',
       boutiqueSouvenirs: 'Boutique y Recuerdos'
+    },
+    auth: {
+      login: {
+        title: 'Iniciar Sesión',
+        subtitle: 'Accede a tu cuenta para continuar',
+        email: 'Correo electrónico',
+        password: 'Contraseña',
+        rememberMe: 'Recordarme',
+        forgotPassword: '¿Olvidaste tu contraseña?',
+        submit: 'Iniciar Sesión',
+        orContinueWith: 'O continúa con',
+        noAccount: '¿No tienes una cuenta?',
+        register: 'Regístrate'
+      },
+      register: {
+        title: 'Crear Cuenta',
+        subtitle: 'Únete a nuestra comunidad',
+        email: 'Correo electrónico',
+        password: 'Contraseña',
+        confirmPassword: 'Confirmar Contraseña',
+        submit: 'Crear Cuenta',
+        orContinueWith: 'O continúa con',
+        haveAccount: '¿Ya tienes una cuenta?',
+        login: 'Iniciar Sesión'
+      },
+      userMenu: {
+        profile: 'Mi Perfil',
+        orders: 'Mis Pedidos',
+        favorites: 'Favoritos',
+        logout: 'Cerrar Sesión',
+        greeting: '¡Hola otra vez, {name}!'
+      },
+      errors: {
+        invalidEmail: 'Correo electrónico inválido',
+        invalidPassword: 'La contraseña debe tener al menos 6 caracteres',
+        passwordsDontMatch: 'Las contraseñas no coinciden',
+        emailInUse: 'El correo electrónico ya está en uso',
+        invalidCredentials: 'Correo electrónico o contraseña inválidos',
+        genericError: 'Ocurrió un error. Por favor, intenta de nuevo.'
+      }
+    },
+    profile: {
+      title: 'Mi Perfil',
+      edit: 'Editar Perfil',
+      save: 'Guardar Cambios',
+      cancel: 'Cancelar',
+      name: 'Nombre',
+      email: 'Correo electrónico',
+      phone: 'Teléfono',
+      address: 'Dirección',
+      city: 'Ciudad',
+      state: 'Estado',
+      postalCode: 'Código Postal',
+      country: 'País',
+      updateSuccess: 'Perfil actualizado exitosamente',
+      pleaseLogin: 'Por favor, inicia sesión para ver tu perfil',
+      deleteAccount: 'Eliminar Cuenta',
+      deleteConfirmation: '¿Estás seguro de que quieres eliminar tu cuenta? Esta acción no se puede deshacer.',
+      deleteSuccess: 'Cuenta eliminada exitosamente'
     }
   },
   fr: {
@@ -342,6 +460,65 @@ export const translations = {
       products: 'Produits',
       foods: 'Aliments',
       boutiqueSouvenirs: 'Boutique & Souvenirs'
+    },
+    auth: {
+      login: {
+        title: 'Connexion',
+        subtitle: 'Accédez à votre compte pour continuer',
+        email: 'Email',
+        password: 'Mot de passe',
+        rememberMe: 'Se souvenir de moi',
+        forgotPassword: 'Mot de passe oublié ?',
+        submit: 'Se connecter',
+        orContinueWith: 'Ou continuer avec',
+        noAccount: "Vous n'avez pas de compte ?",
+        register: "S'inscrire"
+      },
+      register: {
+        title: 'Créer un compte',
+        subtitle: 'Rejoignez notre communauté',
+        email: 'Email',
+        password: 'Mot de passe',
+        confirmPassword: 'Confirmer le mot de passe',
+        submit: 'Créer un compte',
+        orContinueWith: 'Ou continuer avec',
+        haveAccount: 'Vous avez déjà un compte ?',
+        login: 'Se connecter'
+      },
+      userMenu: {
+        profile: 'Mon Profil',
+        orders: 'Mes Commandes',
+        favorites: 'Favoris',
+        logout: 'Déconnexion',
+        greeting: 'Bonjour à nouveau, {name} !'
+      },
+      errors: {
+        invalidEmail: 'Adresse email invalide',
+        invalidPassword: 'Le mot de passe doit contenir au moins 6 caractères',
+        passwordsDontMatch: 'Les mots de passe ne correspondent pas',
+        emailInUse: 'Cet email est déjà utilisé',
+        invalidCredentials: 'Email ou mot de passe invalide',
+        genericError: 'Une erreur est survenue. Veuillez réessayer.'
+      }
+    },
+    profile: {
+      title: 'Mon Profil',
+      edit: 'Modifier le Profil',
+      save: 'Enregistrer les Modifications',
+      cancel: 'Annuler',
+      name: 'Nom',
+      email: 'Email',
+      phone: 'Téléphone',
+      address: 'Adresse',
+      city: 'Ville',
+      state: 'État',
+      postalCode: 'Code Postal',
+      country: 'Pays',
+      updateSuccess: 'Profil mis à jour avec succès',
+      pleaseLogin: 'Veuillez vous connecter pour voir votre profil',
+      deleteAccount: 'Supprimer le Compte',
+      deleteConfirmation: 'Êtes-vous sûr de vouloir supprimer votre compte ? Cette action ne peut pas être annulée.',
+      deleteSuccess: 'Compte supprimé avec succès'
     }
   }
 };

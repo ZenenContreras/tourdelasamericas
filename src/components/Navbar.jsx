@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Menu, X, ChevronRight, ShoppingCart, User } from 'lucide-react';
+import { Menu, X, ChevronRight, ShoppingCart, User, Heart, LogOut } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '../contexts/LanguageContext';
 import LanguageSelector from './LanguageSelector';
@@ -24,10 +24,17 @@ const Navbar = ({ scrollToRef, homeRef, currentSection = 'home' }) => {
   const [isTablet, setIsTablet] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
-  const [authMode, setAuthMode] = useState('login'); // 'login' o 'register'
+  const [authMode, setAuthMode] = useState('login');
+  const [error, setError] = useState(null);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 
   // Verificar si estamos en la página de inicio para ajustar la transparencia
   const isHomePage = location.pathname === "/" || location.pathname === "/home";
+
+  // Verificar si el usuario está autenticado
+  useEffect(() => {
+    console.log('Estado del usuario:', user); // Para depuración
+  }, [user]);
 
   // Controlar la transparencia del navbar al hacer scroll
   useEffect(() => {
@@ -189,29 +196,42 @@ const Navbar = ({ scrollToRef, homeRef, currentSection = 'home' }) => {
 
   const handleAuthSubmit = async (e) => {
     e.preventDefault();
+    setError(null);
     const formData = new FormData(e.target);
     const email = formData.get('email');
     const password = formData.get('password');
+    const confirmPassword = formData.get('confirmPassword');
 
-    if (authMode === 'login') {
-      const { error } = await signInWithEmail(email, password);
-      if (!error) {
+    if (authMode === 'register' && password !== confirmPassword) {
+      setError(t('auth.errors.passwordsDontMatch'));
+      return;
+    }
+
+    try {
+      if (authMode === 'login') {
+        const { error } = await signInWithEmail(email, password);
+        if (error) throw error;
         setIsLoginOpen(false);
-      }
-    } else {
-      const { error } = await signUp(email, password);
-      if (!error) {
+      } else {
+        const { error } = await signUp(email, password);
+        if (error) throw error;
         setAuthMode('login');
         setIsRegisterOpen(false);
       }
+    } catch (error) {
+      setError(error.message);
     }
   };
 
   const handleGoogleAuth = async () => {
-    const { error } = await signInWithGoogle();
-    if (!error) {
+    try {
+      const { data, error } = await signInWithGoogle();
+      if (error) throw error;
       setIsLoginOpen(false);
       setIsRegisterOpen(false);
+      setIsUserMenuOpen(false);
+    } catch (error) {
+      setError(error.message);
     }
   };
 
@@ -282,25 +302,117 @@ const Navbar = ({ scrollToRef, homeRef, currentSection = 'home' }) => {
                   </span>
                 </motion.button>
 
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => setIsLoginOpen(true)}
-                  className="flex items-center space-x-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
-                  aria-label="Iniciar sesión"
-                >
-                  <User className="h-6 w-6" />
-                  <span className="text-sm font-medium">Iniciar sesión</span>
-                </motion.button>
+                {user && user.email ? (
+                  <motion.div
+                    className="relative"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                  >
+                    <button
+                      onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                      className="flex items-center space-x-2 px-4 py-2 bg-indigo-50 text-indigo-600 rounded-lg hover:bg-indigo-100 transition-colors"
+                    >
+                      <div className="h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center overflow-hidden">
+                        {user.user_metadata?.avatar_url ? (
+                          <img 
+                            src={user.user_metadata.avatar_url} 
+                            alt={user.email} 
+                            className="h-full w-full object-cover"
+                          />
+                        ) : (
+                          <div className="h-full w-full flex items-center justify-center bg-indigo-200">
+                            <span className="text-indigo-600 font-medium text-sm">
+                              {user.email.charAt(0).toUpperCase()}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                      <span className="text-sm font-medium">
+                        {user.email.split('@')[0]}
+                      </span>
+                    </button>
+
+                    <AnimatePresence>
+                      {isUserMenuOpen && (
+                        <motion.div
+                          className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg py-2 z-50"
+                          initial={{ opacity: 0, y: -10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -10 }}
+                        >
+                          <div className="px-4 py-2 border-b border-gray-100">
+                            <p className="text-sm text-gray-500">Bienvenido</p>
+                            <p className="text-sm font-medium text-gray-900">{user.email}</p>
+                          </div>
+                          
+                          <button
+                            onClick={() => {
+                              navigate('/perfil');
+                              setIsUserMenuOpen(false);
+                            }}
+                            className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 flex items-center space-x-2"
+                          >
+                            <User className="h-4 w-4" />
+                            <span>{t('auth.userMenu.profile')}</span>
+                          </button>
+                          
+                          <button
+                            onClick={() => {
+                              navigate('/pedidos');
+                              setIsUserMenuOpen(false);
+                            }}
+                            className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 flex items-center space-x-2"
+                          >
+                            <ShoppingCart className="h-4 w-4" />
+                            <span>{t('auth.userMenu.orders')}</span>
+                          </button>
+                          
+                          <button
+                            onClick={() => {
+                              navigate('/favoritos');
+                              setIsUserMenuOpen(false);
+                            }}
+                            className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 flex items-center space-x-2"
+                          >
+                            <Heart className="h-4 w-4" />
+                            <span>{t('auth.userMenu.favorites')}</span>
+                          </button>
+                          
+                          <div className="border-t border-gray-100 my-1"></div>
+                          
+                          <button
+                            onClick={() => {
+                              signOut();
+                              setIsUserMenuOpen(false);
+                            }}
+                            className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center space-x-2"
+                          >
+                            <LogOut className="h-4 w-4" />
+                            <span>{t('auth.userMenu.logout')}</span>
+                          </button>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </motion.div>
+                ) : (
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => setIsLoginOpen(true)}
+                    className="flex items-center space-x-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+                    aria-label="Iniciar sesión"
+                  >
+                    <User className="h-6 w-6" />
+                    <span className="text-sm font-medium">{t('auth.login.submit')}</span>
+                  </motion.button>
+                )}
 
                 <LanguageSelector />
               </div>
             </div>
             
-            {/* Botones móviles (Idioma + Menú) */}
+            {/* Botones móviles */}
             <div className="flex md:hidden items-center space-x-2">
-              <LanguageSelector isMobile={true} />
-
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -313,6 +425,7 @@ const Navbar = ({ scrollToRef, homeRef, currentSection = 'home' }) => {
                 </span>
               </motion.button>
 
+              <LanguageSelector isMobile={true} />
               
               {/* Botón de menú móvil */}
               <button
@@ -332,11 +445,11 @@ const Navbar = ({ scrollToRef, homeRef, currentSection = 'home' }) => {
           </div>
         </nav>
       </motion.header>
-      
+
       {/* Overlay para cuando el menú móvil está abierto */}
       <AnimatePresence>
         {isMobileMenuOpen && (
-          <motion.div
+          <motion.div 
             className="fixed inset-0 bg-black z-40"
             variants={overlayVariants}
             initial="closed"
@@ -346,11 +459,11 @@ const Navbar = ({ scrollToRef, homeRef, currentSection = 'home' }) => {
           />
         )}
       </AnimatePresence>
-      
+
       {/* Menú móvil */}
       <AnimatePresence>
         {isMobileMenuOpen && (
-          <motion.div
+          <motion.div 
             className="fixed top-14 sm:top-16 left-0 right-0 bg-white z-40 overflow-hidden shadow-lg"
             id="mobile-menu"
             variants={mobileMenuVariants}
@@ -398,7 +511,7 @@ const Navbar = ({ scrollToRef, homeRef, currentSection = 'home' }) => {
         )}
       </AnimatePresence>
 
-      {/* Modal de autenticación (Login/Register) */}
+      {/* Modal de autenticación */}
       <AnimatePresence>
         {(isLoginOpen || isRegisterOpen) && (
           <motion.div
@@ -409,6 +522,7 @@ const Navbar = ({ scrollToRef, homeRef, currentSection = 'home' }) => {
             onClick={() => {
               setIsLoginOpen(false);
               setIsRegisterOpen(false);
+              setError(null);
             }}
           >
             <motion.div
@@ -420,19 +534,23 @@ const Navbar = ({ scrollToRef, homeRef, currentSection = 'home' }) => {
             >
               <div className="text-center mb-6">
                 <h2 className="text-2xl font-bold text-gray-900">
-                  {authMode === 'login' ? 'Iniciar sesión' : 'Crear cuenta'}
+                  {t(`auth.${authMode}.title`)}
                 </h2>
                 <p className="text-gray-600 mt-2">
-                  {authMode === 'login' 
-                    ? 'Accede a tu cuenta para continuar' 
-                    : 'Únete a nuestra comunidad'}
+                  {t(`auth.${authMode}.subtitle`)}
                 </p>
               </div>
+
+              {error && (
+                <div className="mb-4 p-3 bg-red-50 text-red-600 rounded-lg text-sm">
+                  {error}
+                </div>
+              )}
 
               <form onSubmit={handleAuthSubmit} className="space-y-4">
                 <div>
                   <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                    Correo electrónico
+                    {t(`auth.${authMode}.email`)}
                   </label>
                   <input
                     type="email"
@@ -446,7 +564,7 @@ const Navbar = ({ scrollToRef, homeRef, currentSection = 'home' }) => {
 
                 <div>
                   <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-                    Contraseña
+                    {t(`auth.${authMode}.password`)}
                   </label>
                   <input
                     type="password"
@@ -458,6 +576,22 @@ const Navbar = ({ scrollToRef, homeRef, currentSection = 'home' }) => {
                   />
                 </div>
 
+                {authMode === 'register' && (
+                  <div>
+                    <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
+                      {t('auth.register.confirmPassword')}
+                    </label>
+                    <input
+                      type="password"
+                      id="confirmPassword"
+                      name="confirmPassword"
+                      required
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      placeholder="••••••••"
+                    />
+                  </div>
+                )}
+
                 {authMode === 'login' && (
                   <div className="flex items-center justify-between">
                     <div className="flex items-center">
@@ -468,14 +602,14 @@ const Navbar = ({ scrollToRef, homeRef, currentSection = 'home' }) => {
                         className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
                       />
                       <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
-                        Recordarme
+                        {t('auth.login.rememberMe')}
                       </label>
                     </div>
                     <button
                       type="button"
                       className="text-sm text-indigo-600 hover:text-indigo-700"
                     >
-                      ¿Olvidaste tu contraseña?
+                      {t('auth.login.forgotPassword')}
                     </button>
                   </div>
                 )}
@@ -484,7 +618,7 @@ const Navbar = ({ scrollToRef, homeRef, currentSection = 'home' }) => {
                   type="submit"
                   className="w-full bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 transition-colors font-medium"
                 >
-                  {authMode === 'login' ? 'Iniciar sesión' : 'Crear cuenta'}
+                  {t(`auth.${authMode}.submit`)}
                 </button>
 
                 <div className="relative my-6">
@@ -492,7 +626,9 @@ const Navbar = ({ scrollToRef, homeRef, currentSection = 'home' }) => {
                     <div className="w-full border-t border-gray-300"></div>
                   </div>
                   <div className="relative flex justify-center text-sm">
-                    <span className="px-2 bg-white text-gray-500">O continúa con</span>
+                    <span className="px-2 bg-white text-gray-500">
+                      {t(`auth.${authMode}.orContinueWith`)}
+                    </span>
                   </div>
                 </div>
 
@@ -508,61 +644,20 @@ const Navbar = ({ scrollToRef, homeRef, currentSection = 'home' }) => {
 
               <div className="mt-6 text-center">
                 <p className="text-sm text-gray-600">
-                  {authMode === 'login' ? '¿No tienes una cuenta?' : '¿Ya tienes una cuenta?'}{' '}
+                  {t(`auth.${authMode}.${authMode === 'login' ? 'noAccount' : 'haveAccount'}`)}{' '}
                   <button
                     type="button"
                     onClick={() => {
                       setAuthMode(authMode === 'login' ? 'register' : 'login');
+                      setError(null);
                     }}
                     className="text-indigo-600 hover:text-indigo-700 font-medium"
                   >
-                    {authMode === 'login' ? 'Regístrate' : 'Inicia sesión'}
+                    {t(`auth.${authMode}.${authMode === 'login' ? 'register' : 'login'}`)}
                   </button>
                 </p>
               </div>
             </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Menú de usuario cuando está autenticado */}
-      <AnimatePresence>
-        {user && (
-          <motion.div
-            className="fixed top-16 right-4 bg-white rounded-lg shadow-lg p-2 z-50"
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-          >
-            <div className="px-4 py-2 border-b border-gray-100">
-              <p className="text-sm font-medium text-gray-900">{user.email}</p>
-            </div>
-            <div className="py-1">
-              <button
-                onClick={() => navigate('/perfil')}
-                className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md"
-              >
-                Mi perfil
-              </button>
-              <button
-                onClick={() => navigate('/pedidos')}
-                className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md"
-              >
-                Mis pedidos
-              </button>
-              <button
-                onClick={() => navigate('/favoritos')}
-                className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md"
-              >
-                Favoritos
-              </button>
-              <button
-                onClick={signOut}
-                className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md"
-              >
-                Cerrar sesión
-              </button>
-            </div>
           </motion.div>
         )}
       </AnimatePresence>

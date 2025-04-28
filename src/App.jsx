@@ -61,6 +61,9 @@ function App() {
     }
   };
 
+  // Asegurarse de que currentSection siempre tenga un valor válido
+  const currentSectionConfig = seoConfig[currentSection] || seoConfig.home;
+
   // Función para desplazamiento suave
   const scrollToRef = (ref) => {
     if (ref && ref.current) {
@@ -139,9 +142,9 @@ function App() {
     <div className="min-h-screen bg-white overflow-x-hidden">
       {/* SEO Dinámico */}
       <SEO 
-        title={seoConfig[currentSection].title}
-        description={seoConfig[currentSection].description}
-        ogImage={seoConfig[currentSection].ogImage}
+        title={currentSectionConfig.title}
+        description={currentSectionConfig.description}
+        ogImage={currentSectionConfig.ogImage}
         section={currentSection}
       />
       

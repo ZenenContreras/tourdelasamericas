@@ -35,27 +35,27 @@ const ImageCarousel = () => {
     <div className="relative w-full h-screen min-h-[500px] sm:min-h-[600px] md:min-h-[700px] lg:min-h-[800px] max-h-[900px] overflow-hidden">
       <div className="relative h-full">
         {/* Fondo de carga con animación suave */}
-        <div 
+      <div 
           className={`absolute inset-0 bg-gradient-to-br from-indigo-50 to-purple-50 transition-opacity duration-700 ${isImageLoaded ? 'opacity-0' : 'opacity-100'}`} 
-        />
-        
+      />
+      
         {/* Imagen de fondo con optimización */}
         <picture>
           <source media="(min-width: 1024px)" srcSet="/fondoEscritorio.png" />
           <source media="(min-width: 768px)" srcSet="/fondoTablet.png" />
           <source media="(max-width: 767px)" srcSet="/fondoMobile2.png" />
-          <img
+        <img
             src={isMobile ? "/fondoMobile2.png" : isTablet ? "/fondoTablet.png" : "/fondoEscritorio.png"}
             alt="Origen America"
             className="w-full h-full object-cover filter blur-[0.5px]"
             loading="eager"
             fetchpriority="high"
-          />
-        </picture>
-        
+        />
+      </picture>
+      
         {/* Gradiente mejorado para mejor legibilidad */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent" />
-        
+      
         {/* Contenido principal con mejor organización */}
         <div className="absolute inset-0 flex flex-col justify-center px-3 sm:px-4 md:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto w-full">
@@ -68,12 +68,12 @@ const ImageCarousel = () => {
                 transition={{ duration: 0.8, ease: "easeOut" }}
               >
                 {/* Título con tipografía mejorada */}
-                <motion.div 
+          <motion.div
                   className="mb-3 sm:mb-4 md:mb-6 lg:mb-8"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
                   transition={{ duration: 0.8, delay: 0.2 }}
-                >
+          >
                   <span className="block mb-1 sm:mb-2 md:mb-3">
                     <span className="italic font-light text-white text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl drop-shadow-xl" 
                           style={{ fontFamily: "'Playfair Display', serif", letterSpacing: '2px', textShadow: '0 4px 12px rgba(0, 0, 0, 0.4)' }}>
@@ -84,18 +84,18 @@ const ImageCarousel = () => {
                         style={{ textShadow: '0 4px 16px rgba(0, 0, 0, 0.5)' }}>
                     {t('hero.america')}
                   </span>
-                </motion.div>
-
+            </motion.div>
+            
                 {/* Descripción con mejor legibilidad */}
-                <motion.p 
+            <motion.p 
                   className="text-sm xs:text-base sm:text-lg md:text-xl text-white/90 mb-4 sm:mb-6 max-w-xl leading-relaxed"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.8, delay: 0.4 }}
                   style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)' }}
-                >
-                  {t('storeDescription')}
-                </motion.p>
+            >
+              {t('storeDescription')}
+            </motion.p>
                 
                 {/* Botón de registro mejorado */}
                 <motion.div
@@ -191,21 +191,21 @@ const ImageCarousel = () => {
                     {t('categories.foods')}
                   </span>
                 </motion.div>
-                
-                <motion.div 
+            
+            <motion.div
                   className="bg-purple-500/15 p-2 sm:p-3 rounded-xl flex flex-col items-center justify-center h-16 sm:h-20 border border-white/10 backdrop-blur-sm hover:bg-purple-500/25 transition-all duration-300"
                   whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.97 }}
-                >
+            >
                   <Store className="h-5 w-5 sm:h-6 sm:w-6 text-white mb-1 sm:mb-2" />
                   <span className="text-white font-medium text-xs sm:text-sm text-center drop-shadow-md" style={{ textShadow: '0 1px 2px rgba(0, 0, 0, 0.4)' }}>
                     {t('categories.boutiqueSouvenirs')}
-                  </span>
-                </motion.div>
-              </motion.div>
-            </div>
-          </div>
-        </div>
+              </span>
+            </motion.div>
+          </motion.div>
+      </div>
+      </div>
+    </div>
         
         {/* Indicador de desplazamiento mejorado */}
         <motion.div 
