@@ -10,12 +10,12 @@ export const translations = {
       language: 'Language'
     },
     hero: {
-      title: 'Discover the Treasures of the Americas',
+      title: 'A Continent at Your Fingertips',
       subtitle: 'Explore a unique collection of authentic products, from delicious foods to exclusive crafts from across the American continent.',
       explore: 'Explore Products',
       learnMore: 'Learn More',
-      origen: 'Origin',
-      america: 'America',
+      origen: 'A',
+      america: 'un clic',
       registerEarlyAccess: 'Register for Early Access'
     },
     sections: {
@@ -125,12 +125,12 @@ export const translations = {
       language: 'Idioma'
     },
     hero: {
-      title: 'Descubre los Tesoros de las Américas',
+      title: 'Todo un continente a un clic',
       subtitle: 'Explora una colección única de productos auténticos, desde deliciosas comidas hasta artesanías exclusivas de todo el continente americano.',
       explore: 'Explorar Productos',
       learnMore: 'Conoce Más',
-      origen: 'Origen',
-      america: 'America',
+      origen: 'A',
+      america: 'un clic',
       registerEarlyAccess: 'Regístrate para acceso anticipado'
     },
     sections: {
@@ -240,12 +240,12 @@ export const translations = {
       language: 'Langue'
     },
     hero: {
-      title: 'Découvrez les Trésors des Amériques',
+      title: 'Un continent à portée de clic',
       subtitle: 'Explorez une collection unique de produits authentiques, des délicieuses cuisines aux artisanats exclusifs de tout le continent américain.',
       explore: 'Explorer les Produits',
       learnMore: 'En Savoir Plus',
-      origen: 'Origine',
-      america: 'Amérique',
+      origen: 'A',
+      america: 'un clic',
       registerEarlyAccess: 'Inscrivez-vous pour un accès anticipé'
     },
     sections: {

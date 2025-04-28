@@ -57,7 +57,6 @@ const LanguageSelector = ({ inverted = false, isMobile = false, isTransparent = 
           whileTap={{ scale: 0.95 }}
           aria-label="Seleccionar idioma"
         >
-          <Globe2 className="h-5 w-5" />
           <span className="font-medium text-base">{currentLanguage?.flag}</span>
           <motion.span
             animate={{ rotate: isOpen ? 180 : 0 }}

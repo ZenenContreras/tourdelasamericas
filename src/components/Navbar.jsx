@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Menu, X, ChevronRight } from 'lucide-react';
+import { Menu, X, ChevronRight, ShoppingCart, User } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '../contexts/LanguageContext';
 import LanguageSelector from './LanguageSelector';
+import { useAuth } from '../contexts/AuthContext';
+import { signInWithEmail, signUp, signInWithGoogle } from '../services/authService';
 
 /**
  * Componente de navegación principal
@@ -14,11 +16,15 @@ import LanguageSelector from './LanguageSelector';
  */
 const Navbar = ({ scrollToRef, homeRef, currentSection = 'home' }) => {
   const { t } = useLanguage();
+  const { user, signOut } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isTablet, setIsTablet] = useState(false);
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const [isRegisterOpen, setIsRegisterOpen] = useState(false);
+  const [authMode, setAuthMode] = useState('login'); // 'login' o 'register'
 
   // Verificar si estamos en la página de inicio para ajustar la transparencia
   const isHomePage = location.pathname === "/" || location.pathname === "/home";
@@ -181,6 +187,34 @@ const Navbar = ({ scrollToRef, homeRef, currentSection = 'home' }) => {
     )}
   ];
 
+  const handleAuthSubmit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const email = formData.get('email');
+    const password = formData.get('password');
+
+    if (authMode === 'login') {
+      const { error } = await signInWithEmail(email, password);
+      if (!error) {
+        setIsLoginOpen(false);
+      }
+    } else {
+      const { error } = await signUp(email, password);
+      if (!error) {
+        setAuthMode('login');
+        setIsRegisterOpen(false);
+      }
+    }
+  };
+
+  const handleGoogleAuth = async () => {
+    const { error } = await signInWithGoogle();
+    if (!error) {
+      setIsLoginOpen(false);
+      setIsRegisterOpen(false);
+    }
+  };
+
   return (
     <>
       <motion.header 
@@ -205,17 +239,14 @@ const Navbar = ({ scrollToRef, homeRef, currentSection = 'home' }) => {
               >
                 <img 
                   src="/america.png" 
-                  alt="Logo Tour de las Americas" 
+                  alt="Logo A un clic" 
                   className="h-9 w-9 sm:h-11 sm:w-11 md:h-13 md:w-13 object-contain" 
                   width="52"
                   height="52"
                 />
                 <div className="pl-1.5 sm:pl-2.5 flex flex-col items-center">
-                  <span className="text-xs sm:text-sm md:text-base lg:text-lg italic font-medium text-gray-600">
-                    Origen
-                  </span>
                   <span className="text-sm sm:text-base md:text-lg lg:text-xl font-bold truncate text-gray-900">
-                    America
+                    Á un clic
                   </span>
                 </div>
               </button>
@@ -236,12 +267,52 @@ const Navbar = ({ scrollToRef, homeRef, currentSection = 'home' }) => {
                   </li>
                 ))}
               </ul>
-              <LanguageSelector />
+
+              {/* Botones de acción */}
+              <div className="flex items-center space-x-4">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="relative p-2 text-gray-700 hover:text-indigo-600 transition-colors"
+                  aria-label="Carrito de compras"
+                >
+                  <ShoppingCart className="h-6 w-6" />
+                  <span className="absolute -top-1 -right-1 bg-indigo-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                    0
+                  </span>
+                </motion.button>
+
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setIsLoginOpen(true)}
+                  className="flex items-center space-x-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+                  aria-label="Iniciar sesión"
+                >
+                  <User className="h-6 w-6" />
+                  <span className="text-sm font-medium">Iniciar sesión</span>
+                </motion.button>
+
+                <LanguageSelector />
+              </div>
             </div>
             
             {/* Botones móviles (Idioma + Menú) */}
             <div className="flex md:hidden items-center space-x-2">
               <LanguageSelector isMobile={true} />
+
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="relative p-2 text-gray-700 hover:text-indigo-600 transition-colors"
+                aria-label="Carrito de compras"
+              >
+                <ShoppingCart className="h-5 w-5" />
+                <span className="absolute -top-1 -right-1 bg-indigo-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                  0
+                </span>
+              </motion.button>
+
               
               {/* Botón de menú móvil */}
               <button
@@ -312,33 +383,186 @@ const Navbar = ({ scrollToRef, homeRef, currentSection = 'home' }) => {
                 ))}
               </ul>
               
-              {/* Descripción de la tienda y enlaces sociales */}
-              <motion.div 
-                className="mt-6 pt-4 border-t border-gray-100"
-                variants={itemVariants}
-              >
-                <p className="px-3 py-2 text-base text-gray-600 mb-4">
-                  {t('storeDescription')}
-                </p>
-                
-                <div className="flex space-x-5 px-3">
-                  {socialLinks.map((social, index) => (
-                    <motion.a
-                      key={index}
-                      href={social.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-indigo-600 hover:text-indigo-800 transition-colors"
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.95 }}
-                      aria-label={social.name}
-                    >
-                      {React.cloneElement(social.icon, { className: "h-7 w-7" })}
-                    </motion.a>
-                  ))}
-                </div>
+              {/* Botón de inicio de sesión móvil */}
+              <motion.div variants={itemVariants} className="mt-4">
+                <button
+                  onClick={() => setIsLoginOpen(true)}
+                  className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+                >
+                  <User className="h-5 w-5" />
+                  <span className="text-base font-medium">Iniciar sesión</span>
+                </button>
               </motion.div>
             </motion.nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Modal de autenticación (Login/Register) */}
+      <AnimatePresence>
+        {(isLoginOpen || isRegisterOpen) && (
+          <motion.div
+            className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => {
+              setIsLoginOpen(false);
+              setIsRegisterOpen(false);
+            }}
+          >
+            <motion.div
+              className="bg-white rounded-xl shadow-2xl max-w-md w-full p-6"
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              onClick={e => e.stopPropagation()}
+            >
+              <div className="text-center mb-6">
+                <h2 className="text-2xl font-bold text-gray-900">
+                  {authMode === 'login' ? 'Iniciar sesión' : 'Crear cuenta'}
+                </h2>
+                <p className="text-gray-600 mt-2">
+                  {authMode === 'login' 
+                    ? 'Accede a tu cuenta para continuar' 
+                    : 'Únete a nuestra comunidad'}
+                </p>
+              </div>
+
+              <form onSubmit={handleAuthSubmit} className="space-y-4">
+                <div>
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                    Correo electrónico
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    required
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    placeholder="tu@email.com"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                    Contraseña
+                  </label>
+                  <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    required
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    placeholder="••••••••"
+                  />
+                </div>
+
+                {authMode === 'login' && (
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      <input
+                        id="remember-me"
+                        name="remember-me"
+                        type="checkbox"
+                        className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                      />
+                      <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
+                        Recordarme
+                      </label>
+                    </div>
+                    <button
+                      type="button"
+                      className="text-sm text-indigo-600 hover:text-indigo-700"
+                    >
+                      ¿Olvidaste tu contraseña?
+                    </button>
+                  </div>
+                )}
+
+                <button
+                  type="submit"
+                  className="w-full bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 transition-colors font-medium"
+                >
+                  {authMode === 'login' ? 'Iniciar sesión' : 'Crear cuenta'}
+                </button>
+
+                <div className="relative my-6">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-gray-300"></div>
+                  </div>
+                  <div className="relative flex justify-center text-sm">
+                    <span className="px-2 bg-white text-gray-500">O continúa con</span>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleGoogleAuth}
+                  className="w-full flex items-center justify-center space-x-2 bg-white border border-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+                >
+                  <img src="/google-icon.svg" alt="Google" className="h-5 w-5" />
+                  <span>Google</span>
+                </button>
+              </form>
+
+              <div className="mt-6 text-center">
+                <p className="text-sm text-gray-600">
+                  {authMode === 'login' ? '¿No tienes una cuenta?' : '¿Ya tienes una cuenta?'}{' '}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setAuthMode(authMode === 'login' ? 'register' : 'login');
+                    }}
+                    className="text-indigo-600 hover:text-indigo-700 font-medium"
+                  >
+                    {authMode === 'login' ? 'Regístrate' : 'Inicia sesión'}
+                  </button>
+                </p>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Menú de usuario cuando está autenticado */}
+      <AnimatePresence>
+        {user && (
+          <motion.div
+            className="fixed top-16 right-4 bg-white rounded-lg shadow-lg p-2 z-50"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+          >
+            <div className="px-4 py-2 border-b border-gray-100">
+              <p className="text-sm font-medium text-gray-900">{user.email}</p>
+            </div>
+            <div className="py-1">
+              <button
+                onClick={() => navigate('/perfil')}
+                className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md"
+              >
+                Mi perfil
+              </button>
+              <button
+                onClick={() => navigate('/pedidos')}
+                className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md"
+              >
+                Mis pedidos
+              </button>
+              <button
+                onClick={() => navigate('/favoritos')}
+                className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md"
+              >
+                Favoritos
+              </button>
+              <button
+                onClick={signOut}
+                className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md"
+              >
+                Cerrar sesión
+              </button>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
