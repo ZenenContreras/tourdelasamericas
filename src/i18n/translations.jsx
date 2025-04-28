@@ -173,14 +173,25 @@ export const translations = {
       deleteSuccess: 'Account deleted successfully',
       tabs: {
         personal: 'Personal Information',
+        personalShort: 'Personal',
         security: 'Security',
+        securityShort: 'Security',
         payments: 'Payments',
-        notifications: 'Notifications'
+        notifications: 'Notifications',
+        notificationsShort: 'Notif.'
       },
       security: {
         warning: 'Keep your account secure by regularly updating your password and enabling two-factor authentication.',
-        changePassword: 'Change Password',
-        twoFactor: 'Two-Factor Authentication'
+        password: {
+          title: 'Password',
+          description: 'Update your password regularly to keep your account secure.',
+          changeButton: 'Change Password'
+        },
+        twoFactor: {
+          title: 'Two-Factor Authentication',
+          description: 'Add an extra layer of security to your account.',
+          setupButton: 'Setup 2FA'
+        }
       },
       payments: {
         info: 'Manage your payment methods and review your transaction history.',
@@ -189,8 +200,14 @@ export const translations = {
       },
       notifications: {
         info: 'Configure how you want to receive notifications.',
-        email: 'Email Notifications',
-        sms: 'SMS Notifications'
+        email: {
+          title: 'Email Notifications',
+          description: 'Receive important updates in your email.'
+        },
+        push: {
+          title: 'Push Notifications',
+          description: 'Receive instant notifications in your browser.'
+        }
       }
     },
     orders: {
@@ -382,14 +399,25 @@ export const translations = {
       deleteSuccess: 'Cuenta eliminada exitosamente',
       tabs: {
         personal: 'Información Personal',
+        personalShort: 'Personal',
         security: 'Seguridad',
+        securityShort: 'Seguridad',
         payments: 'Pagos',
-        notifications: 'Notificaciones'
+        notifications: 'Notificaciones',
+        notificationsShort: 'Notif.'
       },
       security: {
         warning: 'Mantén tu cuenta segura actualizando regularmente tu contraseña y habilitando la autenticación de dos factores.',
-        changePassword: 'Cambiar Contraseña',
-        twoFactor: 'Autenticación de Dos Factores'
+        password: {
+          title: 'Contraseña',
+          description: 'Actualiza tu contraseña regularmente para mantener tu cuenta segura.',
+          changeButton: 'Cambiar contraseña'
+        },
+        twoFactor: {
+          title: 'Autenticación de dos factores',
+          description: 'Añade una capa extra de seguridad a tu cuenta.',
+          setupButton: 'Configurar 2FA'
+        }
       },
       payments: {
         info: 'Gestiona tus métodos de pago y revisa tu historial de transacciones.',
@@ -398,8 +426,14 @@ export const translations = {
       },
       notifications: {
         info: 'Configura cómo quieres recibir las notificaciones.',
-        email: 'Notificaciones por Email',
-        sms: 'Notificaciones por SMS'
+        email: {
+          title: 'Notificaciones por email',
+          description: 'Recibe actualizaciones importantes en tu correo.'
+        },
+        push: {
+          title: 'Notificaciones push',
+          description: 'Recibe notificaciones instantáneas en tu navegador.'
+        }
       }
     },
     orders: {
@@ -591,14 +625,25 @@ export const translations = {
       deleteSuccess: 'Compte supprimé avec succès',
       tabs: {
         personal: 'Informations Personnelles',
+        personalShort: 'Personal',
         security: 'Sécurité',
+        securityShort: 'Seguridad',
         payments: 'Paiements',
-        notifications: 'Notifications'
+        notifications: 'Notifications',
+        notificationsShort: 'Notif.'
       },
       security: {
         warning: 'Gardez votre compte sûr en mettant régulièrement à jour votre mot de passe et en activant l\'authentification à deux facteurs.',
-        changePassword: 'Changer le Mot de Passe',
-        twoFactor: 'Authentification à Deux Facteurs'
+        password: {
+          title: 'Mot de passe',
+          description: 'Mettez régulièrement à jour votre mot de passe pour garder votre compte sûr.',
+          changeButton: 'Changer le mot de passe'
+        },
+        twoFactor: {
+          title: 'Authentification à deux facteurs',
+          description: 'Ajoutez une couche de sécurité à votre compte.',
+          setupButton: 'Configurer 2FA'
+        }
       },
       payments: {
         info: 'Gérez vos moyens de paiement et consultez votre historique des transactions.',
@@ -607,8 +652,14 @@ export const translations = {
       },
       notifications: {
         info: 'Configurez comment vous souhaitez recevoir les notifications.',
-        email: 'Notifications par Email',
-        sms: 'Notifications par SMS'
+        email: {
+          title: 'Notifications par email',
+          description: 'Recevez des mises à jour importantes dans votre email.'
+        },
+        push: {
+          title: 'Notifications push',
+          description: 'Recevez des notifications instantanées dans votre navigateur.'
+        }
       }
     },
     orders: {
