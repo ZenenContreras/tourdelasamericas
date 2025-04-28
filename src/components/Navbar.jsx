@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Menu, X, ChevronRight, ShoppingCart, User, Heart, LogOut } from 'lucide-react';
+import { Menu, X, ChevronRight, ShoppingCart, User, Heart, LogOut, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '../contexts/LanguageContext';
 import LanguageSelector from './LanguageSelector';
 import { useAuth } from '../contexts/AuthContext';
 import { signInWithEmail, signUp, signInWithGoogle } from '../services/authService';
 import { toast } from 'react-hot-toast';
+import AuthModal from './AuthModal';
 
 /**
  * Componente de navegación principal
@@ -16,7 +17,7 @@ import { toast } from 'react-hot-toast';
  * @param {string} props.currentSection - Sección actual para resaltar en la navegación
  */
 const Navbar = ({ scrollToRef, homeRef, currentSection = 'home' }) => {
-  const { t } = useLanguage();
+  const { t, language, setLanguage } = useLanguage();
   const { user, signOut } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
@@ -320,134 +321,123 @@ const Navbar = ({ scrollToRef, homeRef, currentSection = 'home' }) => {
   };
 
   const getUserAvatar = (user) => {
-    if (user.user_metadata?.avatar_url) {
-      return user.user_metadata.avatar_url;
-    } else if (user.user_metadata?.picture) {
-      return user.user_metadata.picture;
-    } else if (user.avatar_url) {
-      return user.avatar_url;
-    }
-    return null;
+    if (!user) return null;
+    return user.user_metadata?.avatar_url || 
+           user.user_metadata?.picture || 
+           user.avatar_url || 
+           null;
   };
 
-  const renderUserMenu = () => {
-    if (!user) {
-      return (
-        <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
-          <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button">
-            <button
-              onClick={() => setIsAuthModalOpen(true)}
-              className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-              role="menuitem"
-            >
-              {t('auth.login.title')}
-            </button>
-            <button
-              onClick={() => {
-                setIsAuthModalOpen(true);
-                setAuthMode('register');
-              }}
-              className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-              role="menuitem"
-            >
-              {t('auth.register.title')}
-            </button>
-            <div className="border-t border-gray-100"></div>
-            <button
-              onClick={() => scrollToRef(homeRef)}
-              className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-              role="menuitem"
-            >
-              {t('nav.home')}
-            </button>
-            <button
-              onClick={() => {
-                const element = document.getElementById('products');
-                if (element) element.scrollIntoView({ behavior: 'smooth' });
-              }}
-              className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-              role="menuitem"
-            >
-              {t('nav.products')}
-            </button>
-            <button
-              onClick={() => {
-                const element = document.getElementById('foods');
-                if (element) element.scrollIntoView({ behavior: 'smooth' });
-              }}
-              className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-              role="menuitem"
-            >
-              {t('nav.foods')}
-            </button>
-            <button
-              onClick={() => {
-                const element = document.getElementById('boutique');
-                if (element) element.scrollIntoView({ behavior: 'smooth' });
-              }}
-              className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-              role="menuitem"
-            >
-              {t('nav.boutique')}
-            </button>
-            <div className="border-t border-gray-100"></div>
-            <button
-              onClick={() => {
-                const element = document.getElementById('about');
-                if (element) element.scrollIntoView({ behavior: 'smooth' });
-              }}
-              className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-              role="menuitem"
-            >
-              {t('nav.about')}
-            </button>
-          </div>
-        </div>
-      );
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      setIsUserMenuOpen(false);
+      setIsMobileMenuOpen(false);
+      navigate('/');
+    } catch (error) {
+      console.error('Error al cerrar sesión:', error);
     }
-
-    return (
-      <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
-        <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button">
-          <div className="px-4 py-2 text-sm text-gray-700 border-b border-gray-100">
-            {t('auth.userMenu.greeting', { name: user.email.split('@')[0] })}
-          </div>
-          <button
-            onClick={() => window.location.href = '/perfil'}
-            className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-            role="menuitem"
-          >
-            {t('auth.userMenu.profile')}
-          </button>
-          <button
-            onClick={() => window.location.href = '/pedidos'}
-            className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-            role="menuitem"
-          >
-            {t('auth.userMenu.orders')}
-          </button>
-          <button
-            onClick={() => window.location.href = '/favoritos'}
-            className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-            role="menuitem"
-          >
-            {t('auth.userMenu.favorites')}
-          </button>
-          <div className="border-t border-gray-100"></div>
-          <button
-            onClick={() => {
-              signOut();
-              setIsUserMenuOpen(false);
-            }}
-            className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50"
-            role="menuitem"
-          >
-            {t('auth.userMenu.logout')}
-          </button>
-        </div>
-      </div>
-    );
   };
+
+  const handleProfileClick = () => {
+    navigate('/perfil');
+    setIsUserMenuOpen(false);
+    setIsMobileMenuOpen(false);
+  };
+
+  const handleCartClick = () => {
+    navigate('/carrito');
+    setIsUserMenuOpen(false);
+    setIsMobileMenuOpen(false);
+  };
+
+  const handleFavoritesClick = () => {
+    navigate('/favoritos');
+    setIsUserMenuOpen(false);
+    setIsMobileMenuOpen(false);
+  };
+
+  const handleOrdersClick = () => {
+    navigate('/pedidos');
+    setIsUserMenuOpen(false);
+    setIsMobileMenuOpen(false);
+  };
+
+  const renderUserMenu = () => (
+    <div className="relative">
+      <button
+        onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+        className="flex items-center space-x-2 focus:outline-none"
+      >
+        <div className="h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center overflow-hidden border-2 border-indigo-200">
+          {getUserAvatar(user) ? (
+            <img 
+              src={getUserAvatar(user)} 
+              alt={user.email} 
+              className="h-full w-full object-cover"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = `https://ui-avatars.com/api/?name=${user.email.charAt(0)}&background=818cf8&color=fff`;
+              }}
+            />
+          ) : (
+            <span className="text-indigo-600 font-medium">
+              {user.email.charAt(0).toUpperCase()}
+            </span>
+          )}
+        </div>
+        <ChevronDown className={`h-4 w-4 text-gray-600 transition-transform ${isUserMenuOpen ? 'rotate-180' : ''}`} />
+      </button>
+
+      <AnimatePresence>
+        {isUserMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 10 }}
+            className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg py-1 ring-1 ring-black ring-opacity-5 z-50"
+          >
+            <button
+              onClick={handleProfileClick}
+              className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+            >
+              <User className="h-4 w-4 mr-2" />
+              {t('auth.userMenu.profile')}
+            </button>
+            <button
+              onClick={handleOrdersClick}
+              className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+            >
+              <ShoppingCart className="h-4 w-4 mr-2" />
+              {t('auth.userMenu.orders')}
+            </button>
+            <button
+              onClick={handleCartClick}
+              className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+            >
+              <ShoppingCart className="h-4 w-4 mr-2" />
+              Carrito
+            </button>
+            <button
+              onClick={handleFavoritesClick}
+              className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+            >
+              <Heart className="h-4 w-4 mr-2" />
+              {t('auth.userMenu.favorites')}
+            </button>
+            <div className="border-t border-gray-100 my-1"></div>
+            <button
+              onClick={handleSignOut}
+              className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+            >
+              <LogOut className="h-4 w-4 mr-2" />
+              {t('auth.userMenu.logout')}
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -522,101 +512,7 @@ const Navbar = ({ scrollToRef, homeRef, currentSection = 'home' }) => {
                 </motion.button>
 
                 {user && user.email ? (
-                  <motion.div
-                    className="relative"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                  >
-                    <button
-                      onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                      className="flex items-center space-x-2 px-4 py-2 bg-indigo-50 text-indigo-600 rounded-lg hover:bg-indigo-100 transition-colors"
-                    >
-                      <div className="h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center overflow-hidden">
-                        {getUserAvatar(user) ? (
-                          <img 
-                            src={getUserAvatar(user)} 
-                            alt={user.email} 
-                            className="h-full w-full object-cover"
-                            onError={(e) => {
-                              e.target.onerror = null;
-                              e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.email)}&background=818cf8&color=fff`;
-                            }}
-                          />
-                        ) : (
-                          <div className="h-full w-full flex items-center justify-center bg-indigo-200">
-                            <span className="text-indigo-600 font-medium text-sm">
-                              {user.email.charAt(0).toUpperCase()}
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                      <span className="text-sm font-medium">
-                        {user.user_metadata?.nombre || user.email.split('@')[0]}
-                      </span>
-                    </button>
-
-                    <AnimatePresence>
-                      {isUserMenuOpen && (
-                        <motion.div
-                          className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg py-2 z-50"
-                          initial={{ opacity: 0, y: -10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -10 }}
-                        >
-                          <div className="px-4 py-2 border-b border-gray-100">
-                            <p className="text-sm text-gray-500">Bienvenido</p>
-                            <p className="text-sm font-medium text-gray-900">{user.email}</p>
-                          </div>
-                          
-                          <button
-                            onClick={() => {
-                              navigate('/perfil');
-                              setIsUserMenuOpen(false);
-                            }}
-                            className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 flex items-center space-x-2"
-                          >
-                            <User className="h-4 w-4" />
-                            <span>{t('auth.userMenu.profile')}</span>
-                          </button>
-                          
-                          <button
-                            onClick={() => {
-                              navigate('/pedidos');
-                              setIsUserMenuOpen(false);
-                            }}
-                            className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 flex items-center space-x-2"
-                          >
-                            <ShoppingCart className="h-4 w-4" />
-                            <span>{t('auth.userMenu.orders')}</span>
-                          </button>
-                          
-                          <button
-                            onClick={() => {
-                              navigate('/favoritos');
-                              setIsUserMenuOpen(false);
-                            }}
-                            className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 flex items-center space-x-2"
-                          >
-                            <Heart className="h-4 w-4" />
-                            <span>{t('auth.userMenu.favorites')}</span>
-                          </button>
-                          
-                          <div className="border-t border-gray-100 my-1"></div>
-                          
-                          <button
-                            onClick={() => {
-                              signOut();
-                              setIsUserMenuOpen(false);
-                            }}
-                            className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center space-x-2"
-                          >
-                            <LogOut className="h-4 w-4" />
-                            <span>{t('auth.userMenu.logout')}</span>
-                          </button>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </motion.div>
+                  renderUserMenu()
                 ) : (
                   <motion.button
                     whileHover={{ scale: 1.05 }}
@@ -814,222 +710,10 @@ const Navbar = ({ scrollToRef, homeRef, currentSection = 'home' }) => {
       </AnimatePresence>
 
       {/* Modal de autenticación */}
-      <AnimatePresence>
-        {(isLoginOpen || isRegisterOpen) && (
-          <motion.div
-            className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => {
-              setIsLoginOpen(false);
-              setIsRegisterOpen(false);
-              setError(null);
-            }}
-          >
-            <motion.div
-              className="bg-white rounded-xl shadow-2xl max-w-md w-full p-6"
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              onClick={e => e.stopPropagation()}
-            >
-              <div className="text-center mb-6">
-                <h2 className="text-2xl font-bold text-gray-900">
-                  {t(`auth.${authMode}.title`)}
-                </h2>
-                <p className="text-gray-600 mt-2">
-                  {t(`auth.${authMode}.subtitle`)}
-                </p>
-              </div>
-
-              {error && (
-                <div className="mb-4 p-3 bg-red-50 text-red-600 rounded-lg text-sm">
-                  {error}
-                </div>
-              )}
-
-              <form onSubmit={handleAuthSubmit} className="space-y-4">
-                {authMode === 'register' && (
-                  <div>
-                    <label htmlFor="nombre" className="block text-sm font-medium text-gray-700 mb-1">
-                      Nombre completo
-                    </label>
-                    <input
-                      type="text"
-                      id="nombre"
-                      name="nombre"
-                      required
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                      placeholder="Tu nombre"
-                      onChange={e => {
-                        setRegisterValidation(v => ({ ...v, nombre: '' }));
-                      }}
-                    />
-                    {registerValidation.nombre && <p className="text-xs text-red-500 mt-1">{registerValidation.nombre}</p>}
-                  </div>
-                )}
-                <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                    {t(`auth.${authMode}.email`)}
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    required
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                    placeholder="tu@email.com"
-                    onChange={e => {
-                      setRegisterValidation(v => ({ ...v, email: '' }));
-                    }}
-                  />
-                  {registerValidation.email && <p className="text-xs text-red-500 mt-1">{registerValidation.email}</p>}
-                </div>
-                <div>
-                  <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-                    {t(`auth.${authMode}.password`)}
-                  </label>
-                  <input
-                    type="password"
-                    id="password"
-                    name="password"
-                    required
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                    placeholder="••••••••"
-                    onChange={e => {
-                      setRegisterValidation(v => ({ ...v, password: '' }));
-                    }}
-                  />
-                  {registerValidation.password && <p className="text-xs text-red-500 mt-1">{registerValidation.password}</p>}
-                </div>
-                {authMode === 'register' && (
-                  <div>
-                    <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
-                      {t('auth.register.confirmPassword')}
-                    </label>
-                    <input
-                      type="password"
-                      id="confirmPassword"
-                      name="confirmPassword"
-                      required
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                      placeholder="••••••••"
-                      onChange={e => {
-                        setRegisterValidation(v => ({ ...v, confirmPassword: '' }));
-                      }}
-                    />
-                    {registerValidation.confirmPassword && <p className="text-xs text-red-500 mt-1">{registerValidation.confirmPassword}</p>}
-                  </div>
-                )}
-                {authMode === 'login' && (
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center">
-                      <input
-                        id="remember-me"
-                        name="remember-me"
-                        type="checkbox"
-                        className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                      />
-                      <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
-                        {t('auth.login.rememberMe')}
-                      </label>
-                    </div>
-                    <button
-                      type="button"
-                      className="text-sm text-indigo-600 hover:text-indigo-700"
-                    >
-                      {t('auth.login.forgotPassword')}
-                    </button>
-                  </div>
-                )}
-                <button
-                  type="submit"
-                  disabled={isLoading}
-                  className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {isLoading ? (
-                    <div className="flex items-center justify-center">
-                      <svg 
-                        className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" 
-                        xmlns="http://www.w3.org/2000/svg" 
-                        fill="none" 
-                        viewBox="0 0 24 24"
-                      >
-                        <circle 
-                          className="opacity-25" 
-                          cx="12" 
-                          cy="12" 
-                          r="10" 
-                          stroke="currentColor" 
-                          strokeWidth="4"
-                        />
-                        <path 
-                          className="opacity-75" 
-                          fill="currentColor" 
-                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                        />
-                      </svg>
-                      <span>
-                        {authMode === 'login' 
-                          ? t('auth.login.submitting') || 'Iniciando sesión...'
-                          : t('auth.register.submitting') || 'Registrando...'}
-                      </span>
-                    </div>
-                  ) : (
-                    <span>
-                      {authMode === 'login' 
-                        ? t('auth.login.submit') || 'Iniciar sesión'
-                        : t('auth.register.submit') || 'Registrarse'}
-                    </span>
-                  )}
-                </button>
-
-                <div className="relative my-6">
-                  <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-gray-300"></div>
-                  </div>
-                  <div className="relative flex justify-center text-sm">
-                    <span className="px-2 bg-white text-gray-500">
-                      {t(`auth.${authMode}.orContinueWith`)}
-                    </span>
-                  </div>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={handleGoogleAuth}
-                  disabled={isLoading}
-                  className="mt-3 w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <img 
-                    src="/google-icon.svg" 
-                    alt="Google" 
-                    className="h-5 w-5 mr-2" 
-                  />
-                  {t('auth.login.orContinueWith')} Google
-                </button>
-              </form>
-
-              <div className="mt-6 text-center">
-                <p className="text-sm text-gray-600">
-                  {t(`auth.${authMode}.${authMode === 'login' ? 'noAccount' : 'haveAccount'}`)}{' '}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setAuthMode(authMode === 'login' ? 'register' : 'login');
-                      setError(null);
-                    }}
-                    className="text-indigo-600 hover:text-indigo-700 font-medium"
-                  >
-                    {t(`auth.${authMode}.${authMode === 'login' ? 'register' : 'login'}`)}
-                  </button>
-                </p>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+      />
 
       {/* Mensaje de confirmación de correo */}
       {showEmailConfirmation && (

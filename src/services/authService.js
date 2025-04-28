@@ -1,5 +1,24 @@
 import { supabase } from '../config/supabase';
 
+const handleAuthError = (error) => {
+  if (!error) return null;
+
+  // Mapeo de errores comunes de Supabase
+  const errorMap = {
+    'Invalid login credentials': 'Credenciales inválidas. Por favor verifica tu email y contraseña.',
+    'Email not confirmed': 'Por favor confirma tu correo electrónico antes de iniciar sesión.',
+    'Email already in use': 'Este correo electrónico ya está registrado.',
+    'Signup requires a valid password': 'La contraseña debe tener al menos 6 caracteres.',
+    'Password should be at least 6 characters': 'La contraseña debe tener al menos 6 caracteres.',
+    'User already registered': 'Este usuario ya está registrado.',
+    'Invalid email': 'El correo electrónico no es válido.',
+    'Network error': 'Error de conexión. Por favor verifica tu conexión a internet.',
+  };
+
+  const message = errorMap[error.message] || error.message;
+  return new Error(message);
+};
+
 export const signInWithEmail = async (email, password) => {
   if (!email || !password) {
     throw new Error('El correo y la contraseña son requeridos');
@@ -11,9 +30,9 @@ export const signInWithEmail = async (email, password) => {
       password,
     });
 
-    if (authError) throw authError;
+    if (authError) throw handleAuthError(authError);
 
-    // Obtener el perfil del usuario de la tabla usuarios
+    // Obtener el perfil del usuario
     const { data: userProfile, error: profileError } = await supabase
       .from('usuarios')
       .select('*')
@@ -24,17 +43,21 @@ export const signInWithEmail = async (email, password) => {
       console.error('Error al obtener el perfil:', profileError);
     }
 
-    // Combinar los datos de autenticación con el perfil
     return {
       user: {
         ...authData.user,
         profile: userProfile || null
       },
-      session: authData.session
+      session: authData.session,
+      error: null
     };
   } catch (error) {
     console.error('Error en signInWithEmail:', error);
-    throw new Error(error.message);
+    return {
+      user: null,
+      session: null,
+      error: handleAuthError(error)
+    };
   }
 };
 
@@ -50,16 +73,15 @@ export const signInWithGoogle = async () => {
         },
       },
     });
-    if (error) throw error;
+
+    if (error) throw handleAuthError(error);
+
     return { data, error: null };
   } catch (error) {
+    console.error('Error en signInWithGoogle:', error);
     return { 
       data: null, 
-      error: {
-        message: error.message,
-        code: error.code,
-        status: error.status
-      }
+      error: handleAuthError(error)
     };
   }
 };
@@ -70,45 +92,63 @@ export const signUp = async (email, password) => {
   }
 
   try {
+    // Verificar si el usuario ya existe
+    const { data: existingUser } = await supabase
+      .from('usuarios')
+      .select('email')
+      .eq('email', email)
+      .single();
+
+    if (existingUser) {
+      throw new Error('Este correo electrónico ya está registrado');
+    }
+
     const { data: authData, error: authError } = await supabase.auth.signUp({
       email,
       password,
     });
 
-    if (authError) throw authError;
+    if (authError) throw handleAuthError(authError);
 
-    // Crear perfil de usuario en la tabla usuarios
+    // Crear perfil de usuario
     const { error: profileError } = await supabase
       .from('usuarios')
       .insert([
         {
           email,
           created_at: new Date(),
+          nombre: email.split('@')[0],
         }
       ]);
 
     if (profileError) {
       console.error('Error al crear el perfil:', profileError);
-      throw profileError;
+      throw handleAuthError(profileError);
     }
 
     return {
       user: authData.user,
-      session: authData.session
+      session: authData.session,
+      error: null
     };
   } catch (error) {
     console.error('Error en signUp:', error);
-    throw new Error(error.message);
+    return {
+      user: null,
+      session: null,
+      error: handleAuthError(error)
+    };
   }
 };
 
 export const signOut = async () => {
   try {
     const { error } = await supabase.auth.signOut();
-    if (error) throw error;
+    if (error) throw handleAuthError(error);
+    return { error: null };
   } catch (error) {
     console.error('Error en signOut:', error);
-    throw new Error(error.message);
+    return { error: handleAuthError(error) };
   }
 };
 
@@ -235,8 +275,8 @@ export const getCurrentUser = async () => {
   try {
     const { data: { user }, error } = await supabase.auth.getUser();
     
-    if (error) throw error;
-    if (!user) return null;
+    if (error) throw handleAuthError(error);
+    if (!user) return { user: null, error: null };
 
     // Obtener el perfil del usuario
     const { data: profile, error: profileError } = await supabase
@@ -250,22 +290,31 @@ export const getCurrentUser = async () => {
     }
 
     return {
-      ...user,
-      profile: profile || null
+      user: {
+        ...user,
+        profile: profile || null
+      },
+      error: null
     };
   } catch (error) {
     console.error('Error en getCurrentUser:', error);
-    return null;
+    return {
+      user: null,
+      error: handleAuthError(error)
+    };
   }
 };
 
 export const getSession = async () => {
   try {
     const { data: { session }, error } = await supabase.auth.getSession();
-    if (error) throw error;
-    return session;
+    if (error) throw handleAuthError(error);
+    return { session, error: null };
   } catch (error) {
     console.error('Error en getSession:', error);
-    return null;
+    return {
+      session: null,
+      error: handleAuthError(error)
+    };
   }
 }; 

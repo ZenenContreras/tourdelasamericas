@@ -1,29 +1,48 @@
 import React, { useEffect, useRef, Suspense, lazy, useState } from 'react';
-import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
+import { Routes, Route, useLocation, Navigate, useNavigate } from 'react-router-dom';
 import { motion, useScroll, useSpring } from 'framer-motion';
 import { useLanguage } from './contexts/LanguageContext';
+import { useAuth } from './contexts/AuthContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ImageCarousel from './components/ImageCarousel';
 import SEO from './components/SEO';
-import ProfilePage from './pages/ProfilePage';
-import OrdersPage from './pages/OrdersPage';
 import LoadingScreen from './components/LoadingScreen';
 
-// Carga perezosa para mejorar el rendimiento inicial
+// Carga perezosa de componentes
 const ProductsSection = lazy(() => import('./components/ProductsSection'));
 const FoodsSection = lazy(() => import('./components/FoodsSection'));
 const BoutiqueSection = lazy(() => import('./components/BoutiqueSection'));
+const ProfilePage = lazy(() => import('./pages/ProfilePage'));
+const OrdersPage = lazy(() => import('./pages/OrdersPage'));
+const CartPage = lazy(() => import('./pages/CartPage'));
+const FavoritesPage = lazy(() => import('./pages/FavoritesPage'));
 
-// Componente de carga mientras se cargan las secciones
+// Componente de carga
 const Loading = () => (
   <div className="flex justify-center items-center py-20">
     <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
   </div>
 );
 
+// Componente para rutas protegidas
+const ProtectedRoute = ({ children }) => {
+  const { user, loading } = useAuth();
+  const location = useLocation();
+
+  if (loading) {
+    return <Loading />;
+  }
+
+  if (!user) {
+    return <Navigate to="/" state={{ from: location }} replace />;
+  }
+
+  return children;
+};
+
 function App() {
-  const { t, language } = useLanguage();
+  const { t } = useLanguage();
   const location = useLocation();
   const { scrollYProgress } = useScroll();
   const [currentSection, setCurrentSection] = useState('home');
@@ -41,7 +60,20 @@ function App() {
   const foodsRef = useRef(null);
   const boutiqueRef = useRef(null);
 
-  // Configuración de SEO para cada sección
+  const scrollToRef = (ref) => {
+    if (ref && ref.current) {
+      const yOffset = -80;
+      const element = ref.current;
+      const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      
+      window.scrollTo({
+        top: y,
+        behavior: 'smooth'
+      });
+    }
+  };
+
+  // Configuración de SEO
   const seoConfig = {
     home: {
       title: `${t('hero.origen')} ${t('hero.america')} | ${t('nav.home')}`,
@@ -65,85 +97,9 @@ function App() {
     }
   };
 
-  // Asegurarse de que currentSection siempre tenga un valor válido
   const currentSectionConfig = seoConfig[currentSection] || seoConfig.home;
 
-  // Función para desplazamiento suave
-  const scrollToRef = (ref) => {
-    if (ref && ref.current) {
-      const yOffset = -80;
-      const element = ref.current;
-      const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
-      
-      window.scrollTo({
-        top: y,
-        behavior: 'smooth'
-      });
-    }
-  };
-
-  // Usar effect para navegar a la sección correcta cuando se carga la página o cambia la URL
   useEffect(() => {
-    // Extraer el ID de la ubicación actual
-    const path = location.pathname;
-    let sectionId = path.replace('/', '');
-    
-    if (path === '/' || path === '/home' || !sectionId) {
-      // Si estamos en la página de inicio, desplazarse a la parte superior
-      window.scrollTo({ top: 0, behavior: 'auto' });
-      setCurrentSection('home');
-      return;
-    }
-
-    setCurrentSection(sectionId);
-
-    // Intentar encontrar y desplazarse al elemento correspondiente
-    const timer = setTimeout(() => {
-      const element = document.getElementById(sectionId);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    }, 100);
-
-    return () => clearTimeout(timer);
-  }, [location.pathname]);
-
-  // Observer para detectar secciones visibles y actualizar URL y SEO
-  useEffect(() => {
-    const options = {
-      root: null,
-      rootMargin: '-100px 0px -70% 0px',
-      threshold: 0.1
-    };
-
-    const handleIntersect = (entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const id = entry.target.id;
-          const path = id === 'home' ? '/' : `/${id}`;
-          
-          if (location.pathname !== path) {
-            window.history.replaceState(null, '', path);
-          }
-          
-          // Actualizar sección actual para SEO
-          setCurrentSection(id);
-        }
-      });
-    };
-
-    const observer = new IntersectionObserver(handleIntersect, options);
-    
-    // Observar cada sección
-    document.querySelectorAll('.section-container').forEach(section => {
-      observer.observe(section);
-    });
-
-    return () => observer.disconnect();
-  }, [location.pathname]);
-
-  useEffect(() => {
-    // Simular tiempo de carga
     const timer = setTimeout(() => {
       setIsLoading(false);
     }, 500);
@@ -151,15 +107,54 @@ function App() {
     return () => clearTimeout(timer);
   }, []);
 
-  const isProfilePage = location.pathname === '/perfil';
-
   if (isLoading) {
     return <LoadingScreen />;
   }
 
+  const HomePage = () => (
+    <>
+      <div 
+        ref={homeRef} 
+        id="home" 
+        className="relative h-screen w-full section-container"
+        style={{ scrollMarginTop: '80px' }}
+      >
+        <ImageCarousel />
+      </div>
+      
+      <Suspense fallback={<Loading />}>
+        <div 
+          ref={productsRef} 
+          id="products" 
+          className="section-container"
+          style={{ scrollMarginTop: '80px' }}
+        >
+          <ProductsSection />
+        </div>
+        
+        <div 
+          ref={foodsRef} 
+          id="foods" 
+          className="section-container"
+          style={{ scrollMarginTop: '80px' }}
+        >
+          <FoodsSection />
+        </div>
+        
+        <div 
+          ref={boutiqueRef} 
+          id="boutique" 
+          className="section-container"
+          style={{ scrollMarginTop: '80px' }}
+        >
+          <BoutiqueSection />
+        </div>
+      </Suspense>
+    </>
+  );
+
   return (
     <div className="min-h-screen bg-white overflow-x-hidden">
-      {/* SEO Dinámico */}
       <SEO 
         title={currentSectionConfig.title}
         description={currentSectionConfig.description}
@@ -167,7 +162,6 @@ function App() {
         section={currentSection}
       />
       
-      {/* Barra de progreso */}
       <motion.div
         className="fixed top-0 left-0 right-0 h-1 bg-indigo-600 z-50 origin-left"
         style={{ scaleX }}
@@ -175,105 +169,55 @@ function App() {
       
       <Navbar scrollToRef={scrollToRef} homeRef={homeRef} currentSection={currentSection} />
       
-      {/* Si es la página de perfil, solo renderiza el perfil */}
-      {isProfilePage ? (
-        <ProfilePage />
-      ) : (
-        <>
-          {/* Sección de inicio */}
-          <div 
-            ref={homeRef} 
-            id="home" 
-            className="relative h-screen w-full section-container"
-            style={{ scrollMarginTop: '80px' }}
-          >
-            <ImageCarousel />
+      <main className="pt-16 sm:pt-20">
+        <Suspense fallback={<Loading />}>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/products" element={<ProductsSection />} />
+            <Route path="/foods" element={<FoodsSection />} />
+            <Route path="/boutique" element={<BoutiqueSection />} />
             
-            <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
-              <motion.div 
-                className="flex flex-col justify-center h-full pt-20"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3 }}
-              >
-                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white max-w-3xl">
-                  {t('hero.title')}
-                </h1>
-                <p className="mt-4 md:mt-6 text-base sm:text-lg md:text-xl text-gray-200 max-w-2xl">
-                  {t('hero.subtitle')}
-                </p>
-                <div className="mt-6 md:mt-10 flex flex-wrap gap-4">
-                  <motion.button 
-                    className="bg-indigo-600 text-white px-6 sm:px-8 py-2 sm:py-3 rounded-lg text-base sm:text-lg font-semibold hover:bg-indigo-700 transition-colors flex items-center"
-                    whileHover={{ scale: 1.03 }}
-                    whileTap={{ scale: 0.97 }}
-                    onClick={() => {
-                      const element = document.getElementById('products');
-                      if (element) {
-                        element.scrollIntoView({ behavior: 'smooth' });
-                      }
-                    }}
-                  >
-                    {t('hero.explore')}
-                    <svg xmlns="http://www.w3.org/2000/svg" className="ml-2 h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <line x1="5" y1="12" x2="19" y2="12"></line>
-                      <polyline points="12 5 19 12 12 19"></polyline>
-                    </svg>
-                  </motion.button>
-                  <motion.button 
-                    className="bg-white/10 backdrop-blur-sm text-white border-2 border-white px-6 sm:px-8 py-2 sm:py-3 rounded-lg text-base sm:text-lg font-semibold hover:bg-white/20 transition-colors"
-                    whileHover={{ scale: 1.03 }}
-                    whileTap={{ scale: 0.97 }}
-                  >
-                    {t('hero.learnMore')}
-                  </motion.button>
-                </div>
-              </motion.div>
-            </div>
-          </div>
-          
-          {/* Secciones con Suspense para carga lenta */}
-          <Suspense fallback={<Loading />}>
-            {/* Productos */}
-            <div 
-              ref={productsRef} 
-              id="products" 
-              className="section-container"
-              style={{ scrollMarginTop: '80px' }}
-            >
-              <ProductsSection />
-            </div>
+            {/* Rutas protegidas */}
+            <Route 
+              path="/perfil" 
+              element={
+                <ProtectedRoute>
+                  <ProfilePage />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/pedidos" 
+              element={
+                <ProtectedRoute>
+                  <OrdersPage />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/carrito" 
+              element={
+                <ProtectedRoute>
+                  <CartPage />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/favoritos" 
+              element={
+                <ProtectedRoute>
+                  <FavoritesPage />
+                </ProtectedRoute>
+              } 
+            />
             
-            {/* Comidas */}
-            <div 
-              ref={foodsRef} 
-              id="foods" 
-              className="section-container"
-              style={{ scrollMarginTop: '80px' }}
-            >
-              <FoodsSection />
-            </div>
-            
-            {/* Boutique */}
-            <div 
-              ref={boutiqueRef} 
-              id="boutique" 
-              className="section-container"
-              style={{ scrollMarginTop: '80px' }}
-            >
-              <BoutiqueSection />
-            </div>
-          </Suspense>
-        </>
-      )}
+            {/* Ruta para manejar páginas no encontradas */}
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </Suspense>
+      </main>
       
       <Footer />
-      
-      {/* Rutas para otras páginas independientes */}
-      <Routes>
-        <Route path="/pedidos" element={<OrdersPage />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
     </div>
   );
 }
