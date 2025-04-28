@@ -462,7 +462,7 @@ const Navbar = ({ scrollToRef, homeRef, currentSection = 'home' }) => {
                 />
                 <div className="pl-1.5 sm:pl-2.5 flex flex-col items-center">
                   <span className="text-sm sm:text-base md:text-lg lg:text-xl font-bold truncate text-gray-900">
-                    Á un clic
+                    Á un clic la
                   </span>
                 </div>
               </button>
