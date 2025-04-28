@@ -345,12 +345,6 @@ const Navbar = ({ scrollToRef, homeRef, currentSection = 'home' }) => {
     setIsMobileMenuOpen(false);
   };
 
-  const handleCartClick = () => {
-    navigate('/carrito');
-    setIsUserMenuOpen(false);
-    setIsMobileMenuOpen(false);
-  };
-
   const handleFavoritesClick = () => {
     navigate('/favoritos');
     setIsUserMenuOpen(false);
@@ -410,13 +404,6 @@ const Navbar = ({ scrollToRef, homeRef, currentSection = 'home' }) => {
             >
               <ShoppingCart className="h-4 w-4 mr-2" />
               {t('auth.userMenu.orders')}
-            </button>
-            <button
-              onClick={handleCartClick}
-              className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-            >
-              <ShoppingCart className="h-4 w-4 mr-2" />
-              Carrito
             </button>
             <button
               onClick={handleFavoritesClick}
@@ -694,7 +681,7 @@ const Navbar = ({ scrollToRef, homeRef, currentSection = 'home' }) => {
                 <motion.div variants={itemVariants} className="mt-4">
                   <button
                     onClick={() => {
-                      setIsLoginOpen(true);
+                      setIsAuthModalOpen(true);
                       setIsMobileMenuOpen(false);
                     }}
                     className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"

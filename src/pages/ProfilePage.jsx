@@ -31,16 +31,17 @@ const ProfilePage = () => {
         try {
           const { data, error } = await getProfile(user.id);
           if (error) throw error;
+          
           setProfile(data);
           setFormData({
             nombre: data.nombre || '',
             email: data.email || '',
-            telefono: data.telefono || '',
-            direccion: data.direccion || '',
-            ciudad: data.ciudad || '',
-            estado: data.estado || '',
-            codigo_postal: data.codigo_postal || '',
-            pais: data.pais || ''
+            telefono: data.direccion_envio?.telefono || '',
+            direccion: data.direccion_envio?.direccion || '',
+            ciudad: data.direccion_envio?.ciudad || '',
+            estado: data.direccion_envio?.estado || '',
+            codigo_postal: data.direccion_envio?.codigo_postal || '',
+            pais: data.direccion_envio?.pais || ''
           });
         } catch (error) {
           setError(error.message);

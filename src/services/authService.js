@@ -192,20 +192,83 @@ export const updatePassword = async (newPassword) => {
 
 export const updateProfile = async (userId, updates) => {
   try {
-    // Primero obtenemos el email del usuario
+    // Primero obtenemos el usuario autenticado
     const { data: userData, error: userError } = await supabase.auth.getUser();
     if (userError) throw userError;
 
-    const { data, error } = await supabase
+    // Obtenemos el ID de la tabla usuarios
+    const { data: userProfile, error: profileError } = await supabase
       .from('usuarios')
-      .update(updates)
+      .select('id')
       .eq('email', userData.user.email)
+      .single();
+
+    if (profileError) throw profileError;
+
+    // Actualizamos el nombre en la tabla usuarios
+    const { data: userUpdate, error: userUpdateError } = await supabase
+      .from('usuarios')
+      .update({ nombre: updates.nombre })
+      .eq('id', userProfile.id)
       .select()
-      .single()
-      .throwOnError();
-    
-    if (error) throw error;
-    return { data, error: null };
+      .single();
+
+    if (userUpdateError) throw userUpdateError;
+
+    // Verificamos si ya existe una dirección para este usuario
+    const { data: existingAddress, error: addressCheckError } = await supabase
+      .from('direcciones_envio')
+      .select('*')
+      .eq('usuario_id', userProfile.id)
+      .single();
+
+    // Solo manejamos el error si no es de "no encontrado"
+    if (addressCheckError && addressCheckError.code !== 'PGRST116') {
+      throw addressCheckError;
+    }
+
+    // Preparamos los datos de dirección
+    const addressData = {
+      usuario_id: userProfile.id,
+      direccion: updates.direccion,
+      ciudad: updates.ciudad,
+      estado: updates.estado,
+      codigo_postal: updates.codigo_postal,
+      pais: updates.pais,
+      telefono: updates.telefono
+    };
+
+    let addressUpdate;
+    if (existingAddress) {
+      // Actualizamos la dirección existente
+      const { data, error } = await supabase
+        .from('direcciones_envio')
+        .update(addressData)
+        .eq('usuario_id', userProfile.id)
+        .select()
+        .single();
+      
+      if (error) throw error;
+      addressUpdate = data;
+    } else {
+      // Creamos una nueva dirección
+      const { data, error } = await supabase
+        .from('direcciones_envio')
+        .insert([addressData])
+        .select()
+        .single();
+      
+      if (error) throw error;
+      addressUpdate = data;
+    }
+
+    return { 
+      data: {
+        ...userUpdate,
+        direccion_envio: addressUpdate
+      }, 
+      error: null 
+    };
   } catch (error) {
     console.error('Error en updateProfile:', error);
     return { 
@@ -227,37 +290,32 @@ export const getProfile = async (userId) => {
 
     const avatar_url = userData.user.user_metadata?.avatar_url || null;
 
-    // Primero verificamos si existe el perfil
-    const { data: existingProfiles, error: checkError } = await supabase
+    // Obtenemos el perfil del usuario
+    const { data: userProfile, error: profileError } = await supabase
       .from('usuarios')
       .select('*')
-      .eq('email', userData.user.email);
+      .eq('email', userData.user.email)
+      .single();
 
-    if (checkError) throw checkError;
+    if (profileError) throw profileError;
 
-    // Si no existe el perfil, lo creamos
-    if (!existingProfiles || existingProfiles.length === 0) {
-      const { data: newProfile, error: createError } = await supabase
-        .from('usuarios')
-        .insert([
-          {
-            email: userData.user.email,
-            nombre: userData.user.email.split('@')[0],
-            fecha_creacion: new Date().toISOString(),
-            autenticacion_social: !!avatar_url,
-            avatar_url: avatar_url,
-            contraseña: '' // Para evitar error de not null
-          }
-        ])
-        .select()
-        .single();
+    // Obtenemos la dirección de envío usando el ID de la tabla usuarios
+    const { data: shippingAddress, error: addressError } = await supabase
+      .from('direcciones_envio')
+      .select('*')
+      .eq('usuario_id', userProfile.id)
+      .single();
 
-      if (createError) throw createError;
-      return { data: newProfile, error: null };
-    }
-
-    // Si existe, devolvemos el primer perfil encontrado
-    return { data: existingProfiles[0], error: null };
+    // No lanzamos error si no hay dirección, es normal que no exista al principio
+    
+    return { 
+      data: {
+        ...userProfile,
+        avatar_url: avatar_url,
+        direccion_envio: shippingAddress || null
+      }, 
+      error: null 
+    };
   } catch (error) {
     console.error('Error en getProfile:', error);
     return { 

@@ -32,7 +32,7 @@ const HomeSection = () => {
   }, [isMobile, isTablet]);
 
   return (
-    <div className="relative w-full h-screen min-h-[500px] sm:min-h-[600px] md:min-h-[700px] lg:min-h-[800px] max-h-[900px] overflow-hidden">
+    <div className="relative w-full h-screen min-h-[450px] sm:min-h-[500px] md:min-h-[700px] lg:min-h-[800px] max-h-[900px] overflow-hidden">
       <div className="relative h-full">
         {/* Fondo de carga con animación suave */}
         <div 
