@@ -143,12 +143,41 @@ export const signUp = async (email, password) => {
 
 export const signOut = async () => {
   try {
+    // Primero verificamos si hay una sesión activa
+    const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+    
+    if (sessionError) {
+      console.warn('Error al verificar la sesión:', sessionError);
+      // Si hay error al verificar la sesión, limpiamos todo de todas formas
+      await supabase.auth.signOut();
+      return { error: null };
+    }
+
+    // Si no hay sesión, consideramos que ya está cerrada
+    if (!session) {
+      console.log('No hay sesión activa para cerrar');
+      return { error: null };
+    }
+
+    // Si hay sesión, intentamos cerrarla normalmente
     const { error } = await supabase.auth.signOut();
-    if (error) throw handleAuthError(error);
+    
+    if (error) {
+      console.error('Error al cerrar sesión:', error);
+      // Si falla el cierre de sesión normal, forzamos el cierre
+      await supabase.auth.signOut({ scope: 'local' });
+    }
+    
     return { error: null };
   } catch (error) {
     console.error('Error en signOut:', error);
-    return { error: handleAuthError(error) };
+    // En caso de cualquier error, intentamos limpiar la sesión localmente
+    try {
+      await supabase.auth.signOut({ scope: 'local' });
+    } catch (e) {
+      console.warn('Error al limpiar sesión local:', e);
+    }
+    return { error: null };
   }
 };
 

@@ -13,13 +13,17 @@ export function AuthProvider({ children }) {
     const getSession = async () => {
       try {
         const { data: { session }, error } = await supabase.auth.getSession();
-        if (error) throw error;
-        
-        if (session) {
+        if (error) {
+          console.error('Error al obtener la sesión:', error);
+          setUser(null);
+        } else if (session) {
           setUser(session.user);
+        } else {
+          setUser(null);
         }
       } catch (error) {
         console.error('Error al obtener la sesión:', error);
+        setUser(null);
       } finally {
         setLoading(false);
       }
@@ -28,7 +32,7 @@ export function AuthProvider({ children }) {
     getSession();
 
     // Suscribirse a cambios en la autenticación
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
       if (session) {
         setUser(session.user);
       } else {
@@ -38,9 +42,27 @@ export function AuthProvider({ children }) {
     });
 
     return () => {
-      subscription.unsubscribe();
+      if (subscription) subscription.unsubscribe();
     };
   }, []);
+
+  const handleSignOut = async () => {
+    try {
+      setLoading(true);
+      const { error } = await signOut();
+      if (error) {
+        console.error('Error en handleSignOut:', error);
+      }
+      // Independientemente del resultado, limpiamos el estado
+      setUser(null);
+    } catch (error) {
+      console.error('Error en handleSignOut:', error);
+      // En caso de error, también limpiamos el estado
+      setUser(null);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const value = {
     user,
@@ -48,7 +70,7 @@ export function AuthProvider({ children }) {
     signInWithEmail,
     signInWithGoogle,
     signUp,
-    signOut,
+    signOut: handleSignOut,
   };
 
   return (
