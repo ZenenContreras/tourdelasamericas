@@ -444,26 +444,47 @@ const Navbar = ({ scrollToRef, homeRef, currentSection = 'home' }) => {
           <div className="flex justify-between items-center h-14 sm:h-16 md:h-16">
             {/* Logo */}
             <motion.div 
-              className="flex items-center"
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
+              className="flex items-center relative"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ 
+                type: "spring", 
+                stiffness: 400, 
+                damping: 15 
+              }}
             >
               <button 
                 onClick={() => handleNavClick('home')} 
-                className="flex flex-row items-center"
+                className="flex flex-row items-center group"
                 aria-label="Ir al inicio"
               >
-                <img 
-                  src="/america.png" 
-                  alt="Logo A un clic" 
-                  className="h-9 w-9 sm:h-11 sm:w-11 md:h-13 md:w-13 object-contain" 
-                  width="52"
-                  height="52"
-                />
-                <div className="pl-1.5 sm:pl-2.5 flex flex-col items-center">
-                  <span className="text-sm sm:text-base md:text-lg lg:text-xl font-bold truncate text-gray-900">
-                    Á un clic la
+                <div className="relative">
+                  <motion.img 
+                    src="/LogoAunClic.svg" 
+                    alt="Logo A un clic" 
+                    className="h-22 w-22 sm:h-22 sm:w-22 md:h-22 md:w-22 filter drop-shadow-md" 
+                    width="88"
+                    height="88"
+                    whileHover={{ 
+                      rotate: [0, -5, 5, -5, 0],
+                      transition: { duration: 0.5 }
+                    }}
+                  />
+                </div>
+                <div className="-ml-5 flex flex-col">
+                  <span className="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600 text-base sm:text-lg md:text-xl lg:text-2xl tracking-tight leading-none">
+                    Á un clic
                   </span>
+                  <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400 text-sm sm:text-base md:text-lg lg:text-xl tracking-tight mt-0.5">
+                    la América
+                  </span>
+                  <motion.div 
+                    className="h-0.5 w-0 bg-gradient-to-r from-indigo-500 to-purple-500 mt-0.5 group-hover:w-full"
+                    whileHover={{ width: "100%" }}
+                    transition={{ duration: 0.3 }}
+                  />
                 </div>
               </button>
             </motion.div>
