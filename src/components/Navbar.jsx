@@ -445,7 +445,7 @@ const Navbar = ({ scrollToRef, homeRef, currentSection = 'home' }) => {
             {/* Logo */}
             <motion.div 
               className="flex items-center relative"
-              whileHover={{ scale: 1.05 }}
+              whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.95 }}
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -464,7 +464,7 @@ const Navbar = ({ scrollToRef, homeRef, currentSection = 'home' }) => {
                   <motion.img 
                     src="/LogoAunClic.svg" 
                     alt="Logo A un clic" 
-                    className="h-22 w-22 sm:h-22 sm:w-22 md:h-22 md:w-22 filter drop-shadow-md" 
+                    className="h-16 w-16 sm:h-22 sm:w-22 md:h-22 md:w-22 filter drop-shadow-md" 
                     width="88"
                     height="88"
                     whileHover={{ 
@@ -473,7 +473,7 @@ const Navbar = ({ scrollToRef, homeRef, currentSection = 'home' }) => {
                     }}
                   />
                 </div>
-                <div className="-ml-5 flex flex-col">
+                <div className="-ml-4 flex flex-col">
                   <span className="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600 text-base sm:text-lg md:text-xl lg:text-2xl tracking-tight leading-none">
                     Á un clic
                   </span>
