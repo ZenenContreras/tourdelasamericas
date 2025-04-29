@@ -171,7 +171,7 @@ function App() {
       
       <Navbar scrollToRef={scrollToRef} homeRef={homeRef} currentSection={currentSection} />
       
-      <main className="pt-16 sm:pt-20">
+      <main className="pt-14 sm:pt-16">
         <Suspense fallback={<Loading />}>
           <Routes>
             <Route path="/" element={<HomePage />} />
