@@ -8,6 +8,8 @@ import Footer from './components/Footer';
 import ImageCarousel from './components/ImageCarousel';
 import SEO from './components/SEO';
 import LoadingScreen from './components/LoadingScreen';
+import { Analytics } from "@vercel/analytics/react"
+
 
 // Carga perezosa de componentes
 const ProductsSection = lazy(() => import('./components/ProductsSection'));
@@ -218,6 +220,7 @@ function App() {
       </main>
       
       <Footer />
+      <Analytics />
     </div>
   );
 }
