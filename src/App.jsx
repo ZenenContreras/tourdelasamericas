@@ -9,7 +9,7 @@ import ImageCarousel from './components/ImageCarousel';
 import SEO from './components/SEO';
 import LoadingScreen from './components/LoadingScreen';
 import { Analytics } from "@vercel/analytics/react"
-
+import { SpeedInsights } from "@vercel/speed-insights/react"
 
 // Carga perezosa de componentes
 const ProductsSection = lazy(() => import('./components/ProductsSection'));
@@ -221,6 +221,7 @@ function App() {
       
       <Footer />
       <Analytics />
+      <SpeedInsights/>
     </div>
   );
 }
