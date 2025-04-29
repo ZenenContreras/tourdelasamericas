@@ -475,11 +475,9 @@ const Navbar = ({ scrollToRef, homeRef, currentSection = 'home' }) => {
                 </div>
                 <div className="-ml-4 flex flex-col mt-1">
                   <span className="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600 text-base sm:text-lg md:text-xl lg:text-2xl tracking-tight leading-none">
-                    Á un clic
+                    Á un clic la
                   </span>
-                  <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400 text-sm sm:text-base md:text-lg lg:text-xl tracking-tight -mt-1">
-                    la América
-                  </span>
+
                   <motion.div 
                     className="h-0.5 w-0 bg-gradient-to-r from-indigo-500 to-purple-500 mt-0.5 group-hover:w-full"
                     whileHover={{ width: "100%" }}
