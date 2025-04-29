@@ -1,106 +1,114 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Utensils, Filter, X, AlertTriangle, ShoppingCart, Star } from 'lucide-react';
+import { Utensils } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
-import { useCart } from '../contexts/CartContext';
+import { XMarkIcon, FunnelIcon } from '@heroicons/react/24/outline';
+import ProductCard from '../components/ProductCard';
+import ProductCardSkeleton from '../components/ProductCardSkeleton';
 import * as productService from '../services/productService';
 
 const FoodPage = () => {
   const { t } = useLanguage();
-  const { addToCart, isInCart, getItemQuantity } = useCart();
   const [food, setFood] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState({
+    search: '',
     minPrice: '',
     maxPrice: '',
-    search: '',
-    category: '',
-    sortBy: 'nombre-asc'
+    sortBy: 'nameAsc'
   });
-  const [showFilters, setShowFilters] = useState(false);
 
   useEffect(() => {
     loadFood();
-  }, [filters]);
+  }, []);
 
   const loadFood = async () => {
     try {
       setLoading(true);
-      const { data, error } = await productService.loadProducts(filters, 2);
-      
-      if (error) throw error;
-      
-      setFood(data || []);
-    } catch (error) {
-      console.error('Error cargando comidas:', error);
+      const result = await productService.loadProducts(filters, 2); // 2 para comidas
+      if (result.error) throw new Error(result.error);
+      setFood(result.data || []);
+    } catch (err) {
       setError(t('food.errorLoading'));
+      console.error('Error loading food:', err);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleFilterChange = (e) => {
-    const { name, value } = e.target;
-    setFilters(prev => ({
-      ...prev,
-      [name]: value
-    }));
+  const handleFilterChange = (name, value) => {
+    setFilters(prev => ({ ...prev, [name]: value }));
   };
 
   const resetFilters = () => {
     setFilters({
+      search: '',
       minPrice: '',
       maxPrice: '',
-      search: '',
-      category: '',
-      sortBy: 'nombre-asc'
+      sortBy: 'nameAsc'
     });
   };
 
-  const handleAddToCart = async (food) => {
-    try {
-      await addToCart(food);
-    } catch (error) {
-      console.error('Error adding to cart:', error);
+  const filteredFood = food.filter(item => {
+    const matchesSearch = item.nombre.toLowerCase().includes(filters.search.toLowerCase()) ||
+                        item.descripcion.toLowerCase().includes(filters.search.toLowerCase());
+    const matchesMinPrice = !filters.minPrice || item.precio >= Number(filters.minPrice);
+    const matchesMaxPrice = !filters.maxPrice || item.precio <= Number(filters.maxPrice);
+    return matchesSearch && matchesMinPrice && matchesMaxPrice;
+  }).sort((a, b) => {
+    switch (filters.sortBy) {
+      case 'nameAsc':
+        return a.nombre.localeCompare(b.nombre);
+      case 'nameDesc':
+        return b.nombre.localeCompare(a.nombre);
+      case 'priceAsc':
+        return a.precio - b.precio;
+      case 'priceDesc':
+        return b.precio - a.precio;
+      default:
+        return 0;
     }
-  };
+  });
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center text-red-600">
-          <p>{error}</p>
+      <div className="min-h-screen bg-gradient-to-br from-amber-50 via-white to-orange-50 flex items-center justify-center p-4">
+        <div className="text-center">
+          <div className="text-red-500 text-xl font-medium mb-2">{error}</div>
+          <button
+            onClick={loadFood}
+            className="text-amber-600 hover:text-amber-700 font-medium"
+          >
+            {t('common.tryAgain')}
+          </button>
         </div>
       </div>
     );
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-amber-50 py-8 sm:py-12">
+    <main className="min-h-screen bg-gradient-to-br from-amber-50 via-white to-orange-50 py-8 sm:py-12">
       <div className="max-w-[95rem] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 flex items-center">
-            <Utensils className="h-8 w-8 text-amber-600 mr-3" />
-            {t('food.title')}
-          </h1>
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 flex items-center mb-2">
+              <Utensils className="h-8 w-8 text-amber-600 mr-3" />
+              {t('food.title')}
+            </h1>
+            <p className="text-sm sm:text-base text-gray-600 max-w-2xl">
+              {t('food.description')}
+            </p>
+          </div>
           
-          <motion.button
+          <button
             onClick={() => setShowFilters(!showFilters)}
-            className={`flex items-center space-x-2 px-4 py-2.5 rounded-lg shadow-sm transition-all duration-300 ${
-              showFilters 
-                ? 'bg-amber-600 text-white hover:bg-amber-700' 
-                : 'bg-white/80 backdrop-blur-sm text-amber-600 hover:bg-white border border-amber-100 hover:border-amber-300'
-            }`}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+            className="flex items-center gap-2 px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors"
           >
-            <Filter className={`h-5 w-5 ${showFilters ? 'text-white' : 'text-amber-600'}`} />
-            <span className="font-medium">{t('common.filters.title')}</span>
-            {showFilters && (
-              <X className="h-5 w-5 ml-2 text-white" />
-            )}
-          </motion.button>
+            {showFilters ? <XMarkIcon className="h-5 w-5" /> : <FunnelIcon className="h-5 w-5" />}
+            <span>{t('common.filters.title')}</span>
+          </button>
         </div>
 
         <AnimatePresence>
@@ -109,203 +117,103 @@ const FoodPage = () => {
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              className="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-6 mb-8 overflow-hidden border border-amber-100"
+              transition={{ duration: 0.3 }}
+              className="bg-white rounded-lg shadow-lg p-4 mb-8"
             >
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-lg font-medium text-gray-900">{t('food.filterOptions')}</h2>
-                <button
-                  onClick={() => setShowFilters(false)}
-                  className="text-gray-400 hover:text-gray-500"
-                >
-                  <X className="h-5 w-5" />
-                </button>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    {t('food.search')}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-gray-700">
+                    {t('common.filters.search')}
                   </label>
                   <input
                     type="text"
-                    name="search"
                     value={filters.search}
-                    onChange={handleFilterChange}
-                    className="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                    placeholder={t('food.searchPlaceholder')}
+                    onChange={(e) => handleFilterChange('search', e.target.value)}
+                    placeholder={t('common.filters.searchPlaceholder')}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-amber-500 focus:border-amber-500"
                   />
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    {t('food.minPrice')}
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-gray-700">
+                    {t('common.filters.minPrice')}
                   </label>
                   <input
                     type="number"
-                    name="minPrice"
                     value={filters.minPrice}
-                    onChange={handleFilterChange}
-                    className="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                    onChange={(e) => handleFilterChange('minPrice', e.target.value)}
                     min="0"
-                    step="0.01"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-amber-500 focus:border-amber-500"
                   />
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    {t('food.maxPrice')}
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-gray-700">
+                    {t('common.filters.maxPrice')}
                   </label>
                   <input
                     type="number"
-                    name="maxPrice"
                     value={filters.maxPrice}
-                    onChange={handleFilterChange}
-                    className="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                    onChange={(e) => handleFilterChange('maxPrice', e.target.value)}
                     min="0"
-                    step="0.01"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-amber-500 focus:border-amber-500"
                   />
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    {t('food.sortBy')}
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-gray-700">
+                    {t('common.filters.sortBy')}
                   </label>
                   <select
-                    name="sortBy"
                     value={filters.sortBy}
-                    onChange={handleFilterChange}
-                    className="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                    onChange={(e) => handleFilterChange('sortBy', e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-amber-500 focus:border-amber-500"
                   >
-                    <option value="nombre-asc">{t('food.sortOptions.nameAsc')}</option>
-                    <option value="nombre-desc">{t('food.sortOptions.nameDesc')}</option>
-                    <option value="precio-asc">{t('food.sortOptions.priceAsc')}</option>
-                    <option value="precio-desc">{t('food.sortOptions.priceDesc')}</option>
+                    <option value="nameAsc">{t('common.filters.sortOptions.nameAsc')}</option>
+                    <option value="nameDesc">{t('common.filters.sortOptions.nameDesc')}</option>
+                    <option value="priceAsc">{t('common.filters.sortOptions.priceAsc')}</option>
+                    <option value="priceDesc">{t('common.filters.sortOptions.priceDesc')}</option>
                   </select>
                 </div>
               </div>
 
-              <div className="mt-4 flex justify-end">
+              <div className="flex justify-end gap-4 mt-4">
                 <button
                   onClick={resetFilters}
-                  className="text-sm text-gray-500 hover:text-gray-700"
+                  className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 transition-colors"
                 >
-                  {t('food.resetFilters')}
+                  {t('common.filters.reset')}
+                </button>
+                <button
+                  onClick={() => setShowFilters(false)}
+                  className="px-4 py-2 bg-amber-600 text-white rounded-md hover:bg-amber-700 transition-colors"
+                >
+                  {t('common.filters.apply')}
                 </button>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
 
-        {loading ? (
-          <div className="flex justify-center items-center min-h-[400px]">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-amber-600"></div>
-          </div>
-        ) : food.length === 0 ? (
-          <div className="text-center py-12">
-            <Utensils className="mx-auto h-12 w-12 text-amber-400" />
-            <h3 className="mt-2 text-sm font-medium text-gray-900">{t('food.noFood')}</h3>
-            <p className="mt-1 text-sm text-gray-500">{t('food.noFoodMessage')}</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3 sm:gap-4">
-            {food.map((item) => (
-              <motion.div
-                key={item.id}
-                layout
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 20 }}
-                className="bg-white/80 backdrop-blur-sm rounded-xl shadow-sm overflow-hidden group hover:shadow-md transition-all duration-300 border border-orange-50 hover:border-orange-200"
-              >
-                <div className="relative">
-                  {item.imagen_url ? (
-                    <div className="aspect-w-1 aspect-h-1 w-full overflow-hidden bg-gradient-to-br from-orange-50 to-amber-50">
-                      <img
-                        src={item.imagen_url}
-                        alt={item.nombre}
-                        className="h-full w-full object-cover object-center transform group-hover:scale-105 transition-transform duration-500"
-                        loading="lazy"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    </div>
-                  ) : (
-                    <div className="aspect-w-1 aspect-h-1 w-full bg-gradient-to-br from-orange-100 to-amber-50 flex items-center justify-center">
-                      <Utensils className="h-8 w-8 text-orange-300" />
-                    </div>
-                  )}
-                  
-                  {item.destacado && (
-                    <div className="absolute top-2 right-2 bg-yellow-400 text-white px-1.5 py-0.5 rounded-full text-[10px] font-medium flex items-center">
-                      <Star className="h-2.5 w-2.5 mr-0.5" />
-                      Destacado
-                    </div>
-                  )}
-                </div>
-                
-                <div className="p-3">
-                  <div className="flex flex-col h-full">
-                    <div className="mb-2 flex flex-wrap gap-1">
-                      {item.categoria && (
-                        <span className="text-[10px] font-medium text-orange-600 bg-orange-50 px-1.5 py-0.5 rounded-full">
-                          {item.categoria}
-                        </span>
-                      )}
-                    </div>
-                    
-                    <h3 className="text-sm font-semibold text-gray-900 mb-1 line-clamp-2 flex-grow">{item.nombre}</h3>
-                    <p className="text-xs text-gray-600 mb-2 line-clamp-2">{item.descripcion}</p>
-                    
-                    {item.stock < 30 && (
-                      <div className="flex items-center space-x-1 text-amber-600 bg-amber-50 px-2 py-1 rounded-lg mb-2 text-[10px]">
-                        <AlertTriangle className="h-3 w-3 flex-shrink-0" />
-                        <span className="font-medium">Stock bajo</span>
-                      </div>
-                    )}
-                    
-                    <div className="flex items-center justify-between mt-auto pt-2 border-t border-gray-100">
-                      <div className="flex flex-col">
-                        <div className="flex items-baseline">
-                          {item.precio_anterior && (
-                            <span className="text-xs text-gray-500 line-through mr-1">
-                              ${item.precio_anterior.toFixed(2)}
-                            </span>
-                          )}
-                          <span className="text-sm font-bold text-gray-900">
-                            ${item.precio.toFixed(2)}
-                          </span>
-                        </div>
-                      </div>
-                      {isInCart(item.id) ? (
-                        <div className="flex items-center space-x-1">
-                          <span className="text-xs text-gray-600 font-medium">
-                            {getItemQuantity(item.id)}x
-                          </span>
-                          <button
-                            onClick={() => handleAddToCart(item)}
-                            className="flex items-center space-x-1 bg-green-600 text-white px-2 py-1 rounded-lg hover:bg-green-700 transition-colors text-xs font-medium"
-                            disabled={item.stock === 0}
-                          >
-                            <ShoppingCart className="h-3 w-3" />
-                            <span>+</span>
-                          </button>
-                        </div>
-                      ) : (
-                        <button
-                          onClick={() => handleAddToCart(item)}
-                          className="flex items-center space-x-1 bg-orange-600 text-white px-2 py-1 rounded-lg hover:bg-orange-700 transition-all duration-300 text-xs font-medium disabled:bg-gray-400 disabled:cursor-not-allowed"
-                          disabled={item.stock === 0}
-                        >
-                          <ShoppingCart className="h-3 w-3" />
-                          <span>{item.stock === 0 ? 'Agotado' : 'Agregar'}</span>
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        )}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
+          {loading ? (
+            Array.from({ length: 12 }).map((_, index) => (
+              <ProductCardSkeleton key={index} type="food" />
+            ))
+          ) : filteredFood.length === 0 ? (
+            <div className="col-span-full text-center py-8">
+              <Utensils className="mx-auto h-12 w-12 text-amber-300" />
+              <h3 className="mt-2 text-lg font-medium text-gray-900">{t('food.noFood')}</h3>
+              <p className="mt-1 text-gray-500">{t('food.noFoodMessage')}</p>
+            </div>
+          ) : (
+            <AnimatePresence>
+              {filteredFood.map(item => (
+                <ProductCard key={item.id} product={item} type="food" />
+              ))}
+            </AnimatePresence>
+          )}
+        </div>
       </div>
     </main>
   );
