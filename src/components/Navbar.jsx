@@ -93,42 +93,22 @@ const Navbar = ({ scrollToRef, homeRef, currentSection = 'home' }) => {
   }, [isMobileMenuOpen]);
 
   const handleNavClick = (id) => {
+    switch (id) {
+      case 'products':
+        navigate('/productos');
+        break;
+      case 'foods':
+        navigate('/comidas');
+        break;
+      case 'boutique':
+        navigate('/boutique');
+        break;
+      default:
+        if (scrollToRef && id === 'home') {
+          scrollToRef(homeRef);
+        }
+    }
     setIsMobileMenuOpen(false);
-    if (id === 'home') {
-      if (location.pathname !== '/') {
-        navigate('/', { replace: true });
-        setTimeout(() => {
-          if (homeRef && homeRef.current) {
-            homeRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          } else {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }
-        }, 300);
-      } else {
-        if (homeRef && homeRef.current) {
-          homeRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        } else {
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-      }
-      return;
-    }
-    if (location.pathname !== '/') {
-      navigate('/', { replace: true });
-      setTimeout(() => {
-        const targetElement = document.getElementById(id);
-        if (targetElement) {
-          targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      }, 350);
-    } else {
-      const targetElement = document.getElementById(id);
-      if (targetElement) {
-        setTimeout(() => {
-          targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 10);
-      }
-    }
   };
 
   const navLinks = [

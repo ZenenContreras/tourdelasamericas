@@ -3,6 +3,7 @@ import { Routes, Route, useLocation, Navigate, useNavigate } from 'react-router-
 import { motion, useScroll, useSpring } from 'framer-motion';
 import { useLanguage } from './contexts/LanguageContext';
 import { useAuth } from './contexts/AuthContext';
+import { CartProvider } from './contexts/CartContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ImageCarousel from './components/ImageCarousel';
@@ -15,6 +16,9 @@ import { SpeedInsights } from "@vercel/speed-insights/react"
 const ProductsSection = lazy(() => import('./components/ProductsSection'));
 const FoodsSection = lazy(() => import('./components/FoodsSection'));
 const BoutiqueSection = lazy(() => import('./components/BoutiqueSection'));
+const ProductsPage = lazy(() => import('./pages/ProductsPage'));
+const FoodPage = lazy(() => import('./pages/FoodPage'));
+const BoutiquePage = lazy(() => import('./pages/BoutiquePage'));
 const ProfilePage = lazy(() => import('./pages/ProfilePage'));
 const OrdersPage = lazy(() => import('./pages/OrdersPage'));
 const CartPage = lazy(() => import('./pages/CartPage'));
@@ -156,73 +160,75 @@ function App() {
   );
 
   return (
-    <div className="min-h-screen bg-white overflow-x-hidden">
-      <SEO 
-        title={currentSectionConfig.title}
-        description={currentSectionConfig.description}
-        ogImage={currentSectionConfig.ogImage}
-        section={currentSection}
-      />
-      
-      <motion.div
-        className="fixed top-0 left-0 right-0 h-1 bg-indigo-600 z-50 origin-left"
-        style={{ scaleX }}
-      />
-      
-      <Navbar scrollToRef={scrollToRef} homeRef={homeRef} currentSection={currentSection} />
-      
-      <main className="pt-14 sm:pt-16">
-        <Suspense fallback={<Loading />}>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/products" element={<ProductsSection />} />
-            <Route path="/foods" element={<FoodsSection />} />
-            <Route path="/boutique" element={<BoutiqueSection />} />
-            
-            {/* Rutas protegidas */}
-            <Route 
-              path="/perfil" 
-              element={
-                <ProtectedRoute>
-                  <ProfilePage />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/pedidos" 
-              element={
-                <ProtectedRoute>
-                  <OrdersPage />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/carrito" 
-              element={
-                <ProtectedRoute>
-                  <CartPage />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/favoritos" 
-              element={
-                <ProtectedRoute>
-                  <FavoritesPage />
-                </ProtectedRoute>
-              } 
-            />
-            
-            {/* Ruta para manejar páginas no encontradas */}
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </Suspense>
-      </main>
-      
-      <Footer />
-      <Analytics />
-      <SpeedInsights/>
-    </div>
+    <CartProvider>
+      <div className="min-h-screen bg-white overflow-x-hidden">
+        <SEO 
+          title={currentSectionConfig.title}
+          description={currentSectionConfig.description}
+          ogImage={currentSectionConfig.ogImage}
+          section={currentSection}
+        />
+        
+        <motion.div
+          className="fixed top-0 left-0 right-0 h-1 bg-indigo-600 z-50 origin-left"
+          style={{ scaleX }}
+        />
+        
+        <Navbar scrollToRef={scrollToRef} homeRef={homeRef} currentSection={currentSection} />
+        
+        <main className="pt-14 sm:pt-16">
+          <Suspense fallback={<Loading />}>
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/productos" element={<ProductsPage />} />
+              <Route path="/comidas" element={<FoodPage />} />
+              <Route path="/boutique" element={<BoutiquePage />} />
+              
+              {/* Rutas protegidas */}
+              <Route 
+                path="/perfil" 
+                element={
+                  <ProtectedRoute>
+                    <ProfilePage />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/pedidos" 
+                element={
+                  <ProtectedRoute>
+                    <OrdersPage />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/carrito" 
+                element={
+                  <ProtectedRoute>
+                    <CartPage />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/favoritos" 
+                element={
+                  <ProtectedRoute>
+                    <FavoritesPage />
+                  </ProtectedRoute>
+                } 
+              />
+              
+              {/* Ruta para manejar páginas no encontradas */}
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </Suspense>
+        </main>
+        
+        <Footer />
+        <Analytics />
+        <SpeedInsights/>
+      </div>
+    </CartProvider>
   );
 }
 
