@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingBag, Filter, X, AlertTriangle, ShoppingCart } from 'lucide-react';
+import { ShoppingBag, Filter, X, AlertTriangle, ShoppingCart, Star, Package } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useCart } from '../contexts/CartContext';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
+import { supabase } from '../config/supabase';
 import * as productService from '../services/productService';
 
 const ProductsPage = () => {
@@ -70,221 +69,251 @@ const ProductsPage = () => {
 
   if (error) {
     return (
-      <>
-        <Navbar />
-        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-          <div className="text-center text-red-600">
-            <p>{error}</p>
-          </div>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center text-red-600">
+          <p>{error}</p>
         </div>
-        <Footer />
-      </>
+      </div>
     );
   }
 
   return (
-    <>
-      <Navbar />
-      <main className="min-h-screen bg-gray-50 py-8 sm:py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 flex items-center">
+    <main className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-blue-50 py-8 sm:py-12">
+      <div className="max-w-[95rem] mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 flex items-center mb-2">
               <ShoppingBag className="h-8 w-8 text-indigo-600 mr-3" />
               {t('products.title')}
             </h1>
-            
-            <button
-              onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center space-x-2 bg-white px-4 py-2 rounded-lg shadow-sm hover:bg-gray-50 transition-colors border border-gray-200"
-            >
-              <Filter className="h-5 w-5 text-gray-500" />
-              <span>{t('products.filters')}</span>
-            </button>
+            <p className="text-sm sm:text-base text-gray-600 max-w-2xl">
+              {t('products.description')}
+            </p>
           </div>
-
-          <AnimatePresence>
+          
+          <motion.button
+            onClick={() => setShowFilters(!showFilters)}
+            className={`flex items-center space-x-2 px-4 py-2.5 rounded-lg shadow-sm transition-all duration-300 ${
+              showFilters 
+                ? 'bg-indigo-600 text-white hover:bg-indigo-700' 
+                : 'bg-white/80 backdrop-blur-sm text-indigo-600 hover:bg-white border border-indigo-100 hover:border-indigo-300'
+            }`}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            <Filter className={`h-5 w-5 ${showFilters ? 'text-white' : 'text-indigo-600'}`} />
+            <span className="font-medium">{t('common.filters.title')}</span>
             {showFilters && (
-              <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: 'auto', opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                className="bg-white rounded-lg shadow-sm p-6 mb-8 overflow-hidden"
-              >
-                <div className="flex justify-between items-center mb-4">
-                  <h2 className="text-lg font-medium text-gray-900">{t('products.filterOptions')}</h2>
-                  <button
-                    onClick={() => setShowFilters(false)}
-                    className="text-gray-400 hover:text-gray-500"
-                  >
-                    <X className="h-5 w-5" />
-                  </button>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      {t('products.search')}
-                    </label>
-                    <input
-                      type="text"
-                      name="search"
-                      value={filters.search}
-                      onChange={handleFilterChange}
-                      className="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                      placeholder={t('products.searchPlaceholder')}
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      {t('products.minPrice')}
-                    </label>
-                    <input
-                      type="number"
-                      name="minPrice"
-                      value={filters.minPrice}
-                      onChange={handleFilterChange}
-                      className="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                      min="0"
-                      step="0.01"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      {t('products.maxPrice')}
-                    </label>
-                    <input
-                      type="number"
-                      name="maxPrice"
-                      value={filters.maxPrice}
-                      onChange={handleFilterChange}
-                      className="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                      min="0"
-                      step="0.01"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      {t('products.sortBy')}
-                    </label>
-                    <select
-                      name="sortBy"
-                      value={filters.sortBy}
-                      onChange={handleFilterChange}
-                      className="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                    >
-                      <option value="nombre-asc">{t('products.sortOptions.nameAsc')}</option>
-                      <option value="nombre-desc">{t('products.sortOptions.nameDesc')}</option>
-                      <option value="precio-asc">{t('products.sortOptions.priceAsc')}</option>
-                      <option value="precio-desc">{t('products.sortOptions.priceDesc')}</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div className="mt-4 flex justify-end">
-                  <button
-                    onClick={resetFilters}
-                    className="text-sm text-gray-500 hover:text-gray-700"
-                  >
-                    {t('products.resetFilters')}
-                  </button>
-                </div>
-              </motion.div>
+              <X className="h-5 w-5 ml-2 text-white" />
             )}
-          </AnimatePresence>
+          </motion.button>
+        </div>
 
-          {loading ? (
-            <div className="flex justify-center items-center min-h-[400px]">
-              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
-            </div>
-          ) : products.length === 0 ? (
-            <div className="text-center py-12">
-              <ShoppingBag className="mx-auto h-12 w-12 text-gray-400" />
-              <h3 className="mt-2 text-sm font-medium text-gray-900">{t('products.noProducts')}</h3>
-              <p className="mt-1 text-sm text-gray-500">{t('products.noProductsMessage')}</p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {products.map((product) => (
-                <motion.div
-                  key={product.id}
-                  layout
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="bg-white rounded-lg shadow-sm overflow-hidden group"
+        <AnimatePresence>
+          {showFilters && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              className="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-6 mb-8 overflow-hidden border border-indigo-100"
+            >
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-lg font-medium text-gray-900">{t('products.filterOptions')}</h2>
+                <button
+                  onClick={() => setShowFilters(false)}
+                  className="text-gray-400 hover:text-gray-500"
                 >
-                  {product.imagen_url && (
-                    <div className="aspect-w-1 aspect-h-1 w-full overflow-hidden bg-gray-200">
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    {t('products.search')}
+                  </label>
+                  <input
+                    type="text"
+                    name="search"
+                    value={filters.search}
+                    onChange={handleFilterChange}
+                    className="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                    placeholder={t('products.searchPlaceholder')}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    {t('products.minPrice')}
+                  </label>
+                  <input
+                    type="number"
+                    name="minPrice"
+                    value={filters.minPrice}
+                    onChange={handleFilterChange}
+                    className="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                    min="0"
+                    step="0.01"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    {t('products.maxPrice')}
+                  </label>
+                  <input
+                    type="number"
+                    name="maxPrice"
+                    value={filters.maxPrice}
+                    onChange={handleFilterChange}
+                    className="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                    min="0"
+                    step="0.01"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    {t('products.sortBy')}
+                  </label>
+                  <select
+                    name="sortBy"
+                    value={filters.sortBy}
+                    onChange={handleFilterChange}
+                    className="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                  >
+                    <option value="nombre-asc">{t('products.sortOptions.nameAsc')}</option>
+                    <option value="nombre-desc">{t('products.sortOptions.nameDesc')}</option>
+                    <option value="precio-asc">{t('products.sortOptions.priceAsc')}</option>
+                    <option value="precio-desc">{t('products.sortOptions.priceDesc')}</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="mt-4 flex justify-end">
+                <button
+                  onClick={resetFilters}
+                  className="text-sm text-gray-500 hover:text-gray-700"
+                >
+                  {t('products.resetFilters')}
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {loading ? (
+          <div className="flex justify-center items-center min-h-[400px]">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-600"></div>
+          </div>
+        ) : products.length === 0 ? (
+          <div className="text-center py-12">
+            <ShoppingBag className="mx-auto h-12 w-12 text-indigo-400" />
+            <h3 className="mt-2 text-sm font-medium text-gray-900">{t('products.noProducts')}</h3>
+            <p className="mt-1 text-sm text-gray-500">{t('products.noProductsMessage')}</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3 sm:gap-4">
+            {products.map((item) => (
+              <motion.div
+                key={item.id}
+                layout
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 20 }}
+                className="bg-white/80 backdrop-blur-sm rounded-xl shadow-sm overflow-hidden group hover:shadow-md transition-all duration-300 border border-indigo-50 hover:border-indigo-200"
+              >
+                <div className="relative">
+                  {item.imagen_url ? (
+                    <div className="aspect-w-1 aspect-h-1 w-full overflow-hidden bg-gradient-to-br from-indigo-50 to-blue-50">
                       <img
-                        src={product.imagen_url}
-                        alt={product.nombre}
-                        className="h-full w-full object-cover object-center group-hover:opacity-75 transition-opacity"
+                        src={item.imagen_url}
+                        alt={item.nombre}
+                        className="h-full w-full object-cover object-center transform group-hover:scale-105 transition-transform duration-500"
+                        loading="lazy"
                       />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    </div>
+                  ) : (
+                    <div className="aspect-w-1 aspect-h-1 w-full bg-gradient-to-br from-indigo-100 to-blue-50 flex items-center justify-center">
+                      <Package className="h-8 w-8 text-indigo-300" />
                     </div>
                   )}
                   
-                  <div className="p-4">
-                    {product.categoria && (
-                      <div className="mb-2">
-                        <span className="text-xs font-medium text-indigo-600 bg-indigo-50 px-2 py-1 rounded-full">
-                          {product.categoria}
+                  {item.destacado && (
+                    <div className="absolute top-2 right-2 bg-yellow-400 text-white px-1.5 py-0.5 rounded-full text-[10px] font-medium flex items-center">
+                      <Star className="h-2.5 w-2.5 mr-0.5" />
+                      {t('common.featured')}
+                    </div>
+                  )}
+                </div>
+                
+                <div className="p-3">
+                  <div className="flex flex-col h-full">
+                    <div className="mb-2 flex flex-wrap gap-1">
+                      {item.categoria && (
+                        <span className="text-[10px] font-medium text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded-full">
+                          {item.categoria}
                         </span>
+                      )}
+                    </div>
+                    
+                    <h3 className="text-sm font-semibold text-gray-900 mb-1 line-clamp-2 flex-grow">{item.nombre}</h3>
+                    <p className="text-xs text-gray-600 mb-2 line-clamp-2">{item.descripcion}</p>
+                    
+                    {item.stock < 30 && (
+                      <div className="flex items-center space-x-1 text-amber-600 bg-amber-50 px-2 py-1 rounded-lg mb-2 text-[10px]">
+                        <AlertTriangle className="h-3 w-3 flex-shrink-0" />
+                        <span className="font-medium">{t('common.lowStock')}</span>
                       </div>
                     )}
                     
-                    <h3 className="text-lg font-medium text-gray-900 mb-1">{product.nombre}</h3>
-                    <p className="text-sm text-gray-500 mb-3">{product.descripcion}</p>
-                    
-                    {product.stock < 30 && (
-                      <div className="flex items-center space-x-2 text-amber-600 bg-amber-50 px-3 py-1 rounded-full mb-3">
-                        <AlertTriangle className="h-4 w-4" />
-                        <span className="text-sm">
-                          {t('products.lowStock', { product: product.nombre })}
-                        </span>
+                    <div className="flex items-center justify-between mt-auto pt-2 border-t border-gray-100">
+                      <div className="flex flex-col">
+                        <div className="flex items-baseline">
+                          {item.precio_anterior && (
+                            <span className="text-xs text-gray-500 line-through mr-1">
+                              ${item.precio_anterior.toFixed(2)}
+                            </span>
+                          )}
+                          <span className="text-sm font-bold text-gray-900">
+                            ${item.precio.toFixed(2)}
+                          </span>
+                        </div>
                       </div>
-                    )}
-                    
-                    <div className="flex items-center justify-between">
-                      <span className="text-lg font-bold text-gray-900">
-                        ${product.precio.toFixed(2)}
-                      </span>
-                      {isInCart(product.id) ? (
-                        <div className="flex items-center space-x-2">
-                          <span className="text-sm text-gray-600">
-                            {t('cart.quantity')}: {getItemQuantity(product.id)}
+                      {isInCart(item.id) ? (
+                        <div className="flex items-center space-x-1">
+                          <span className="text-xs text-gray-600 font-medium">
+                            {getItemQuantity(item.id)}x
                           </span>
                           <button
-                            onClick={() => handleAddToCart(product)}
-                            className="flex items-center space-x-2 bg-green-600 text-white px-3 py-2 rounded-lg hover:bg-green-700 transition-colors text-sm font-medium"
-                            disabled={product.stock === 0}
+                            onClick={() => handleAddToCart(item)}
+                            className="flex items-center space-x-1 bg-green-600 text-white px-2 py-1 rounded-lg hover:bg-green-700 transition-colors text-xs font-medium"
+                            disabled={item.stock === 0}
                           >
-                            <ShoppingCart className="h-4 w-4" />
-                            <span>{t('cart.addMore')}</span>
+                            <ShoppingCart className="h-3 w-3" />
+                            <span>+</span>
                           </button>
                         </div>
                       ) : (
                         <button
-                          onClick={() => handleAddToCart(product)}
-                          className="flex items-center space-x-2 bg-indigo-600 text-white px-3 py-2 rounded-lg hover:bg-indigo-700 transition-colors text-sm font-medium"
-                          disabled={product.stock === 0}
+                          onClick={() => handleAddToCart(item)}
+                          className="flex items-center space-x-1 bg-indigo-600 text-white px-2 py-1 rounded-lg hover:bg-indigo-700 transition-all duration-300 text-xs font-medium disabled:bg-gray-400 disabled:cursor-not-allowed"
+                          disabled={item.stock === 0}
                         >
-                          <ShoppingCart className="h-4 w-4" />
-                          <span>{product.stock === 0 ? t('products.outOfStock') : t('products.addToCart')}</span>
+                          <ShoppingCart className="h-3 w-3" />
+                          <span>{item.stock === 0 ? t('common.outOfStock') : t('common.add')}</span>
                         </button>
                       )}
                     </div>
                   </div>
-                </motion.div>
-              ))}
-            </div>
-          )}
-        </div>
-      </main>
-      <Footer />
-    </>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        )}
+      </div>
+    </main>
   );
 };
 

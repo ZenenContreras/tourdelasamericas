@@ -1,5 +1,15 @@
 import { supabase } from '../config/supabase';
 
+const processImage = async (producto) => {
+  if (producto.imagen_principal) {
+    const url = supabase.storage
+      .from('productos')
+      .getPublicUrl(producto.imagen_principal).data.publicUrl;
+    return { ...producto, imagen_url: url };
+  }
+  return producto;
+};
+
 // Función para cargar productos con filtros
 export const loadProducts = async (filters = {}, categoria_id = null) => {
   try {
@@ -34,6 +44,9 @@ export const loadProducts = async (filters = {}, categoria_id = null) => {
     if (filters.search) {
       query = query.ilike('nombre', `%${filters.search}%`);
     }
+    if (filters.category) {
+      query = query.eq('categoria_id', filters.category);
+    }
 
     // Aplicar ordenamiento
     switch (filters.sortBy) {
@@ -57,12 +70,18 @@ export const loadProducts = async (filters = {}, categoria_id = null) => {
 
     if (error) throw error;
 
-    return {
-      data: data.map(item => ({
-        ...item,
+    // Procesar las imágenes y datos
+    const processedData = await Promise.all(data.map(async (item) => {
+      const processedItem = await processImage(item);
+      return {
+        ...processedItem,
         precio: parseFloat(item.precio),
         categoria: item.categorias?.nombre || null
-      })),
+      };
+    }));
+
+    return {
+      data: processedData,
       error: null
     };
   } catch (error) {
@@ -75,17 +94,18 @@ export const loadProducts = async (filters = {}, categoria_id = null) => {
 };
 
 // Función para obtener un producto por ID
-export const getProductById = async (id, table = 'productos') => {
+export const getProductById = async (id) => {
   try {
     const { data, error } = await supabase
-      .from(table)
+      .from('productos')
       .select(`
         id,
         nombre,
         descripcion,
         precio,
         stock,
-        imagen_url,
+        imagen_principal,
+        categoria_id,
         categorias (
           id,
           nombre
@@ -96,16 +116,19 @@ export const getProductById = async (id, table = 'productos') => {
 
     if (error) throw error;
 
+    // Procesar la imagen
+    const processedItem = await processImage(data);
+
     return {
       data: {
-        ...data,
+        ...processedItem,
         precio: parseFloat(data.precio),
         categoria: data.categorias?.nombre || null
       },
       error: null
     };
   } catch (error) {
-    console.error(`Error obteniendo ${table}:`, error);
+    console.error('Error obteniendo producto:', error);
     return {
       data: null,
       error: error.message
@@ -114,10 +137,10 @@ export const getProductById = async (id, table = 'productos') => {
 };
 
 // Función para verificar stock disponible
-export const checkStock = async (productId, quantity, table = 'productos') => {
+export const checkStock = async (productId, quantity) => {
   try {
     const { data, error } = await supabase
-      .from(table)
+      .from('productos')
       .select('stock')
       .eq('id', productId)
       .single();
@@ -140,10 +163,10 @@ export const checkStock = async (productId, quantity, table = 'productos') => {
 };
 
 // Función para actualizar el stock
-export const updateStock = async (productId, newStock, table = 'productos') => {
+export const updateStock = async (productId, newStock) => {
   try {
     const { data, error } = await supabase
-      .from(table)
+      .from('productos')
       .update({ stock: newStock })
       .eq('id', productId)
       .select()

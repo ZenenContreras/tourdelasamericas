@@ -94,6 +94,9 @@ const Navbar = ({ scrollToRef, homeRef, currentSection = 'home' }) => {
 
   const handleNavClick = (id) => {
     switch (id) {
+      case 'home':
+        navigate('/');
+        break;
       case 'products':
         navigate('/productos');
         break;
@@ -104,10 +107,13 @@ const Navbar = ({ scrollToRef, homeRef, currentSection = 'home' }) => {
         navigate('/boutique');
         break;
       default:
-        if (scrollToRef && id === 'home') {
-          scrollToRef(homeRef);
-        }
+        navigate('/');
     }
+    setIsMobileMenuOpen(false);
+  };
+
+  const handleLogoClick = () => {
+    navigate('/');
     setIsMobileMenuOpen(false);
   };
 
@@ -436,7 +442,7 @@ const Navbar = ({ scrollToRef, homeRef, currentSection = 'home' }) => {
               }}
             >
               <button 
-                onClick={() => handleNavClick('home')} 
+                onClick={handleLogoClick} 
                 className="flex flex-row items-center group"
                 aria-label="Ir al inicio"
               >
