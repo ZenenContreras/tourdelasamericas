@@ -117,7 +117,7 @@ const ProductCard = ({ product, type = 'product' }) => {
         )}
         
         {/* Footer del card con precio y botón */}
-        <div className="flex items-center justify-between pt-2 sm:pt-3 border-t border-gray-100 mt-auto">
+        <div className="flex flex-col items-center sm:flex-row items-start sm:items-center justify-between pt-2 sm:pt-3 border-t border-gray-100 mt-auto gap-2">
           <div className="flex flex-col">
             {product.precio_anterior && (
               <span className="text-[10px] sm:text-xs text-gray-500 line-through">
@@ -130,26 +130,24 @@ const ProductCard = ({ product, type = 'product' }) => {
           </div>
           
           {isInCart(product.id) ? (
-            <div className="flex items-center gap-1">
+            <div className="flex items-center  gap-1 w-full sm:w-auto">
               <span className="text-[10px] sm:text-xs text-gray-600 font-medium">
                 {getItemQuantity(product.id)}x
               </span>
               <button
                 onClick={handleAddToCart}
-                className="flex items-center justify-center gap-0.5 bg-green-600 text-white px-2 py-1 rounded-lg hover:bg-green-700 transition-colors text-[10px] sm:text-xs font-medium disabled:bg-gray-400 disabled:cursor-not-allowed min-w-[60px] sm:min-w-[70px]"
+                className="flex flex-col items-center justify-center gap-0.5 bg-green-600 text-white px-3 py-1.5 rounded-lg hover:bg-green-700 transition-colors text-[11px] sm:text-xs font-medium disabled:bg-gray-400 disabled:cursor-not-allowed w-full sm:w-auto whitespace-nowrap"
                 disabled={product.stock === 0}
               >
-                <ShoppingCart className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                 <span>{t('cart.addMore')}</span>
               </button>
             </div>
           ) : (
             <button
               onClick={handleAddToCart}
-              className={`flex items-center justify-center gap-0.5 bg-${config.button}-600 text-white px-2 py-1 rounded-lg hover:bg-${config.button}-700 transition-all duration-300 text-[10px] sm:text-xs font-medium disabled:bg-gray-400 disabled:cursor-not-allowed min-w-[60px] sm:min-w-[70px]`}
+              className={`flex flex-col items-center justify-center gap-0.5 bg-${config.button}-600 text-white px-3 py-1.5 rounded-lg hover:bg-${config.button}-700 transition-all duration-300 text-[11px] sm:text-xs font-medium disabled:bg-gray-400 disabled:cursor-not-allowed w-full sm:w-auto whitespace-nowrap`}
               disabled={product.stock === 0}
             >
-              <ShoppingCart className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
               <span>
                 {product.stock === 0 
                   ? t(config.translations.outOfStock)
