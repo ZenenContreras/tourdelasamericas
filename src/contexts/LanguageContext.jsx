@@ -6,16 +6,23 @@ const LanguageContext = createContext();
 export function LanguageProvider({ children }) {
   const [language, setLanguage] = useState('es');
 
+  const getNestedTranslation = (obj, path) => {
+    return path.split('.').reduce((acc, part) => {
+      if (acc === undefined) return undefined;
+      return acc[part];
+    }, obj);
+  };
+
   const value = {
     language,
     setLanguage,
     t: (key) => {
-      const keys = key.split('.');
-      let translation = translations[language];
-      for (const k of keys) {
-        translation = translation[k];
+      const translation = getNestedTranslation(translations[language], key);
+      if (translation === undefined) {
+        console.warn(`Translation key not found: ${key} for language: ${language}`);
+        return key;
       }
-      return translation || key;
+      return translation;
     }
   };
 

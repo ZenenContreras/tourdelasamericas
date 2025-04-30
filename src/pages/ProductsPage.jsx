@@ -3,15 +3,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingBag, Filter, X, AlertTriangle, ShoppingCart, Star, Package } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useCart } from '../contexts/CartContext';
-import { supabase } from '../config/supabase';
 import * as productService from '../services/productService';
-import { XMarkIcon, FunnelIcon } from '@heroicons/react/24/outline';
 import ProductCard from '../components/ProductCard';
 import ProductCardSkeleton from '../components/ProductCardSkeleton';
 
 const ProductsPage = () => {
   const { t } = useLanguage();
-  const { addToCart, isInCart, getItemQuantity } = useCart();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -109,8 +106,8 @@ const ProductsPage = () => {
             onClick={() => setShowFilters(!showFilters)}
             className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
           >
-            {showFilters ? <XMarkIcon className="h-5 w-5" /> : <FunnelIcon className="h-5 w-5" />}
-            <span>{t('common.filters.title')}</span>
+            {showFilters ? <X className="h-5 w-5" /> : <Filter className="h-5 w-5" />}
+            <span>{t('products.filters.title')}</span>
           </button>
         </div>
 
@@ -126,20 +123,20 @@ const ProductsPage = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div className="space-y-2">
                   <label className="block text-sm font-medium text-gray-700">
-                    {t('common.filters.search')}
+                    {t('products.filters.search')}
                   </label>
                   <input
                     type="text"
                     value={filters.search}
                     onChange={(e) => handleFilterChange('search', e.target.value)}
-                    placeholder={t('common.filters.searchPlaceholder')}
+                    placeholder={t('products.filters.searchPlaceholder')}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
                   />
                 </div>
 
                 <div className="space-y-2">
                   <label className="block text-sm font-medium text-gray-700">
-                    {t('common.filters.minPrice')}
+                    {t('products.filters.minPrice')}
                   </label>
                   <input
                     type="number"
@@ -152,7 +149,7 @@ const ProductsPage = () => {
 
                 <div className="space-y-2">
                   <label className="block text-sm font-medium text-gray-700">
-                    {t('common.filters.maxPrice')}
+                    {t('products.filters.maxPrice')}
                   </label>
                   <input
                     type="number"
@@ -165,17 +162,17 @@ const ProductsPage = () => {
 
                 <div className="space-y-2">
                   <label className="block text-sm font-medium text-gray-700">
-                    {t('common.filters.sortBy')}
+                    {t('products.filters.sortBy')}
                   </label>
                   <select
                     value={filters.sortBy}
                     onChange={(e) => handleFilterChange('sortBy', e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
                   >
-                    <option value="nameAsc">{t('common.filters.sortOptions.nameAsc')}</option>
-                    <option value="nameDesc">{t('common.filters.sortOptions.nameDesc')}</option>
-                    <option value="priceAsc">{t('common.filters.sortOptions.priceAsc')}</option>
-                    <option value="priceDesc">{t('common.filters.sortOptions.priceDesc')}</option>
+                    <option value="nameAsc">{t('products.filters.sortOptions.nameAsc')}</option>
+                    <option value="nameDesc">{t('products.filters.sortOptions.nameDesc')}</option>
+                    <option value="priceAsc">{t('products.filters.sortOptions.priceAsc')}</option>
+                    <option value="priceDesc">{t('products.filters.sortOptions.priceDesc')}</option>
                   </select>
                 </div>
               </div>
@@ -185,13 +182,13 @@ const ProductsPage = () => {
                   onClick={resetFilters}
                   className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 transition-colors"
                 >
-                  {t('common.filters.reset')}
+                  {t('products.filters.reset')}
                 </button>
                 <button
                   onClick={() => setShowFilters(false)}
                   className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors"
                 >
-                  {t('common.filters.apply')}
+                  {t('products.filters.apply')}
                 </button>
               </div>
             </motion.div>

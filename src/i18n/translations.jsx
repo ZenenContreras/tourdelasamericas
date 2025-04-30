@@ -226,32 +226,45 @@ export const translations = {
     },
     products: {
       title: "Products",
-      filters: "Filters",
-      filterOptions: "Filter Options",
-      search: "Search products...",
-      searchPlaceholder: "Search by name...",
-      minPrice: "Minimum Price",
-      maxPrice: "Maximum Price",
-      sortBy: "Sort by",
-      sortOptions: {
-        nameAsc: "Name (A-Z)",
-        nameDesc: "Name (Z-A)",
-        priceAsc: "Price (low to high)",
-        priceDesc: "Price (high to low)"
-      },
-      resetFilters: "Reset Filters",
+      description: "Explore our selection of authentic products from across the Americas",
       noProducts: "No products available",
       noProductsMessage: "No products found matching the selected filters",
-      lowStock: "Only a few units left of {{product}}!",
-      outOfStock: "Out of stock",
-      addToCart: "Add to cart",
-      errorLoading: "Error loading products"
+      errorLoading: "Error loading products",
+      filters: {
+        title: "Filters",
+        search: "Search products...",
+        searchPlaceholder: "Search by name...",
+        minPrice: "Minimum Price",
+        maxPrice: "Maximum Price",
+        category: "Category",
+        sortBy: "Sort By",
+        reset: "Reset Filters",
+        apply: "Apply Filters",
+        sortOptions: {
+          nameAsc: "Name (A-Z)",
+          nameDesc: "Name (Z-A)",
+          priceAsc: "Price (Low to High)",
+          priceDesc: "Price (High to Low)"
+        }
+      },
+      categories: {
+        all: "All products",
+        food: "Food",
+        drinks: "Drinks",
+        snacks: "Snacks",
+        souvenirs: "Souvenirs"
+      },
+      stock: {
+        available: "Available: {{stock}}",
+        lowStock: "Last units!",
+        outOfStock: "Out of stock"
+      }
     },
     food: {
       title: "Food Menu",
+      description: "Discover authentic flavors from the Americas",
       filters: "Filters",
-      filterOptions: "Filter Options",
-      search: "Search",
+      search: "Search foods...",
       searchPlaceholder: "Search by name...",
       minPrice: "Minimum price",
       maxPrice: "Maximum price",
@@ -265,16 +278,44 @@ export const translations = {
       resetFilters: "Reset filters",
       noFood: "No food available",
       noFoodMessage: "No food items found matching the selected filters",
-      lowStock: "Only a few units of {{food}} left!",
+      lowStock: "Only a few units left!",
       outOfStock: "Out of stock",
       addToCart: "Add to cart",
-      errorLoading: "Error loading food items"
+      errorLoading: "Error loading food items",
+      categories: {
+        all: "All foods",
+        appetizers: "Appetizers",
+        mainCourses: "Main courses",
+        desserts: "Desserts",
+        beverages: "Beverages"
+      },
+      stock: {
+        available: "Available: {{stock}}",
+        lowStock: "Last units!",
+        outOfStock: "Out of stock"
+      },
+      spicyLevel: {
+        mild: "Mild",
+        medium: "Medium",
+        hot: "Hot"
+      },
+      dietaryInfo: {
+        vegetarian: "Vegetarian",
+        vegan: "Vegan",
+        glutenFree: "Gluten-free",
+        dairyFree: "Dairy-free"
+      },
+      portionSize: {
+        small: "Small",
+        medium: "Medium",
+        large: "Large"
+      }
     },
     boutique: {
       title: "Boutique & Souvenirs",
+      description: "Discover unique items and souvenirs from the Americas",
       filters: "Filters",
-      filterOptions: "Filter Options",
-      search: "Search",
+      search: "Search items...",
       searchPlaceholder: "Search by name...",
       minPrice: "Minimum price",
       maxPrice: "Maximum price",
@@ -288,9 +329,34 @@ export const translations = {
       resetFilters: "Reset filters",
       noItems: "No items available",
       noItemsMessage: "No items found matching the selected filters",
-      lowStock: "Only a few units of {{item}} left!",
+      lowStock: "Only a few units left!",
+      outOfStock: "Out of stock",
       addToCart: "Add to cart",
-      errorLoading: "Error loading items"
+      errorLoading: "Error loading items",
+      categories: {
+        all: "All items",
+        clothing: "Clothing",
+        accessories: "Accessories",
+        crafts: "Crafts",
+        souvenirs: "Souvenirs"
+      },
+      stock: {
+        available: "Available: {{stock}}",
+        lowStock: "Last units!",
+        outOfStock: "Out of stock"
+      },
+      collections: {
+        traditional: "Traditional",
+        modern: "Modern",
+        limited: "Limited edition"
+      },
+      materials: {
+        cotton: "Cotton",
+        wool: "Wool",
+        leather: "Leather",
+        wood: "Wood",
+        ceramic: "Ceramic"
+      }
     },
     cart: {
       title: "Shopping Cart",
@@ -328,99 +394,31 @@ export const translations = {
       outOfStock: "Out of stock",
       add: "Add",
       addMore: "Add more",
+      tryAgain: "Try Again",
       filters: {
-        title: 'Filters',
-        search: 'Search',
-        searchPlaceholder: 'Search by name...',
-        price: 'Price',
-        minPrice: 'Min Price',
-        maxPrice: 'Max Price',
-        category: 'Category',
-        sortBy: 'Sort By',
-        reset: 'Reset Filters',
-        apply: 'Apply Filters',
-        sortOptions: {
-          nameAsc: 'Name (A-Z)',
-          nameDesc: 'Name (Z-A)',
-          priceAsc: 'Price (Low to High)',
-          priceDesc: 'Price (High to Low)'
-        }
-      },
-      loading: "Loading...",
-      error: "An error has occurred",
-      noResults: "No results found",
-      description: "Description",
-      stock: "Available stock: {{stock}}"
+        apply: "Apply Filters"
+      }
     },
-    products: {
-      title: "Products",
-      description: "Explore our selection of authentic products from across the Americas",
-      noProducts: "No products available",
-      noProductsMessage: "No products found matching the selected filters",
-      categories: {
-        all: "All products",
-        food: "Food",
-        crafts: "Crafts",
-        clothing: "Clothing",
-        accessories: "Accessories"
-      },
-      errorLoading: "Error loading products"
+    product: {
+      addToCart: "Add to cart",
+      lowStock: "Only {{stock}} units left!",
+      outOfStock: "Out of stock"
     },
-    food: {
-      title: "Food Menu",
-      description: "Discover authentic flavors from the Americas",
-      noFood: "No food available",
-      noFoodMessage: "No food items found matching the selected filters",
-      categories: {
-        all: "All food",
-        appetizers: "Appetizers",
-        mainCourses: "Main courses",
-        desserts: "Desserts",
-        beverages: "Beverages"
-      },
-      spicyLevel: {
-        mild: "Mild",
-        medium: "Medium",
-        hot: "Hot"
-      },
-      dietaryInfo: {
-        vegetarian: "Vegetarian",
-        vegan: "Vegan",
-        glutenFree: "Gluten-free",
-        dairyFree: "Dairy-free"
-      },
-      portionSize: {
-        small: "Small",
-        medium: "Medium",
-        large: "Large"
-      },
-      errorLoading: "Error loading food items"
-    },
-    boutique: {
-      title: "Boutique & Souvenirs",
-      description: "Find unique items and special souvenirs from the Americas",
-      noItems: "No items available",
-      noItemsMessage: "No items found matching the selected filters",
-      categories: {
-        all: "All items",
-        clothing: "Clothing",
-        accessories: "Accessories",
-        crafts: "Crafts",
-        souvenirs: "Souvenirs"
-      },
-      collections: {
-        traditional: "Traditional",
-        modern: "Modern",
-        limited: "Limited edition"
-      },
-      materials: {
-        cotton: "Cotton",
-        wool: "Wool",
-        leather: "Leather",
-        wood: "Wood",
-        ceramic: "Ceramic"
-      },
-      errorLoading: "Error loading items"
+    productCard: {
+      addToCart: "Add to cart",
+      addMore: "Add more",
+      outOfStock: "Out of stock",
+      lowStock: "Last units!",
+      featured: "Featured",
+      category: "Category",
+      price: "Price",
+      previousPrice: "Previous price",
+      quantity: "Quantity",
+      stock: {
+        available: "Available: {{stock}}",
+        lowStock: "Last units!",
+        outOfStock: "Out of stock"
+      }
     }
   },
   es: {
@@ -650,31 +648,44 @@ export const translations = {
     },
     products: {
       title: "Productos",
-      filters: "Filtros",
-      filterOptions: "Opciones de filtrado",
-      search: "Buscar productos...",
-      searchPlaceholder: "Buscar por nombre...",
-      minPrice: "Precio mínimo",
-      maxPrice: "Precio máximo",
-      sortBy: "Ordenar por",
-      sortOptions: {
-        nameAsc: "Nombre (A-Z)",
-        nameDesc: "Nombre (Z-A)",
-        priceAsc: "Precio (menor a mayor)",
-        priceDesc: "Precio (mayor a menor)"
-      },
-      resetFilters: "Restablecer filtros",
+      description: "Explora nuestra selección de productos auténticos de todas las Américas",
       noProducts: "No hay productos disponibles",
       noProductsMessage: "No se encontraron productos que coincidan con los filtros seleccionados",
-      lowStock: "¡Quedan pocas unidades de {{product}}!",
-      outOfStock: "Sin stock",
-      addToCart: "Agregar al carrito",
-      errorLoading: "Error al cargar los productos"
+      errorLoading: "Error al cargar los productos",
+      filters: {
+        title: "Filtros",
+        search: "Buscar productos...",
+        searchPlaceholder: "Buscar por nombre...",
+        minPrice: "Precio Mínimo",
+        maxPrice: "Precio Máximo",
+        category: "Categoría",
+        sortBy: "Ordenar Por",
+        reset: "Restablecer Filtros",
+        apply: "Aplicar Filtros",
+        sortOptions: {
+          nameAsc: "Nombre (A-Z)",
+          nameDesc: "Nombre (Z-A)",
+          priceAsc: "Precio (Menor a Mayor)",
+          priceDesc: "Precio (Mayor a Menor)"
+        }
+      },
+      categories: {
+        all: "Todos los productos",
+        food: "Comidas",
+        drinks: "Bebidas",
+        snacks: "Snacks",
+        souvenirs: "Souvenirs"
+      },
+      stock: {
+        available: "Disponibles: {{stock}}",
+        lowStock: "¡Últimas unidades!",
+        outOfStock: "Agotado"
+      }
     },
     food: {
       title: "Menú de Comidas",
+      description: "Descubre sabores auténticos de las Américas",
       filters: "Filtros",
-      filterOptions: "Opciones de filtrado",
       search: "Buscar comidas...",
       searchPlaceholder: "Buscar por nombre...",
       minPrice: "Precio mínimo",
@@ -692,13 +703,41 @@ export const translations = {
       lowStock: "¡Quedan pocas unidades!",
       outOfStock: "Sin stock",
       addToCart: "Agregar al carrito",
-      errorLoading: "Error al cargar las comidas"
+      errorLoading: "Error al cargar las comidas",
+      categories: {
+        all: "Todas las comidas",
+        appetizers: "Entradas",
+        mainCourses: "Platos principales",
+        desserts: "Postres",
+        beverages: "Bebidas"
+      },
+      stock: {
+        available: "Disponibles: {{stock}}",
+        lowStock: "¡Últimas unidades!",
+        outOfStock: "Agotado"
+      },
+      spicyLevel: {
+        mild: "Mild",
+        medium: "Medium",
+        hot: "Hot"
+      },
+      dietaryInfo: {
+        vegetarian: "Vegetarian",
+        vegan: "Vegan",
+        glutenFree: "Gluten-free",
+        dairyFree: "Dairy-free"
+      },
+      portionSize: {
+        small: "Small",
+        medium: "Medium",
+        large: "Large"
+      }
     },
     boutique: {
       title: "Boutique y Souvenirs",
+      description: "Descubre artículos únicos y souvenirs de las Américas",
       filters: "Filtros",
-      filterOptions: "Opciones de filtrado",
-      search: "Buscar",
+      search: "Buscar artículos...",
       searchPlaceholder: "Buscar por nombre...",
       minPrice: "Precio mínimo",
       maxPrice: "Precio máximo",
@@ -712,9 +751,34 @@ export const translations = {
       resetFilters: "Restablecer filtros",
       noItems: "No hay artículos disponibles",
       noItemsMessage: "No se encontraron artículos que coincidan con los filtros seleccionados",
-      lowStock: "¡Quedan pocas unidades de {{item}}!",
+      lowStock: "¡Quedan pocas unidades!",
+      outOfStock: "Sin stock",
       addToCart: "Agregar al carrito",
-      errorLoading: "Error al cargar los artículos"
+      errorLoading: "Error al cargar los artículos",
+      categories: {
+        all: "Todos los artículos",
+        clothing: "Ropa",
+        accessories: "Accessoires",
+        crafts: "Artesanías",
+        souvenirs: "Souvenirs"
+      },
+      stock: {
+        available: "Disponibles: {{stock}}",
+        lowStock: "¡Últimas unidades!",
+        outOfStock: "Agotado"
+      },
+      collections: {
+        traditional: "Traditional",
+        modern: "Modern",
+        limited: "Limited edition"
+      },
+      materials: {
+        cotton: "Cotton",
+        wool: "Wool",
+        leather: "Leather",
+        wood: "Wood",
+        ceramic: "Ceramic"
+      }
     },
     cart: {
       title: "Carrito de Compras",
@@ -748,75 +812,35 @@ export const translations = {
     },
     common: {
       featured: "Destacado",
-      lowStock: "Stock bajo",
+      lowStock: "¡Pocas unidades!",
       outOfStock: "Agotado",
       add: "Agregar",
       addMore: "Agregar más",
+      tryAgain: "Intentar de nuevo",
       filters: {
-        title: 'Filtros',
-        search: 'Buscar',
-        searchPlaceholder: 'Buscar por nombre...',
-        price: 'Precio',
-        minPrice: 'Precio Mínimo',
-        maxPrice: 'Precio Máximo',
-        category: 'Categoría',
-        sortBy: 'Ordenar Por',
-        reset: 'Restablecer Filtros',
-        apply: 'Aplicar Filtros',
-        sortOptions: {
-          nameAsc: 'Nombre (A-Z)',
-          nameDesc: 'Nombre (Z-A)',
-          priceAsc: 'Precio (Menor a Mayor)',
-          priceDesc: 'Precio (Mayor a Menor)'
-        }
-      },
-      loading: "Cargando...",
-      error: "Ha ocurrido un error",
-      noResults: "No se encontraron resultados",
-      description: "Descripción",
-      stock: "Stock disponible: {{stock}}"
+        apply: "Aplicar Filtros"
+      }
     },
-    products: {
-      title: "Productos",
-      description: "Explora nuestra selección de productos auténticos de todas las Américas",
-      noProducts: "No hay productos disponibles",
-      noProductsMessage: "No se encontraron productos que coincidan con los filtros seleccionados",
-      categories: {
-        all: "Todos los productos",
-        food: "Alimentos",
-        crafts: "Artesanías",
-        clothing: "Ropa",
-        accessories: "Accessoires"
-      },
-      errorLoading: "Error al cargar los productos"
+    product: {
+      addToCart: "Agregar al carrito",
+      lowStock: "¡Solo quedan {{stock}} unidades!",
+      outOfStock: "Agotado"
     },
-    food: {
-      title: "Menú de Comidas",
-      description: "Descubre sabores auténticos de las Américas.",
-      filterOptions: 'Opciones de Filtrado',
-      search: 'Buscar Comidas',
-      searchPlaceholder: 'Buscar comidas...',
-      minPrice: 'Precio Mínimo',
-      maxPrice: 'Precio Máximo',
-      sortBy: 'Ordenar Por',
-      resetFilters: 'Restablecer Filtros',
-      noFood: 'No se encontraron comidas',
-      noFoodMessage: 'Intenta ajustar tus filtros o criterios de búsqueda.',
-      errorLoading: 'Error al cargar comidas'
-    },
-    boutique: {
-      title: "Boutique y Souvenirs",
-      description: "Explora nuestra colección de artículos únicos y recuerdos.",
-      filterOptions: 'Opciones de Filtrado',
-      search: 'Buscar Artículos',
-      searchPlaceholder: 'Buscar artículos de boutique...',
-      minPrice: 'Precio Mínimo',
-      maxPrice: 'Precio Máximo',
-      sortBy: 'Ordenar Por',
-      resetFilters: 'Restablecer Filtros',
-      noProducts: 'No se encontraron artículos',
-      noProductsMessage: 'Intenta ajustar tus filtros o criterios de búsqueda.',
-      errorLoading: 'Error al cargar artículos de boutique'
+    productCard: {
+      addToCart: "Agregar al carrito",
+      addMore: "Agregar más",
+      outOfStock: "Agotado",
+      lowStock: "¡Últimas unidades!",
+      featured: "Destacado",
+      category: "Categoría",
+      price: "Precio",
+      previousPrice: "Precio anterior",
+      quantity: "Cantidad",
+      stock: {
+        available: "Disponibles: {{stock}}",
+        lowStock: "¡Últimas unidades!",
+        outOfStock: "Agotado"
+      }
     }
   },
   fr: {
@@ -1046,31 +1070,44 @@ export const translations = {
     },
     products: {
       title: "Produits",
-      filters: "Filtres",
-      filterOptions: "Options de filtrage",
-      search: "Rechercher des produits...",
-      searchPlaceholder: "Rechercher par nom...",
-      minPrice: "Prix minimum",
-      maxPrice: "Prix maximum",
-      sortBy: "Trier par",
-      sortOptions: {
-        nameAsc: "Nom (A-Z)",
-        nameDesc: "Nom (Z-A)",
-        priceAsc: "Prix (croissant)",
-        priceDesc: "Prix (décroissant)"
-      },
-      resetFilters: "Réinitialiser les filtres",
+      description: "Explorez notre sélection de produits authentiques des Amériques",
       noProducts: "Aucun produit disponible",
       noProductsMessage: "Aucun produit ne correspond aux filtres sélectionnés",
-      lowStock: "Il ne reste que quelques unités de {{product}} !",
-      outOfStock: "En rupture de stock",
-      addToCart: "Ajouter au panier",
-      errorLoading: "Erreur lors du chargement des produits"
+      errorLoading: "Erreur lors du chargement des produits",
+      filters: {
+        title: "Filtres",
+        search: "Rechercher des produits...",
+        searchPlaceholder: "Rechercher par nom...",
+        minPrice: "Prix minimum",
+        maxPrice: "Prix maximum",
+        category: "Catégorie",
+        sortBy: "Trier par",
+        reset: "Réinitialiser les filtres",
+        apply: "Appliquer les filtres",
+        sortOptions: {
+          nameAsc: "Nom (A-Z)",
+          nameDesc: "Nom (Z-A)",
+          priceAsc: "Prix (croissant)",
+          priceDesc: "Prix (décroissant)"
+        }
+      },
+      categories: {
+        all: "Tous les produits",
+        food: "Nourriture",
+        drinks: "Boissons",
+        snacks: "Snacks",
+        souvenirs: "Souvenirs"
+      },
+      stock: {
+        available: "Disponibles : {{stock}}",
+        lowStock: "Dernières unités !",
+        outOfStock: "En rupture de stock"
+      }
     },
     food: {
       title: "Menu de Nourriture",
+      description: "Découvrez les saveurs authentiques des Amériques",
       filters: "Filtres",
-      filterOptions: "Options de filtrage",
       search: "Rechercher des plats...",
       searchPlaceholder: "Rechercher par nom...",
       minPrice: "Prix minimum",
@@ -1085,16 +1122,44 @@ export const translations = {
       resetFilters: "Réinitialiser les filtres",
       noFood: "Aucun plat disponible",
       noFoodMessage: "Aucun plat ne correspond aux filtres sélectionnés",
-      lowStock: "Il ne reste que quelques unités !",
+      lowStock: "Plus que quelques unités !",
       outOfStock: "En rupture de stock",
       addToCart: "Ajouter au panier",
-      errorLoading: "Erreur lors du chargement des plats"
+      errorLoading: "Erreur lors du chargement des plats",
+      categories: {
+        all: "Tous les plats",
+        appetizers: "Entrées",
+        mainCourses: "Plats principaux",
+        desserts: "Desserts",
+        beverages: "Boissons"
+      },
+      stock: {
+        available: "Disponibles : {{stock}}",
+        lowStock: "Dernières unités !",
+        outOfStock: "En rupture de stock"
+      },
+      spicyLevel: {
+        mild: "Mild",
+        medium: "Medium",
+        hot: "Hot"
+      },
+      dietaryInfo: {
+        vegetarian: "Vegetarian",
+        vegan: "Vegan",
+        glutenFree: "Gluten-free",
+        dairyFree: "Dairy-free"
+      },
+      portionSize: {
+        small: "Small",
+        medium: "Medium",
+        large: "Large"
+      }
     },
     boutique: {
       title: "Boutique et Souvenirs",
+      description: "Découvrez des articles uniques et des souvenirs des Amériques",
       filters: "Filtres",
-      filterOptions: "Options de filtrage",
-      search: "Rechercher",
+      search: "Rechercher des articles...",
       searchPlaceholder: "Rechercher par nom...",
       minPrice: "Prix minimum",
       maxPrice: "Prix maximum",
@@ -1108,9 +1173,34 @@ export const translations = {
       resetFilters: "Réinitialiser les filtres",
       noItems: "Aucun article disponible",
       noItemsMessage: "Aucun article ne correspond aux filtres sélectionnés",
-      lowStock: "Il ne reste que quelques unités de {{item}} !",
+      lowStock: "Plus que quelques unités !",
+      outOfStock: "En rupture de stock",
       addToCart: "Ajouter au panier",
-      errorLoading: "Erreur lors du chargement des articles"
+      errorLoading: "Erreur lors du chargement des articles",
+      categories: {
+        all: "Tous les articles",
+        clothing: "Vêtements",
+        accessories: "Accessoires",
+        crafts: "Artisanat",
+        souvenirs: "Souvenirs"
+      },
+      stock: {
+        available: "Disponibles : {{stock}}",
+        lowStock: "Dernières unités !",
+        outOfStock: "En rupture de stock"
+      },
+      collections: {
+        traditional: "Traditional",
+        modern: "Modern",
+        limited: "Limited edition"
+      },
+      materials: {
+        cotton: "Cotton",
+        wool: "Wool",
+        leather: "Leather",
+        wood: "Wood",
+        ceramic: "Ceramic"
+      }
     },
     cart: {
       title: "Panier",
@@ -1145,74 +1235,34 @@ export const translations = {
     common: {
       featured: "En vedette",
       lowStock: "Stock limité",
-      outOfStock: "Rupture de stock",
+      outOfStock: "En rupture de stock",
       add: "Ajouter",
       addMore: "Ajouter plus",
+      tryAgain: "Réessayer",
       filters: {
-        title: "Filtres",
-        search: "Rechercher...",
-        searchPlaceholder: "Rechercher par nom...",
-        price: "Prix",
-        minPrice: "Prix minimum",
-        maxPrice: "Prix maximum",
-        category: "Catégorie",
-        sortBy: "Trier par",
-        reset: "Réinitialiser les filtres",
-        apply: "Appliquer les filtres",
-        sortOptions: {
-          nameAsc: "Nom (A-Z)",
-          nameDesc: "Nom (Z-A)",
-          priceAsc: "Prix (Croissant)",
-          priceDesc: "Prix (Décroissant)"
-        }
-      },
-      loading: "Chargement...",
-      error: "Une erreur est survenue",
-      noResults: "Aucun résultat trouvé",
-      description: "Description",
-      stock: "Stock disponible: {{stock}}"
+        apply: "Appliquer les filtres"
+      }
     },
-    products: {
-      title: "Produits",
-      description: "Explorez notre sélection de produits authentiques des Amériques",
-      noProducts: "Aucun produit disponible",
-      noProductsMessage: "Aucun produit ne correspond aux filtres sélectionnés",
-      categories: {
-        all: "Tous les produits",
-        food: "Alimentation",
-        crafts: "Artisanat",
-        clothing: "Vêtements",
-        accessories: "Accessoires"
-      },
-      errorLoading: "Erreur lors du chargement des produits"
+    product: {
+      addToCart: "Ajouter au panier",
+      lowStock: "Plus que {{stock}} unités !",
+      outOfStock: "En rupture de stock"
     },
-    food: {
-      title: "Menu de Cuisine",
-      description: "Découvrez les saveurs authentiques des Amériques",
-      filterOptions: "Opciones de Filtrado",
-      search: "Rechercher Comidas",
-      searchPlaceholder: "Rechercher comidas...",
-      minPrice: "Prix minimum",
-      maxPrice: "Prix maximum",
-      sortBy: "Trier par",
-      resetFilters: "Restablecer Filtres",
-      noFood: "Aucun plat disponible",
-      noFoodMessage: "Aucun plat ne correspond aux filtres sélectionnés",
-      errorLoading: "Erreur lors du chargement des plats"
-    },
-    boutique: {
-      title: "Boutique et Souvenirs",
-      description: "Trouvez des articles uniques et des souvenirs spéciaux des Amériques",
-      filterOptions: "Opciones de Filtrado",
-      search: "Rechercher Articles",
-      searchPlaceholder: "Rechercher articles de boutique...",
-      minPrice: "Prix minimum",
-      maxPrice: "Prix maximum",
-      sortBy: "Trier par",
-      resetFilters: "Restablecer Filtres",
-      noProducts: "Aucun article disponible",
-      noProductsMessage: "Aucun article ne correspond aux filtres sélectionnés",
-      errorLoading: "Erreur lors du chargement des articles de boutique"
+    productCard: {
+      addToCart: "Ajouter au panier",
+      addMore: "Ajouter plus",
+      outOfStock: "En rupture de stock",
+      lowStock: "Dernières unités !",
+      featured: "En vedette",
+      category: "Catégorie",
+      price: "Prix",
+      previousPrice: "Prix précédent",
+      quantity: "Quantité",
+      stock: {
+        available: "Disponibles : {{stock}}",
+        lowStock: "Dernières unités !",
+        outOfStock: "En rupture de stock"
+      }
     }
   }
 };

@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Utensils } from 'lucide-react';
+import { Utensils, Filter, X } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
-import { XMarkIcon, FunnelIcon } from '@heroicons/react/24/outline';
+import * as productService from '../services/productService';
 import ProductCard from '../components/ProductCard';
 import ProductCardSkeleton from '../components/ProductCardSkeleton';
-import * as productService from '../services/productService';
 
-const FoodPage = () => {
+export default function FoodPage() {
   const { t } = useLanguage();
   const [food, setFood] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -25,14 +24,17 @@ const FoodPage = () => {
   }, []);
 
   const loadFood = async () => {
+    setLoading(true);
+    setError(null);
     try {
-      setLoading(true);
       const result = await productService.loadProducts(filters, 2); // 2 para comidas
-      if (result.error) throw new Error(result.error);
-      setFood(result.data || []);
+      if (result.error) {
+        setError(result.error);
+      } else {
+        setFood(result.data || []);
+      }
     } catch (err) {
       setError(t('food.errorLoading'));
-      console.error('Error loading food:', err);
     } finally {
       setLoading(false);
     }
@@ -42,13 +44,19 @@ const FoodPage = () => {
     setFilters(prev => ({ ...prev, [name]: value }));
   };
 
-  const resetFilters = () => {
+  const handleApplyFilters = () => {
+    loadFood();
+    setShowFilters(false);
+  };
+
+  const handleResetFilters = () => {
     setFilters({
       search: '',
       minPrice: '',
       maxPrice: '',
       sortBy: 'nameAsc'
     });
+    loadFood();
   };
 
   const filteredFood = food.filter(item => {
@@ -72,22 +80,6 @@ const FoodPage = () => {
     }
   });
 
-  if (error) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-amber-50 via-white to-orange-50 flex items-center justify-center p-4">
-        <div className="text-center">
-          <div className="text-red-500 text-xl font-medium mb-2">{error}</div>
-          <button
-            onClick={loadFood}
-            className="text-amber-600 hover:text-amber-700 font-medium"
-          >
-            {t('common.tryAgain')}
-          </button>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <main className="min-h-screen bg-gradient-to-br from-amber-50 via-white to-orange-50 py-8 sm:py-12">
       <div className="max-w-[95rem] mx-auto px-4 sm:px-6 lg:px-8">
@@ -106,8 +98,8 @@ const FoodPage = () => {
             onClick={() => setShowFilters(!showFilters)}
             className="flex items-center gap-2 px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors"
           >
-            {showFilters ? <XMarkIcon className="h-5 w-5" /> : <FunnelIcon className="h-5 w-5" />}
-            <span>{t('common.filters.title')}</span>
+            {showFilters ? <X className="h-5 w-5" /> : <Filter className="h-5 w-5" />}
+            <span>{t('food.filters')}</span>
           </button>
         </div>
 
@@ -121,72 +113,70 @@ const FoodPage = () => {
               className="bg-white rounded-lg shadow-lg p-4 mb-8"
             >
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="space-y-2">
-                  <label className="block text-sm font-medium text-gray-700">
-                    {t('common.filters.search')}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    {t('food.search')}
                   </label>
                   <input
                     type="text"
                     value={filters.search}
                     onChange={(e) => handleFilterChange('search', e.target.value)}
-                    placeholder={t('common.filters.searchPlaceholder')}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-amber-500 focus:border-amber-500"
+                    placeholder={t('food.searchPlaceholder')}
+                    className="w-full p-2 border rounded-md"
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <label className="block text-sm font-medium text-gray-700">
-                    {t('common.filters.minPrice')}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    {t('food.minPrice')}
                   </label>
                   <input
                     type="number"
                     value={filters.minPrice}
                     onChange={(e) => handleFilterChange('minPrice', e.target.value)}
-                    min="0"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-amber-500 focus:border-amber-500"
+                    className="w-full p-2 border rounded-md"
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <label className="block text-sm font-medium text-gray-700">
-                    {t('common.filters.maxPrice')}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    {t('food.maxPrice')}
                   </label>
                   <input
                     type="number"
                     value={filters.maxPrice}
                     onChange={(e) => handleFilterChange('maxPrice', e.target.value)}
-                    min="0"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-amber-500 focus:border-amber-500"
+                    className="w-full p-2 border rounded-md"
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <label className="block text-sm font-medium text-gray-700">
-                    {t('common.filters.sortBy')}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    {t('food.sortBy')}
                   </label>
                   <select
                     value={filters.sortBy}
                     onChange={(e) => handleFilterChange('sortBy', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-amber-500 focus:border-amber-500"
+                    className="w-full p-2 border rounded-md"
                   >
-                    <option value="nameAsc">{t('common.filters.sortOptions.nameAsc')}</option>
-                    <option value="nameDesc">{t('common.filters.sortOptions.nameDesc')}</option>
-                    <option value="priceAsc">{t('common.filters.sortOptions.priceAsc')}</option>
-                    <option value="priceDesc">{t('common.filters.sortOptions.priceDesc')}</option>
+                    <option value="nameAsc">{t('food.sortOptions.nameAsc')}</option>
+                    <option value="nameDesc">{t('food.sortOptions.nameDesc')}</option>
+                    <option value="priceAsc">{t('food.sortOptions.priceAsc')}</option>
+                    <option value="priceDesc">{t('food.sortOptions.priceDesc')}</option>
                   </select>
                 </div>
               </div>
 
               <div className="flex justify-end gap-4 mt-4">
                 <button
-                  onClick={resetFilters}
-                  className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 transition-colors"
+                  onClick={handleResetFilters}
+                  className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
                 >
-                  {t('common.filters.reset')}
+                  {t('food.resetFilters')}
                 </button>
                 <button
-                  onClick={() => setShowFilters(false)}
-                  className="px-4 py-2 bg-amber-600 text-white rounded-md hover:bg-amber-700 transition-colors"
+                  onClick={handleApplyFilters}
+                  className="px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors"
                 >
                   {t('common.filters.apply')}
                 </button>
@@ -200,6 +190,16 @@ const FoodPage = () => {
             Array.from({ length: 12 }).map((_, index) => (
               <ProductCardSkeleton key={index} type="food" />
             ))
+          ) : error ? (
+            <div className="col-span-full text-center py-8">
+              <div className="text-red-500 text-xl font-medium mb-2">{error}</div>
+              <button
+                onClick={loadFood}
+                className="text-amber-600 hover:text-amber-700 font-medium"
+              >
+                {t('common.tryAgain')}
+              </button>
+            </div>
           ) : filteredFood.length === 0 ? (
             <div className="col-span-full text-center py-8">
               <Utensils className="mx-auto h-12 w-12 text-amber-300" />
@@ -217,6 +217,4 @@ const FoodPage = () => {
       </div>
     </main>
   );
-};
-
-export default FoodPage; 
+} 
