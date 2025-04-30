@@ -62,9 +62,10 @@ const ProductCard = ({ product, type = 'product' }) => {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 20 }}
       className={`bg-white rounded-xl shadow-sm overflow-hidden group hover:shadow-lg transition-all duration-300 border border-${config.accent}-100 hover:border-${config.accent}-300 h-full flex flex-col`}
+      style={{ minHeight: '400px' }}
     >
-      {/* Contenedor de imagen con aspect ratio fijo */}
-      <div className="relative aspect-square w-full overflow-hidden">
+      {/* Contenedor de imagen con aspect ratio fijo y placeholder */}
+      <div className="relative aspect-square w-full overflow-hidden bg-gray-100">
         {product.imagen_url ? (
           <div className={`w-full h-full bg-gradient-to-br ${config.gradient}`}>
             <img
@@ -72,6 +73,12 @@ const ProductCard = ({ product, type = 'product' }) => {
               alt={product.nombre}
               className="h-full w-full object-cover object-center transform group-hover:scale-105 transition-transform duration-500"
               loading="lazy"
+              width="400"
+              height="400"
+              style={{ 
+                aspectRatio: '1/1',
+                backgroundColor: '#f3f4f6'
+              }}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           </div>
@@ -89,8 +96,8 @@ const ProductCard = ({ product, type = 'product' }) => {
         )}
       </div>
       
-      {/* Contenido del card con altura fija */}
-      <div className="p-2 sm:p-3 md:p-4 flex flex-col flex-grow">
+      {/* Contenido del card con altura fija y dimensiones reservadas */}
+      <div className="p-2 sm:p-3 md:p-4 flex flex-col flex-grow" style={{ minHeight: '200px' }}>
         <div className="mb-1 sm:mb-2 flex flex-wrap gap-0.5 sm:gap-1">
           {product.categoria && (
             <span className={`text-[10px] sm:text-xs font-medium text-${config.accent}-600 bg-${config.accent}-50 px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-full`}>

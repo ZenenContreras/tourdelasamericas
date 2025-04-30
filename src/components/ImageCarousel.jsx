@@ -34,27 +34,41 @@ const ImageCarousel = () => {
   return (
     <div className="relative w-full h-screen min-h-[500px] sm:min-h-[600px] md:min-h-[700px] lg:min-h-[800px] max-h-[900px] overflow-hidden">
       <div className="relative h-full">
-        {/* Fondo de carga con animación suave */}
-      <div 
-          className={`absolute inset-0 bg-gradient-to-br from-indigo-50 to-purple-50 transition-opacity duration-700 ${isImageLoaded ? 'opacity-0' : 'opacity-100'}`} 
-      />
-      
-        {/* Imagen de fondo con optimización */}
-        <picture>
+        {/* Fondo de carga con dimensiones fijas y placeholder */}
+        <div 
+          className={`absolute inset-0 bg-gradient-to-br from-indigo-50 to-purple-50 transition-opacity duration-700 ${isImageLoaded ? 'opacity-0' : 'opacity-100'}`}
+          style={{ 
+            aspectRatio: '16/9',
+            minHeight: 'inherit'
+          }}
+        />
+        
+        {/* Imagen de fondo con dimensiones reservadas y placeholder */}
+        <picture className="block w-full h-full">
           <source media="(min-width: 1024px)" srcSet="/fondoEscritorio.png" />
           <source media="(min-width: 768px)" srcSet="/fondoTablet.png" />
           <source media="(max-width: 767px)" srcSet="/fondoMobile2.png" />
-        <img
+          <img
             src={isMobile ? "/fondoMobile2.png" : isTablet ? "/fondoTablet.png" : "/fondoEscritorio.png"}
             alt="Origen America"
             className="w-full h-full object-cover filter blur-[0.5px]"
             loading="eager"
             fetchpriority="high"
+            width="1920"
+            height="1080"
+            style={{ 
+              aspectRatio: '16/9',
+              minHeight: 'inherit',
+              backgroundColor: '#f3f4f6'
+            }}
+          />
+        </picture>
+        
+        {/* Gradiente mejorado con dimensiones fijas */}
+        <div 
+          className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent"
+          style={{ minHeight: 'inherit' }}
         />
-      </picture>
-      
-        {/* Gradiente mejorado para mejor legibilidad */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent" />
       
         {/* Contenido principal con mejor organización */}
         <div className="absolute inset-0 flex flex-col justify-center px-3 sm:px-4 md:px-6 lg:px-8">

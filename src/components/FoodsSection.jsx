@@ -66,17 +66,31 @@ const FoodsSection = () => {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => handleRegionClick(region.id)}
+              style={{ minHeight: '320px' }}
             >
               <div className="absolute inset-0 w-full h-full overflow-hidden">
                 <img 
                   src={region.image} 
                   alt={region.name}
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 filter blur-[0.8px]"
+                  width="800"
+                  height="600"
+                  style={{ 
+                    aspectRatio: '4/3',
+                    backgroundColor: '#f3f4f6',
+                    minHeight: 'inherit'
+                  }}
                 />
                 
-                <div className={`absolute inset-0 bg-gradient-to-r ${region.color} opacity-10 transition-opacity duration-300 group-hover:opacity-20`}></div>
+                <div 
+                  className={`absolute inset-0 bg-gradient-to-r ${region.color} opacity-10 transition-opacity duration-300 group-hover:opacity-20`}
+                  style={{ minHeight: 'inherit' }}
+                ></div>
               
-                <div className="absolute inset-0 flex flex-col justify-center p-6 sm:p-8">
+                <div 
+                  className="absolute inset-0 flex flex-col justify-center p-6 sm:p-8"
+                  style={{ minHeight: 'inherit' }}
+                >
                   <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-3 sm:mb-4 drop-shadow-lg" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.7)' }}>
                     {region.name}
                   </h3>
