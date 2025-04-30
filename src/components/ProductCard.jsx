@@ -108,7 +108,7 @@ const ProductCard = ({ product, type = 'product' }) => {
         </p>
         
         {product.stock < 30 && (
-          <div className={`flex items-center gap-0.5 sm:gap-1 text-${config.accent}-600 bg-${config.accent}-50 px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-lg mb-2 sm:mb-3 text-[10px] sm:text-xs`}>
+          <div className={`flex items-center justify-center gap-0.5 sm:gap-1 text-${config.accent}-600 bg-${config.accent}-50 px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-lg mb-2 sm:mb-3 text-[10px] sm:text-xs`}>
             <AlertTriangle className="h-2.5 w-2.5 sm:h-3 sm:w-3 flex-shrink-0" />
             <span className="font-medium">
               {t(config.translations.lowStock, { stock: product.stock })}
@@ -130,7 +130,7 @@ const ProductCard = ({ product, type = 'product' }) => {
           </div>
           
           {isInCart(product.id) ? (
-            <div className="flex items-center  gap-1 w-full sm:w-auto">
+            <div className="flex items-center gap-1 w-full sm:w-auto">
               <span className="text-[10px] sm:text-xs text-gray-600 font-medium">
                 {getItemQuantity(product.id)}x
               </span>
