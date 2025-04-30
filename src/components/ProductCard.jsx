@@ -130,13 +130,13 @@ const ProductCard = ({ product, type = 'product' }) => {
           </div>
           
           {isInCart(product.id) ? (
-            <div className="flex items-center gap-0.5 sm:gap-1">
+            <div className="flex items-center gap-1">
               <span className="text-[10px] sm:text-xs text-gray-600 font-medium">
                 {getItemQuantity(product.id)}x
               </span>
               <button
                 onClick={handleAddToCart}
-                className="flex items-center gap-0.5 bg-green-600 text-white px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-lg hover:bg-green-700 transition-colors text-[10px] sm:text-xs font-medium disabled:bg-gray-400 disabled:cursor-not-allowed"
+                className="flex items-center justify-center gap-0.5 bg-green-600 text-white px-2 py-1 rounded-lg hover:bg-green-700 transition-colors text-[10px] sm:text-xs font-medium disabled:bg-gray-400 disabled:cursor-not-allowed min-w-[60px] sm:min-w-[70px]"
                 disabled={product.stock === 0}
               >
                 <ShoppingCart className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
@@ -146,7 +146,7 @@ const ProductCard = ({ product, type = 'product' }) => {
           ) : (
             <button
               onClick={handleAddToCart}
-              className={`flex items-center gap-0.5 bg-${config.button}-600 text-white px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-lg hover:bg-${config.button}-700 transition-all duration-300 text-[10px] sm:text-xs font-medium disabled:bg-gray-400 disabled:cursor-not-allowed min-w-[70px] sm:min-w-[80px] justify-center`}
+              className={`flex items-center justify-center gap-0.5 bg-${config.button}-600 text-white px-2 py-1 rounded-lg hover:bg-${config.button}-700 transition-all duration-300 text-[10px] sm:text-xs font-medium disabled:bg-gray-400 disabled:cursor-not-allowed min-w-[60px] sm:min-w-[70px]`}
               disabled={product.stock === 0}
             >
               <ShoppingCart className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
