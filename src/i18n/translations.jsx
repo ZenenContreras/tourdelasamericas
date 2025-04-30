@@ -111,7 +111,10 @@ export const translations = {
     categories: {
       products: 'Products',
       foods: 'Foods',
-      boutiqueSouvenirs: 'Boutique & Souvenirs'
+      boutiqueSouvenirs: 'Boutique Souvenirs',
+      productsDescription: 'Unique products from Latin America, from crafts to modern innovations.',
+      foodsDescription: 'Latin American gastronomy with authentic recipes and traditional flavors.',
+      boutiqueDescription: 'Unique souvenirs and gifts that capture the essence of each country.'
     },
     auth: {
       login: {
@@ -533,7 +536,10 @@ export const translations = {
     categories: {
       products: 'Productos',
       foods: 'Comidas',
-      boutiqueSouvenirs: 'Boutique y Recuerdos'
+      boutiqueSouvenirs: 'Boutique Souvenirs',
+      productsDescription: 'Productos únicos de América Latina, desde artesanías hasta innovaciones modernas.',
+      foodsDescription: 'Gastronomía latinoamericana con recetas auténticas y sabores tradicionales.',
+      boutiqueDescription: 'Souvenirs y regalos únicos que capturan la esencia de cada país.'
     },
     auth: {
       login: {
@@ -954,8 +960,11 @@ export const translations = {
     scrollDown: 'Défiler vers le Bas',
     categories: {
       products: 'Produits',
-      foods: 'Aliments',
-      boutiqueSouvenirs: 'Boutique & Souvenirs'
+      foods: 'Cuisines',
+      boutiqueSouvenirs: 'Boutique Souvenirs',
+      productsDescription: 'Produits uniques d\'Amérique latine, de l\'artisanat aux innovations modernes.',
+      foodsDescription: 'Gastronomie latino-américaine avec des recettes authentiques et des saveurs traditionnelles.',
+      boutiqueDescription: 'Souvenirs et cadeaux uniques qui capturent l\'essence de chaque pays.'
     },
     auth: {
       login: {
