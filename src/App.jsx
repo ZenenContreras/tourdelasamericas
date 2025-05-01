@@ -127,6 +127,20 @@ function App() {
   // Referencias para cada sección
   const homeRef = useRef(null);
 
+  // Determinar la sección actual basada en la ruta
+  useEffect(() => {
+    const path = location.pathname;
+    if (path === "/" || path === "/home") {
+      setCurrentSection('home');
+    } else if (path === "/productos") {
+      setCurrentSection('products');
+    } else if (path === "/comidas") {
+      setCurrentSection('foods');
+    } else if (path === "/boutique") {
+      setCurrentSection('boutique');
+    }
+  }, [location.pathname]);
+
   // Memoizar la función de scroll
   const scrollToRef = useCallback((ref) => {
     if (ref && ref.current) {
@@ -139,6 +153,11 @@ function App() {
         behavior: 'smooth'
       });
     }
+  }, []);
+
+  // Memoizar la función para actualizar la sección actual
+  const handleSectionChange = useCallback((section) => {
+    setCurrentSection(section);
   }, []);
 
   // Memoizar la configuración de SEO
@@ -181,11 +200,12 @@ function App() {
           {/* SEO */}
           <SEO {...currentSectionConfig} />
 
-          {/* Navbar */}
+          {/* Navbar - pasando la función setCurrentSection */}
           <Navbar
             scrollToRef={scrollToRef}
             homeRef={homeRef}
             currentSection={currentSection}
+            setCurrentSection={handleSectionChange}
           />
 
           {/* Rutas con dimensiones predefinidas mínimas para evitar CLS */}

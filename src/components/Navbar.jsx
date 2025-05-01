@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Menu, X, ChevronRight, ShoppingCart, User, Heart, LogOut, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -15,8 +15,9 @@ import AuthModal from './AuthModal';
  * @param {Function} props.scrollToRef - Función para desplazamiento a referencias
  * @param {Object} props.homeRef - Referencia a la sección de inicio
  * @param {string} props.currentSection - Sección actual para resaltar en la navegación
+ * @param {Function} props.setCurrentSection - Función para actualizar la sección actual
  */
-const Navbar = ({ scrollToRef, homeRef, currentSection = 'home' }) => {
+const Navbar = ({ scrollToRef, homeRef, currentSection = 'home', setCurrentSection }) => {
   const { t, language, setLanguage } = useLanguage();
   const { user, signOut } = useAuth();
   const location = useLocation();
@@ -51,6 +52,20 @@ const Navbar = ({ scrollToRef, homeRef, currentSection = 'home' }) => {
   // Verificar si estamos en la página de inicio para ajustar la transparencia
   const isHomePage = location.pathname === "/" || location.pathname === "/home";
 
+  // Actualizar la sección actual basada en la ruta
+  useEffect(() => {
+    const path = location.pathname;
+    if (path === "/" || path === "/home") {
+      setCurrentSection && setCurrentSection('home');
+    } else if (path === "/productos") {
+      setCurrentSection && setCurrentSection('products');
+    } else if (path === "/comidas") {
+      setCurrentSection && setCurrentSection('foods');
+    } else if (path === "/boutique") {
+      setCurrentSection && setCurrentSection('boutique');
+    }
+  }, [location.pathname, setCurrentSection]);
+
   // Verificar si el usuario está autenticado
   useEffect(() => {
     console.log('Estado del usuario:', user); // Para depuración
@@ -72,7 +87,8 @@ const Navbar = ({ scrollToRef, homeRef, currentSection = 'home' }) => {
   useEffect(() => {
     const checkDevice = () => {
       const width = window.innerWidth;
-      setIsTablet(width >= 768 && width < 1024);
+      // Usar un punto de corte más bajo para mostrar antes el menú de tablets
+      setIsTablet(width >= 640 && width < 1024);
     };
     
     checkDevice();
@@ -92,30 +108,63 @@ const Navbar = ({ scrollToRef, homeRef, currentSection = 'home' }) => {
     };
   }, [isMobileMenuOpen]);
 
-  const handleNavClick = (id) => {
+  // Función mejorada para manejar clics en la navegación
+  const handleNavClick = useCallback((id) => {
+    let targetPath = '/';
+    
     switch (id) {
       case 'home':
-        navigate('/');
+        targetPath = '/';
+        setCurrentSection && setCurrentSection('home');
         break;
       case 'products':
-        navigate('/productos');
+        targetPath = '/productos';
+        setCurrentSection && setCurrentSection('products');
         break;
       case 'foods':
-        navigate('/comidas');
+        targetPath = '/comidas';
+        setCurrentSection && setCurrentSection('foods');
         break;
       case 'boutique':
-        navigate('/boutique');
+        targetPath = '/boutique';
+        setCurrentSection && setCurrentSection('boutique');
         break;
       default:
-        navigate('/');
+        targetPath = '/';
+        setCurrentSection && setCurrentSection('home');
     }
+    
+    // Si ya estamos en la misma ruta, solo hacer scroll al inicio
+    if (location.pathname === targetPath) {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    } else {
+      // Navegar a la nueva ruta y después hacer scroll al inicio
+      navigate(targetPath);
+      // Después de la navegación, scroll al inicio
+      setTimeout(() => {
+        window.scrollTo({
+          top: 0,
+          behavior: 'auto'
+        });
+      }, 100);
+    }
+    
+    // Cerrar el menú móvil
     setIsMobileMenuOpen(false);
-  };
+  }, [navigate, location.pathname, setCurrentSection]);
 
-  const handleLogoClick = () => {
+  const handleLogoClick = useCallback(() => {
     navigate('/');
+    setCurrentSection && setCurrentSection('home');
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
     setIsMobileMenuOpen(false);
-  };
+  }, [navigate, setCurrentSection]);
 
   const navLinks = [
     { id: 'home', label: t('nav.home') },
@@ -124,9 +173,12 @@ const Navbar = ({ scrollToRef, homeRef, currentSection = 'home' }) => {
     { id: 'boutique', label: t('nav.boutique') }
   ];
 
-  // Clases para los enlaces de navegación
-  const activeNavLinkClass = "text-indigo-600 font-medium";
-  const normalNavLinkClass = "text-gray-700 hover:text-indigo-600 transition-colors duration-200";
+  // Clases mejoradas para los enlaces de navegación con transición más suave
+  const activeNavLinkClass = "text-indigo-600 font-medium relative";
+  const normalNavLinkClass = "text-gray-700 hover:text-indigo-600 transition-all duration-300 hover:bg-indigo-50 relative";
+  
+  // Crear un ID único para el layoutId de la animación de subrayado
+  const underlineLayoutId = "nav-underline";
   
   // Animaciones del menú móvil
   const mobileMenuVariants = {
@@ -314,42 +366,50 @@ const Navbar = ({ scrollToRef, homeRef, currentSection = 'home' }) => {
            null;
   };
 
-  const handleSignOut = async () => {
-    try {
-      await signOut();
-      setIsUserMenuOpen(false);
-      setIsMobileMenuOpen(false);
-      navigate('/');
-    } catch (error) {
-      console.error('Error al cerrar sesión:', error);
-    }
-  };
-
   const handleProfileClick = () => {
     navigate('/perfil');
     setIsUserMenuOpen(false);
     setIsMobileMenuOpen(false);
+    // Scroll al inicio
+    window.scrollTo({ top: 0, behavior: 'auto' });
   };
 
   const handleFavoritesClick = () => {
     navigate('/favoritos');
     setIsUserMenuOpen(false);
     setIsMobileMenuOpen(false);
+    // Scroll al inicio
+    window.scrollTo({ top: 0, behavior: 'auto' });
   };
 
   const handleOrdersClick = () => {
     navigate('/pedidos');
     setIsUserMenuOpen(false);
     setIsMobileMenuOpen(false);
+    // Scroll al inicio
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      setIsUserMenuOpen(false);
+      setIsMobileMenuOpen(false);
+      navigate('/');
+      // Scroll al inicio
+      window.scrollTo({ top: 0, behavior: 'auto' });
+    } catch (error) {
+      console.error('Error al cerrar sesión:', error);
+    }
   };
 
   const renderUserMenu = () => (
     <div className="relative">
       <button
         onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-        className="flex items-center space-x-2 focus:outline-none"
+        className="flex items-center space-x-1 lg:space-x-2 focus:outline-none"
       >
-        <div className="h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center overflow-hidden border-2 border-indigo-200">
+        <div className="h-7 w-7 lg:h-8 lg:w-8 rounded-full bg-indigo-100 flex items-center justify-center overflow-hidden border-2 border-indigo-200">
           {getUserAvatar(user) ? (
             <img 
               src={getUserAvatar(user)} 
@@ -361,12 +421,12 @@ const Navbar = ({ scrollToRef, homeRef, currentSection = 'home' }) => {
               }}
             />
           ) : (
-            <span className="text-indigo-600 font-medium">
+            <span className="text-indigo-600 font-medium text-xs lg:text-sm">
               {user.email.charAt(0).toUpperCase()}
             </span>
           )}
         </div>
-        <ChevronDown className={`h-4 w-4 text-gray-600 transition-transform ${isUserMenuOpen ? 'rotate-180' : ''}`} />
+        <ChevronDown className={`h-3 w-3 lg:h-4 lg:w-4 text-gray-600 transition-transform ${isUserMenuOpen ? 'rotate-180' : ''}`} />
       </button>
 
       <AnimatePresence>
@@ -379,31 +439,31 @@ const Navbar = ({ scrollToRef, homeRef, currentSection = 'home' }) => {
           >
             <button
               onClick={handleProfileClick}
-              className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              className="flex items-center w-full px-4 py-2 text-xs lg:text-sm text-gray-700 hover:bg-gray-100"
             >
-              <User className="h-4 w-4 mr-2" />
+              <User className="h-3.5 w-3.5 lg:h-4 lg:w-4 mr-2" />
               {t('auth.userMenu.profile')}
             </button>
             <button
               onClick={handleOrdersClick}
-              className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              className="flex items-center w-full px-4 py-2 text-xs lg:text-sm text-gray-700 hover:bg-gray-100"
             >
-              <ShoppingCart className="h-4 w-4 mr-2" />
+              <ShoppingCart className="h-3.5 w-3.5 lg:h-4 lg:w-4 mr-2" />
               {t('auth.userMenu.orders')}
             </button>
             <button
               onClick={handleFavoritesClick}
-              className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              className="flex items-center w-full px-4 py-2 text-xs lg:text-sm text-gray-700 hover:bg-gray-100"
             >
-              <Heart className="h-4 w-4 mr-2" />
+              <Heart className="h-3.5 w-3.5 lg:h-4 lg:w-4 mr-2" />
               {t('auth.userMenu.favorites')}
             </button>
             <div className="border-t border-gray-100 my-1"></div>
             <button
               onClick={handleSignOut}
-              className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+              className="flex items-center w-full px-4 py-2 text-xs lg:text-sm text-red-600 hover:bg-red-50"
             >
-              <LogOut className="h-4 w-4 mr-2" />
+              <LogOut className="h-3.5 w-3.5 lg:h-4 lg:w-4 mr-2" />
               {t('auth.userMenu.logout')}
             </button>
           </motion.div>
@@ -426,11 +486,11 @@ const Navbar = ({ scrollToRef, homeRef, currentSection = 'home' }) => {
         transition={{ duration: 0.2 }}
         role="banner"
       >
-        <nav className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8" aria-label="Navegación principal">
+        <nav className="max-w-7xl mx-auto px-2 sm:px-3 md:px-4 lg:px-6" aria-label="Navegación principal">
           <div className="flex justify-between items-center h-14 sm:h-16 md:h-16">
             {/* Logo */}
             <motion.div 
-              className="flex items-center relative"
+              className="flex items-center relative z-10 flex-shrink-0"
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.95 }}
               initial={{ opacity: 0, x: -20 }}
@@ -450,7 +510,7 @@ const Navbar = ({ scrollToRef, homeRef, currentSection = 'home' }) => {
                   <motion.img 
                     src="/LogoAunClic.svg" 
                     alt="Logo A un clic" 
-                    className="h-[70px] w-[70px] sm:h-22 sm:w-22 md:h-22 md:w-22 filter drop-shadow-md" 
+                    className="h-[60px] w-[60px] xs:h-[60px] xs:w-[60px] sm:h-[65px] sm:w-[65px] md:h-[70px] md:w-[70px] filter drop-shadow-md" 
                     width="88"
                     height="88"
                     whileHover={{ 
@@ -459,9 +519,9 @@ const Navbar = ({ scrollToRef, homeRef, currentSection = 'home' }) => {
                     }}
                   />
                 </div>
-                <div className="-ml-4 flex flex-col mt-1">
-                  <span className="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600 text-base sm:text-lg md:text-xl lg:text-2xl tracking-tight leading-none">
-                    Á un clic la
+                <div className="-ml-2 xs:-ml-3 flex flex-col flex-start mt-1">
+                  <span className="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600 text-lg xs:text-sm sm:text-base md:text-lg lg:text-xl tracking-tight leading-none">
+                    A un clic la
                   </span>
 
                   <motion.div 
@@ -474,30 +534,46 @@ const Navbar = ({ scrollToRef, homeRef, currentSection = 'home' }) => {
             </motion.div>
             
             {/* Navegación de escritorio */}
-            <div className="hidden md:flex items-center space-x-6 lg:space-x-8">
-              <ul className="flex space-x-4 lg:space-x-6">
+            <div className="hidden sm:hidden md:flex items-center justify-end space-x-3 lg:space-x-6 xl:space-x-8 flex-grow ml-4">
+              <ul className="flex space-x-2 lg:space-x-4 xl:space-x-6">
                 {navLinks.map((link) => (
                   <li key={link.id}>
                     <button
                       onClick={() => handleNavClick(link.id)}
-                      className={`${currentSection === link.id ? activeNavLinkClass : normalNavLinkClass} px-2.5 py-1.5 font-medium rounded-md text-sm lg:text-base xl:text-lg`}
+                      className={`${currentSection === link.id ? activeNavLinkClass : normalNavLinkClass} px-2 py-1.5 font-medium rounded-md text-sm lg:text-base xl:text-lg transition-all duration-300`}
                       aria-current={currentSection === link.id ? 'page' : undefined}
                     >
-                      {link.label}
+                      <span className="relative">
+                        {link.label}
+                        {currentSection === link.id && (
+                          <motion.div 
+                            className="absolute -bottom-1 left-0 w-full h-[3px] bg-gradient-to-r from-indigo-500 to-indigo-600 rounded-full"
+                            layoutId={underlineLayoutId}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ 
+                              type: "spring", 
+                              stiffness: 500, 
+                              damping: 30,
+                              mass: 1
+                            }}
+                          />
+                        )}
+                      </span>
                     </button>
                   </li>
                 ))}
               </ul>
 
               {/* Botones de acción */}
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-2 lg:space-x-4">
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="relative p-2 text-gray-700 hover:text-indigo-600 transition-colors"
+                  className="relative p-1.5 lg:p-2 text-gray-700 hover:text-indigo-600 transition-colors"
                   aria-label="Carrito de compras"
                 >
-                  <ShoppingCart className="h-6 w-6" />
+                  <ShoppingCart className="h-5 w-5 lg:h-6 lg:w-6" />
                   <span className="absolute -top-1 -right-1 bg-indigo-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                     0
                   </span>
@@ -510,11 +586,11 @@ const Navbar = ({ scrollToRef, homeRef, currentSection = 'home' }) => {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => setIsAuthModalOpen(true)}
-                    className="flex items-center space-x-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+                    className="flex items-center space-x-1.5 px-3 py-1.5 lg:px-4 lg:py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
                     aria-label="Iniciar sesión"
                   >
-                    <User className="h-6 w-6" />
-                    <span className="text-sm font-medium">{t('auth.login.submit')}</span>
+                    <User className="h-5 w-5 lg:h-6 lg:w-6" />
+                    <span className="text-xs lg:text-sm font-medium">{t('auth.login.submit')}</span>
                   </motion.button>
                 )}
 
@@ -522,16 +598,65 @@ const Navbar = ({ scrollToRef, homeRef, currentSection = 'home' }) => {
               </div>
             </div>
             
+            {/* Menú para tablets (640-1023px) - Versión simplificada */}
+            <div className="hidden sm:flex md:hidden items-center justify-end space-x-2 flex-grow ml-1">
+              <ul className="flex space-x-1">
+                {navLinks.map((link) => (
+                  <li key={link.id}>
+                    <button
+                      onClick={() => handleNavClick(link.id)}
+                      className={`${currentSection === link.id ? 'text-indigo-600 font-medium' : 'text-gray-700 hover:text-indigo-600'} px-1 py-0.5 text-xs rounded-md transition-all duration-300`}
+                      aria-current={currentSection === link.id ? 'page' : undefined}
+                    >
+                      <span className="relative whitespace-nowrap">
+                        {link.label}
+                        {currentSection === link.id && (
+                          <motion.div 
+                            className="absolute -bottom-1 left-0 w-full h-[2px] bg-gradient-to-r from-indigo-500 to-indigo-600 rounded-full"
+                            layoutId="tablet-underline"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ 
+                              type: "spring", 
+                              stiffness: 500, 
+                              damping: 30,
+                              mass: 1
+                            }}
+                          />
+                        )}
+                      </span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+
+              <div className="flex items-center space-x-1">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="relative p-1 text-gray-700 hover:text-indigo-600 transition-colors"
+                  aria-label="Carrito de compras"
+                >
+                  <ShoppingCart className="h-4 w-4" />
+                  <span className="absolute -top-1 -right-1 bg-indigo-600 text-white text-[8px] rounded-full h-3.5 w-3.5 flex items-center justify-center">
+                    0
+                  </span>
+                </motion.button>
+
+                <LanguageSelector isMobile={true} />
+              </div>
+            </div>
+            
             {/* Botones móviles */}
-            <div className="flex md:hidden items-center space-x-2">
+            <div className="flex sm:hidden items-center space-x-1.5">
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="relative p-2 text-gray-700 hover:text-indigo-600 transition-colors"
+                className="relative p-1.5 text-gray-700 hover:text-indigo-600 transition-colors"
                 aria-label="Carrito de compras"
               >
                 <ShoppingCart className="h-5 w-5" />
-                <span className="absolute -top-1 -right-1 bg-indigo-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 bg-indigo-600 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center text-[10px]">
                   0
                 </span>
               </motion.button>
@@ -547,9 +672,9 @@ const Navbar = ({ scrollToRef, homeRef, currentSection = 'home' }) => {
                 aria-label={isMobileMenuOpen ? "Cerrar menú" : "Abrir menú"}
               >
                 {isMobileMenuOpen ? (
-                  <X className="h-7 w-7" aria-hidden="true" />
+                  <X className="h-6 w-6" aria-hidden="true" />
                 ) : (
-                  <Menu className="h-7 w-7" aria-hidden="true" />
+                  <Menu className="h-6 w-6" aria-hidden="true" />
                 )}
               </button>
             </div>
@@ -575,7 +700,7 @@ const Navbar = ({ scrollToRef, homeRef, currentSection = 'home' }) => {
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div 
-            className="fixed top-14 sm:top-16 left-0 right-0 bg-white z-40 overflow-hidden shadow-lg"
+            className="fixed top-14 left-0 right-0 bg-white z-40 overflow-hidden shadow-lg"
             id="mobile-menu"
             variants={mobileMenuVariants}
             initial="closed"
@@ -593,13 +718,13 @@ const Navbar = ({ scrollToRef, homeRef, currentSection = 'home' }) => {
                   <motion.li key={link.id} variants={itemVariants}>
                     <button
                       onClick={() => handleNavClick(link.id)}
-                      className={`${currentSection === link.id ? 'text-indigo-600 bg-indigo-50' : 'text-gray-800 hover:bg-gray-50'} block w-full text-left px-4 py-3 rounded-md font-medium transition-colors text-base`}
+                      className={`${currentSection === link.id ? 'text-indigo-600 bg-indigo-50 font-medium' : 'text-gray-800 hover:bg-gray-50'} block w-full text-left px-4 py-3 rounded-md transition-colors text-base`}
                       aria-current={currentSection === link.id ? 'page' : undefined}
                     >
                       <span className="flex items-center">
                         {link.label}
                         {currentSection === link.id && (
-                          <ChevronRight className="ml-2 h-5 w-5" aria-hidden="true" />
+                          <ChevronRight className="ml-2 h-5 w-5 text-indigo-600" aria-hidden="true" />
                         )}
                       </span>
                     </button>
@@ -642,6 +767,8 @@ const Navbar = ({ scrollToRef, homeRef, currentSection = 'home' }) => {
                     onClick={() => {
                       navigate('/perfil');
                       setIsMobileMenuOpen(false);
+                      // Scroll al inicio
+                      window.scrollTo({ top: 0, behavior: 'auto' });
                     }}
                     className="w-full flex items-center space-x-2 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-md"
                   >
@@ -653,6 +780,8 @@ const Navbar = ({ scrollToRef, homeRef, currentSection = 'home' }) => {
                     onClick={() => {
                       navigate('/pedidos');
                       setIsMobileMenuOpen(false);
+                      // Scroll al inicio
+                      window.scrollTo({ top: 0, behavior: 'auto' });
                     }}
                     className="w-full flex items-center space-x-2 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-md"
                   >
@@ -664,6 +793,8 @@ const Navbar = ({ scrollToRef, homeRef, currentSection = 'home' }) => {
                     onClick={() => {
                       navigate('/favoritos');
                       setIsMobileMenuOpen(false);
+                      // Scroll al inicio
+                      window.scrollTo({ top: 0, behavior: 'auto' });
                     }}
                     className="w-full flex items-center space-x-2 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-md"
                   >
@@ -675,6 +806,9 @@ const Navbar = ({ scrollToRef, homeRef, currentSection = 'home' }) => {
                     onClick={() => {
                       signOut();
                       setIsMobileMenuOpen(false);
+                      navigate('/');
+                      // Scroll al inicio
+                      window.scrollTo({ top: 0, behavior: 'auto' });
                     }}
                     className="w-full flex items-center space-x-2 px-4 py-3 text-red-600 hover:bg-red-50 rounded-md"
                   >
