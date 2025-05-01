@@ -6,16 +6,13 @@ import { useAuth } from './contexts/AuthContext';
 import { CartProvider } from './contexts/CartContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import ImageCarousel from './components/ImageCarousel';
 import SEO from './components/SEO';
 import LoadingScreen from './components/LoadingScreen';
 import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/react"
 
 // Carga perezosa de componentes con prefetch
-const ProductsSection = lazy(() => import(/* webpackPrefetch: true */ './components/ProductsSection'));
-const FoodsSection = lazy(() => import(/* webpackPrefetch: true */ './components/FoodsSection'));
-const BoutiqueSection = lazy(() => import(/* webpackPrefetch: true */ './components/BoutiqueSection'));
+const LandingPage = lazy(() => import(/* webpackPrefetch: true */ './pages/LandingPage'));
 const ProductsPage = lazy(() => import(/* webpackPrefetch: true */ './pages/ProductsPage'));
 const FoodPage = lazy(() => import(/* webpackPrefetch: true */ './pages/FoodPage'));
 const BoutiquePage = lazy(() => import(/* webpackPrefetch: true */ './pages/BoutiquePage'));
@@ -95,9 +92,6 @@ function App() {
 
   // Referencias para cada sección
   const homeRef = useRef(null);
-  const productsRef = useRef(null);
-  const foodsRef = useRef(null);
-  const boutiqueRef = useRef(null);
 
   // Memoizar la función de scroll
   const scrollToRef = useCallback((ref) => {
@@ -177,20 +171,9 @@ function App() {
               <Route
                 path="/"
                 element={
-                  <>
-                    <div ref={homeRef}>
-                      <ImageCarousel />
-                    </div>
-                    <div ref={productsRef}>
-                      <ProductsSection />
-                    </div>
-                    <div ref={foodsRef}>
-                      <FoodsSection />
-                    </div>
-                    <div ref={boutiqueRef}>
-                      <BoutiqueSection />
-                    </div>
-                  </>
+                  <div ref={homeRef}>
+                    <LandingPage />
+                  </div>
                 }
               />
               <Route path="/productos" element={<ProductsPage />} />
