@@ -16,8 +16,15 @@ export default function FoodPage() {
     search: '',
     minPrice: '',
     maxPrice: '',
-    sortBy: 'nameAsc'
+    sortBy: 'nameAsc',
+    subcategory: ''
   });
+
+  const subcategories = [
+    { id: '4', name: t('food.filters.subcategories.northAmerica') },
+    { id: '5', name: t('food.filters.subcategories.centralAmerica') },
+    { id: '6', name: t('food.filters.subcategories.southAmerica') }
+  ];
 
   useEffect(() => {
     loadFood();
@@ -54,7 +61,8 @@ export default function FoodPage() {
       search: '',
       minPrice: '',
       maxPrice: '',
-      sortBy: 'nameAsc'
+      sortBy: 'nameAsc',
+      subcategory: ''
     });
     loadFood();
   };
@@ -64,7 +72,8 @@ export default function FoodPage() {
                         item.descripcion.toLowerCase().includes(filters.search.toLowerCase());
     const matchesMinPrice = !filters.minPrice || item.precio >= Number(filters.minPrice);
     const matchesMaxPrice = !filters.maxPrice || item.precio <= Number(filters.maxPrice);
-    return matchesSearch && matchesMinPrice && matchesMaxPrice;
+    const matchesSubcategory = !filters.subcategory || item.subcategoria_id === Number(filters.subcategory);
+    return matchesSearch && matchesMinPrice && matchesMaxPrice && matchesSubcategory;
   }).sort((a, b) => {
     switch (filters.sortBy) {
       case 'nameAsc':
@@ -112,7 +121,7 @@ export default function FoodPage() {
               transition={{ duration: 0.3 }}
               className="bg-white rounded-lg shadow-lg p-4 mb-8"
             >
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     {t('food.search')}
@@ -124,6 +133,24 @@ export default function FoodPage() {
                     placeholder={t('food.searchPlaceholder')}
                     className="w-full p-2 border rounded-md"
                   />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    {t('food.filters.subcategory')}
+                  </label>
+                  <select
+                    value={filters.subcategory}
+                    onChange={(e) => handleFilterChange('subcategory', e.target.value)}
+                    className="w-full p-2 border rounded-md"
+                  >
+                    <option value="">{t('food.filters.allSubcategories')}</option>
+                    {subcategories.map(subcat => (
+                      <option key={subcat.id} value={subcat.id}>
+                        {subcat.name}
+                      </option>
+                    ))}
+                  </select>
                 </div>
 
                 <div>

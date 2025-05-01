@@ -248,6 +248,13 @@ export const translations = {
           nameDesc: "Name (Z-A)",
           priceAsc: "Price (Low to High)",
           priceDesc: "Price (High to Low)"
+        },
+        subcategory: "Subcategory",
+        allSubcategories: "All subcategories",
+        subcategories: {
+          flour: "Flour and dough",
+          sauces: "Sauces and dressings",
+          snacks: "Packages and snacks"
         }
       },
       categories: {
@@ -312,6 +319,13 @@ export const translations = {
         small: "Small",
         medium: "Medium",
         large: "Large"
+      },
+      subcategory: "Region",
+      allSubcategories: "All regions",
+      subcategories: {
+        northAmerica: "North America",
+        centralAmerica: "Central America",
+        southAmerica: "South America"
       }
     },
     boutique: {
@@ -359,6 +373,13 @@ export const translations = {
         leather: "Leather",
         wood: "Wood",
         ceramic: "Ceramic"
+      },
+      subcategory: "Category",
+      allSubcategories: "All categories",
+      subcategories: {
+        clothing: "Clothing",
+        accessories: "Accessories",
+        souvenirs: "Souvenirs"
       }
     },
     cart: {
@@ -673,6 +694,13 @@ export const translations = {
           nameDesc: "Nombre (Z-A)",
           priceAsc: "Precio (Menor a Mayor)",
           priceDesc: "Precio (Mayor a Menor)"
+        },
+        subcategory: "Subcategoría",
+        allSubcategories: "Todas las subcategorías",
+        subcategories: {
+          flour: "Harinas y masas",
+          sauces: "Salsas y aderezos",
+          snacks: "Paquetes y snacks"
         }
       },
       categories: {
@@ -737,41 +765,48 @@ export const translations = {
         small: "Small",
         medium: "Medium",
         large: "Large"
+      },
+      subcategory: "Región",
+      allSubcategories: "Todas las regiones",
+      subcategories: {
+        northAmerica: "Norte América",
+        centralAmerica: "Centro América",
+        southAmerica: "Sur América"
       }
     },
     boutique: {
       title: "Boutique y Souvenirs",
       description: "Descubre artículos únicos y souvenirs de las Américas",
       filters: "Filtros",
-      search: "Buscar artículos...",
-      searchPlaceholder: "Buscar por nombre...",
-      minPrice: "Precio mínimo",
-      maxPrice: "Precio máximo",
-      sortBy: "Ordenar por",
+      search: "Rechercher des articles...",
+      searchPlaceholder: "Rechercher par nom...",
+      minPrice: "Prix minimum",
+      maxPrice: "Prix maximum",
+      sortBy: "Trier par",
       sortOptions: {
-        nameAsc: "Nombre (A-Z)",
-        nameDesc: "Nombre (Z-A)",
-        priceAsc: "Precio (menor a mayor)",
-        priceDesc: "Precio (mayor a menor)"
+        nameAsc: "Nom (A-Z)",
+        nameDesc: "Nom (Z-A)",
+        priceAsc: "Prix (croissant)",
+        priceDesc: "Prix (décroissant)"
       },
-      resetFilters: "Restablecer filtros",
-      noItems: "No hay artículos disponibles",
-      noItemsMessage: "No se encontraron artículos que coincidan con los filtros seleccionados",
-      lowStock: "¡Quedan pocas unidades!",
-      outOfStock: "Sin stock",
-      addToCart: "Agregar al carrito",
-      errorLoading: "Error al cargar los artículos",
+      resetFilters: "Réinitialiser les filtres",
+      noItems: "Aucun article disponible",
+      noItemsMessage: "Aucun article ne correspond aux filtres sélectionnés",
+      lowStock: "Plus que quelques unités !",
+      outOfStock: "En rupture de stock",
+      addToCart: "Ajouter au panier",
+      errorLoading: "Erreur lors du chargement des articles",
       categories: {
-        all: "Todos los artículos",
+        all: "Tous les articles",
         clothing: "Ropa",
         accessories: "Accessoires",
         crafts: "Artesanías",
         souvenirs: "Souvenirs"
       },
       stock: {
-        available: "Disponibles: {{stock}}",
-        lowStock: "¡Últimas unidades!",
-        outOfStock: "Agotado"
+        available: "Disponibles : {{stock}}",
+        lowStock: "Dernières unités !",
+        outOfStock: "En rupture de stock"
       },
       collections: {
         traditional: "Traditional",
@@ -784,6 +819,13 @@ export const translations = {
         leather: "Leather",
         wood: "Wood",
         ceramic: "Ceramic"
+      },
+      subcategory: "Categoría",
+      allSubcategories: "Todas las categorías",
+      subcategories: {
+        clothing: "Ropa",
+        accessories: "Accesorios",
+        souvenirs: "Souvenirs"
       }
     },
     cart: {
@@ -809,12 +851,12 @@ export const translations = {
       errorRemoving: "Error al eliminar del carrito",
       errorClearing: "Error al vaciar el carrito",
       addMore: "Agregar más",
-      itemCount: "{{count}} items",
-      itemCountSingular: "1 item",
+      itemCount: "{{count}} articles",
+      itemCountSingular: "1 article",
       confirmRemove: "¿Estás seguro que deseas eliminar este producto?",
       confirmClear: "¿Estás seguro que deseas vaciar el carrito?",
-      stockLimit: "Stock disponible: {{stock}}",
-      outOfStock: "Agotado"
+      stockLimit: "Stock disponible : {{stock}}",
+      outOfStock: "En rupture de stock"
     },
     common: {
       featured: "Destacado",
@@ -835,17 +877,17 @@ export const translations = {
     productCard: {
       addToCart: "Agregar al carrito",
       addMore: "Agregar más",
-      outOfStock: "Agotado",
-      lowStock: "¡Últimas unidades!",
+      outOfStock: "En rupture de stock",
+      lowStock: "Dernières unités !",
       featured: "Destacado",
       category: "Categoría",
-      price: "Precio",
-      previousPrice: "Precio anterior",
-      quantity: "Cantidad",
+      price: "Prix",
+      previousPrice: "Prix précédent",
+      quantity: "Quantité",
       stock: {
-        available: "Disponibles: {{stock}}",
-        lowStock: "¡Últimas unidades!",
-        outOfStock: "Agotado"
+        available: "Disponibles : {{stock}}",
+        lowStock: "Dernières unités !",
+        outOfStock: "En rupture de stock"
       }
     }
   },
@@ -1098,6 +1140,13 @@ export const translations = {
           nameDesc: "Nom (Z-A)",
           priceAsc: "Prix (croissant)",
           priceDesc: "Prix (décroissant)"
+        },
+        subcategory: "Sous-catégorie",
+        allSubcategories: "Toutes les sous-catégories",
+        subcategories: {
+          flour: "Farines et pâtes",
+          sauces: "Sauces et vinaigrettes",
+          snacks: "Paquets et collations"
         }
       },
       categories: {
@@ -1162,6 +1211,13 @@ export const translations = {
         small: "Small",
         medium: "Medium",
         large: "Large"
+      },
+      subcategory: "Région",
+      allSubcategories: "Toutes les régions",
+      subcategories: {
+        northAmerica: "Amérique du Nord",
+        centralAmerica: "Amérique Centrale",
+        southAmerica: "Amérique du Sud"
       }
     },
     boutique: {
@@ -1209,6 +1265,13 @@ export const translations = {
         leather: "Leather",
         wood: "Wood",
         ceramic: "Ceramic"
+      },
+      subcategory: "Catégorie",
+      allSubcategories: "Toutes les catégories",
+      subcategories: {
+        clothing: "Vêtements",
+        accessories: "Accessoires",
+        souvenirs: "Souvenirs"
       }
     },
     cart: {

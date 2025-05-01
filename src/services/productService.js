@@ -23,6 +23,7 @@ export const loadProducts = async (filters = {}, categoria_id = null) => {
         stock,
         imagen_principal,
         categoria_id,
+        subcategoria_id,
         categorias (
           id,
           nombre
@@ -44,8 +45,8 @@ export const loadProducts = async (filters = {}, categoria_id = null) => {
     if (filters.search) {
       query = query.ilike('nombre', `%${filters.search}%`);
     }
-    if (filters.category) {
-      query = query.eq('categoria_id', filters.category);
+    if (filters.subcategory) {
+      query = query.eq('subcategoria_id', parseInt(filters.subcategory));
     }
 
     // Aplicar ordenamiento
@@ -76,7 +77,8 @@ export const loadProducts = async (filters = {}, categoria_id = null) => {
       return {
         ...processedItem,
         precio: parseFloat(item.precio),
-        categoria: item.categorias?.nombre || null
+        categoria: item.categorias?.nombre || null,
+        subcategoria_id: item.subcategoria_id
       };
     }));
 

@@ -17,8 +17,15 @@ const ProductsPage = () => {
     search: '',
     minPrice: '',
     maxPrice: '',
-    sortBy: 'nameAsc'
+    sortBy: 'nameAsc',
+    subcategory: ''
   });
+
+  const subcategories = [
+    { id: '1', name: t('products.filters.subcategories.flour') },
+    { id: '2', name: t('products.filters.subcategories.sauces') },
+    { id: '3', name: t('products.filters.subcategories.snacks') }
+  ];
 
   useEffect(() => {
     loadProducts();
@@ -47,7 +54,8 @@ const ProductsPage = () => {
       search: '',
       minPrice: '',
       maxPrice: '',
-      sortBy: 'nameAsc'
+      sortBy: 'nameAsc',
+      subcategory: ''
     });
   };
 
@@ -56,7 +64,8 @@ const ProductsPage = () => {
                         product.descripcion.toLowerCase().includes(filters.search.toLowerCase());
     const matchesMinPrice = !filters.minPrice || product.precio >= Number(filters.minPrice);
     const matchesMaxPrice = !filters.maxPrice || product.precio <= Number(filters.maxPrice);
-    return matchesSearch && matchesMinPrice && matchesMaxPrice;
+    const matchesSubcategory = !filters.subcategory || product.subcategoria_id === Number(filters.subcategory);
+    return matchesSearch && matchesMinPrice && matchesMaxPrice && matchesSubcategory;
   }).sort((a, b) => {
     switch (filters.sortBy) {
       case 'nameAsc':
@@ -120,7 +129,7 @@ const ProductsPage = () => {
               transition={{ duration: 0.3 }}
               className="bg-white rounded-lg shadow-lg p-4 mb-8"
             >
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
                 <div className="space-y-2">
                   <label className="block text-sm font-medium text-gray-700">
                     {t('products.filters.search')}
@@ -132,6 +141,24 @@ const ProductsPage = () => {
                     placeholder={t('products.filters.searchPlaceholder')}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
                   />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-gray-700">
+                    {t('products.filters.subcategory')}
+                  </label>
+                  <select
+                    value={filters.subcategory}
+                    onChange={(e) => handleFilterChange('subcategory', e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                  >
+                    <option value="">{t('products.filters.allSubcategories')}</option>
+                    {subcategories.map(subcat => (
+                      <option key={subcat.id} value={subcat.id}>
+                        {subcat.name}
+                      </option>
+                    ))}
+                  </select>
                 </div>
 
                 <div className="space-y-2">
