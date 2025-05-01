@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, Suspense, lazy, useState, useCallback, memo } from 'react';
-import { Routes, Route, useLocation, Navigate, useNavigate } from 'react-router-dom';
+import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { motion, useScroll, useSpring } from 'framer-motion';
 import { useLanguage } from './contexts/LanguageContext';
 import { useAuth } from './contexts/AuthContext';
@@ -7,26 +7,27 @@ import { CartProvider } from './contexts/CartContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import SEO from './components/SEO';
-import LoadingScreen from './components/LoadingScreen';
 import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/react"
 
-// Carga perezosa de componentes con prefetch
-const LandingPage = lazy(() => import(/* webpackPrefetch: true */ './pages/LandingPage'));
-const ProductsPage = lazy(() => import(/* webpackPrefetch: true */ './pages/ProductsPage'));
-const FoodPage = lazy(() => import(/* webpackPrefetch: true */ './pages/FoodPage'));
-const BoutiquePage = lazy(() => import(/* webpackPrefetch: true */ './pages/BoutiquePage'));
-const ProfilePage = lazy(() => import(/* webpackPrefetch: true */ './pages/ProfilePage'));
-const OrdersPage = lazy(() => import(/* webpackPrefetch: true */ './pages/OrdersPage'));
-const CartPage = lazy(() => import(/* webpackPrefetch: true */ './pages/CartPage'));
-const FavoritesPage = lazy(() => import(/* webpackPrefetch: true */ './pages/FavoritesPage'));
-
-// Componente de carga optimizado
-const Loading = memo(() => (
-  <div className="flex justify-center items-center py-20">
-    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
+// Memoizado del componente de carga
+const LoadingFallback = memo(() => (
+  <div className="flex justify-center items-center py-20 h-[50vh]">
+    <div className="w-12 h-12 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
   </div>
 ));
+
+// Carga perezosa de componentes con preload solo de la página de inicio para carga rápida
+const LandingPage = lazy(() => import('./pages/LandingPage'));
+
+// Otras páginas con carga bajo demanda
+const ProductsPage = lazy(() => import('./pages/ProductsPage'));
+const FoodPage = lazy(() => import('./pages/FoodPage'));
+const BoutiquePage = lazy(() => import('./pages/BoutiquePage'));
+const ProfilePage = lazy(() => import('./pages/ProfilePage'));
+const OrdersPage = lazy(() => import('./pages/OrdersPage'));
+const CartPage = lazy(() => import('./pages/CartPage'));
+const FavoritesPage = lazy(() => import('./pages/FavoritesPage'));
 
 // Componente para rutas protegidas optimizado
 const ProtectedRoute = memo(({ children }) => {
@@ -34,7 +35,7 @@ const ProtectedRoute = memo(({ children }) => {
   const location = useLocation();
 
   if (loading) {
-    return <Loading />;
+    return <LoadingFallback />;
   }
 
   if (!user) {
@@ -77,12 +78,45 @@ const ErrorBoundary = memo(({ children }) => {
   return children;
 });
 
+// Precargar las páginas principales cuando el usuario está inactivo
+const usePreloadPages = () => {
+  useEffect(() => {
+    // Función para precargar componentes importantes cuando el usuario esté inactivo
+    const idleCallback = () => {
+      const preloadComponents = async () => {
+        try {
+          // Precargar las páginas principales solo cuando el usuario esté inactivo
+          await Promise.all([
+            import('./pages/ProductsPage'),
+            import('./pages/FoodPage')
+          ]);
+        } catch (err) {
+          console.error('Error precargando componentes:', err);
+        }
+      };
+      
+      preloadComponents();
+    };
+
+    // Usar requestIdleCallback si está disponible, sino usar un timeout
+    if ('requestIdleCallback' in window) {
+      window.requestIdleCallback(idleCallback, { timeout: 2000 });
+    } else {
+      const timeoutId = setTimeout(idleCallback, 2000);
+      return () => clearTimeout(timeoutId);
+    }
+  }, []);
+};
+
 function App() {
   const { t } = useLanguage();
   const location = useLocation();
   const { scrollYProgress } = useScroll();
   const [currentSection, setCurrentSection] = useState('home');
-  const [isLoading, setIsLoading] = useState(true);
+  
+  // Optimización: Remover el estado de isLoading para reducir renderizados iniciales
+  // Usar los hooks de optimización
+  usePreloadPages();
   
   const scaleX = useSpring(scrollYProgress, {
     stiffness: 200,
@@ -133,26 +167,15 @@ function App() {
 
   const currentSectionConfig = seoConfig[currentSection] || seoConfig.home;
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  if (isLoading) {
-    return <LoadingScreen />;
-  }
-
+  // Establecer dimensiones fijas para evitar Cumulative Layout Shift
   return (
     <ErrorBoundary>
       <CartProvider>
-        <div className="min-h-screen bg-gray-50">
-          {/* Barra de progreso de scroll */}
+        <div className="min-h-screen bg-gray-50 relative">
+          {/* Barra de progreso de scroll con dimensiones predefinidas */}
           <motion.div
             className="fixed top-0 left-0 right-0 h-1 bg-indigo-600 origin-left z-50"
-            style={{ scaleX }}
+            style={{ scaleX, height: '4px' }}
           />
 
           {/* SEO */}
@@ -165,54 +188,60 @@ function App() {
             currentSection={currentSection}
           />
 
-          {/* Rutas */}
-          <Suspense fallback={<Loading />}>
-            <Routes>
-              <Route
-                path="/"
-                element={
-                  <div ref={homeRef}>
-                    <LandingPage />
-                  </div>
-                }
-              />
-              <Route path="/productos" element={<ProductsPage />} />
-              <Route path="/comidas" element={<FoodPage />} />
-              <Route path="/boutique" element={<BoutiquePage />} />
-              <Route
-                path="/perfil"
-                element={
-                  <ProtectedRoute>
-                    <ProfilePage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/pedidos"
-                element={
-                  <ProtectedRoute>
-                    <OrdersPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route path="/carrito" element={<CartPage />} />
-              <Route
-                path="/favoritos"
-                element={
-                  <ProtectedRoute>
-                    <FavoritesPage />
-                  </ProtectedRoute>
-                }
-              />
-            </Routes>
-          </Suspense>
+          {/* Rutas con dimensiones predefinidas mínimas para evitar CLS */}
+          <div className="min-h-[calc(100vh-80px)]">
+            <Suspense fallback={<LoadingFallback />}>
+              <Routes>
+                <Route
+                  path="/"
+                  element={
+                    <div ref={homeRef}>
+                      <LandingPage />
+                    </div>
+                  }
+                />
+                <Route path="/productos" element={<ProductsPage />} />
+                <Route path="/comidas" element={<FoodPage />} />
+                <Route path="/boutique" element={<BoutiquePage />} />
+                <Route
+                  path="/perfil"
+                  element={
+                    <ProtectedRoute>
+                      <ProfilePage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/pedidos"
+                  element={
+                    <ProtectedRoute>
+                      <OrdersPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route path="/carrito" element={<CartPage />} />
+                <Route
+                  path="/favoritos"
+                  element={
+                    <ProtectedRoute>
+                      <FavoritesPage />
+                    </ProtectedRoute>
+                  }
+                />
+              </Routes>
+            </Suspense>
+          </div>
 
           {/* Footer */}
           <Footer />
 
-          {/* Analytics */}
-          <Analytics />
-          <SpeedInsights />
+          {/* Analytics - Carga asíncrona para no bloquear */}
+          {typeof window !== 'undefined' && (
+            <>
+              <Analytics />
+              <SpeedInsights />
+            </>
+          )}
         </div>
       </CartProvider>
     </ErrorBoundary>

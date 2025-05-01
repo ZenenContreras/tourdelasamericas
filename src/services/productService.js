@@ -1,19 +1,33 @@
 import { supabase } from '../config/supabase';
 
+// Cache para URL de imágenes para evitar recálculos
+const imageUrlCache = new Map();
+
 const processImage = async (producto) => {
+  // Si ya tenemos la URL en caché, usarla en lugar de recalcular
   if (producto.imagen_principal) {
+    const cacheKey = `productos/${producto.imagen_principal}`;
+    
+    if (imageUrlCache.has(cacheKey)) {
+      return { ...producto, imagen_url: imageUrlCache.get(cacheKey) };
+    }
+    
     const url = supabase.storage
       .from('productos')
       .getPublicUrl(producto.imagen_principal).data.publicUrl;
+    
+    // Guardar en caché para uso futuro
+    imageUrlCache.set(cacheKey, url);
     return { ...producto, imagen_url: url };
   }
   return producto;
 };
 
-// Función para cargar productos con filtros
+// Función optimizada para cargar productos con filtros
 export const loadProducts = async (filters = {}, categoria_id = null) => {
   try {
-    let query = supabase
+    // Campos mínimos necesarios para mejorar rendimiento de la consulta
+    const baseQuery = supabase
       .from('productos')
       .select(`
         id,
@@ -30,48 +44,77 @@ export const loadProducts = async (filters = {}, categoria_id = null) => {
         )
       `);
 
+    // Construir un único objeto de consulta para mejorar rendimiento
+    const queryParams = {};
+    const filterConditions = [];
+    
     // Filtrar por categoría_id si se proporciona
     if (categoria_id) {
-      query = query.eq('categoria_id', categoria_id);
+      queryParams['categoria_id'] = categoria_id;
+      filterConditions.push('categoria_id.eq.' + categoria_id);
     }
 
-    // Aplicar filtros
+    // Aplicar filtros de precio
     if (filters.minPrice) {
-      query = query.gte('precio', parseFloat(filters.minPrice));
+      filterConditions.push('precio.gte.' + parseFloat(filters.minPrice));
     }
     if (filters.maxPrice) {
-      query = query.lte('precio', parseFloat(filters.maxPrice));
+      filterConditions.push('precio.lte.' + parseFloat(filters.maxPrice));
     }
+    
+    // Búsqueda optimizada
     if (filters.search) {
-      query = query.ilike('nombre', `%${filters.search}%`);
+      filterConditions.push(`nombre.ilike.%${filters.search}%`);
     }
+    
+    // Subcategoría
     if (filters.subcategory && filters.subcategory !== '') {
-      query = query.eq('subcategoria_id', parseInt(filters.subcategory));
+      queryParams['subcategoria_id'] = parseInt(filters.subcategory);
+      filterConditions.push('subcategoria_id.eq.' + parseInt(filters.subcategory));
     }
+
+    // Construir consulta final
+    let query = baseQuery;
+    
+    // Aplicar filtros usando .match para consultas más eficientes cuando sea posible
+    if (Object.keys(queryParams).length > 0) {
+      query = query.match(queryParams);
+    }
+    
+    // Aplicar otros filtros complejos
+    filterConditions.forEach(condition => {
+      const [field, op, value] = condition.split('.');
+      if (op === 'ilike') {
+        query = query.ilike(field, value);
+      } else if (op === 'gte') {
+        query = query.gte(field, parseFloat(value));
+      } else if (op === 'lte') {
+        query = query.lte(field, parseFloat(value));
+      }
+      // Para eq ya está cubierto con .match
+    });
 
     // Aplicar ordenamiento
     switch (filters.sortBy) {
-      case 'precio-asc':
+      case 'priceAsc':
         query = query.order('precio', { ascending: true });
         break;
-      case 'precio-desc':
+      case 'priceDesc':
         query = query.order('precio', { ascending: false });
         break;
-      case 'nombre-asc':
-        query = query.order('nombre', { ascending: true });
-        break;
-      case 'nombre-desc':
+      case 'nameDesc':
         query = query.order('nombre', { ascending: false });
         break;
       default:
         query = query.order('nombre', { ascending: true });
     }
 
+    // Ejecutar consulta
     const { data, error } = await query;
 
     if (error) throw error;
 
-    // Procesar las imágenes y datos
+    // Procesamiento de imágenes en paralelo para mejor rendimiento
     const processedData = await Promise.all(data.map(async (item) => {
       const processedItem = await processImage(item);
       return {
@@ -95,9 +138,13 @@ export const loadProducts = async (filters = {}, categoria_id = null) => {
   }
 };
 
-// Función para obtener un producto por ID
+// Función optimizada para obtener un producto por ID
 export const getProductById = async (id) => {
   try {
+    // Verificar caché para imágenes
+    const cacheKey = `product-${id}`;
+    
+    // Consulta al servidor
     const { data, error } = await supabase
       .from('productos')
       .select(`

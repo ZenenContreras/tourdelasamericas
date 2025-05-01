@@ -1,8 +1,65 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, memo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Filter, X, SlidersHorizontal, ChevronDown, Search, Trash2, Tag, CheckCircle, AlertCircle } from 'lucide-react';
 
-const FilterPanel = ({ 
+// Memoizar componentes internos para mejorar rendimiento
+const FilterButton = memo(({ onClick, children, className }) => (
+  <button onClick={onClick} className={className}>
+    {children}
+  </button>
+));
+
+const FilterChip = memo(({ onRemove, icon: Icon, label, color }) => (
+  <motion.div 
+    className={`inline-flex items-center px-3 py-1 rounded-full bg-${color}-100 text-${color}-800 text-xs font-medium mr-2 mb-2`}
+    initial={{ opacity: 0, scale: 0.8 }}
+    animate={{ opacity: 1, scale: 1 }}
+    exit={{ opacity: 0, scale: 0.8 }}
+    layout
+  >
+    {Icon && <Icon className="h-3 w-3 mr-1" />}
+    <span className="truncate max-w-[120px]">{label}</span>
+    <button onClick={onRemove} className="ml-1 p-0.5 hover:bg-white rounded-full">
+      <X className="h-3 w-3" />
+    </button>
+  </motion.div>
+));
+
+const NotificationComponent = memo(({ notification, onClose }) => {
+  if (!notification.show) return null;
+  
+  const bgColor = notification.type === 'success' 
+    ? 'bg-green-100 border-green-500 text-green-800' 
+    : notification.type === 'error' 
+      ? 'bg-red-100 border-red-500 text-red-800' 
+      : 'bg-blue-100 border-blue-500 text-blue-800';
+  
+  const Icon = notification.type === 'success' 
+    ? CheckCircle 
+    : notification.type === 'error' 
+      ? AlertCircle 
+      : CheckCircle;
+  
+  return (
+    <motion.div 
+      className={`fixed top-4 left-1/2 transform -translate-x-1/2 z-50 rounded-lg shadow-lg px-4 py-3 flex items-center space-x-2 border-l-4 ${bgColor} max-w-sm`}
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+    >
+      <Icon className="h-5 w-5" />
+      <span className="text-sm font-medium">{notification.message}</span>
+      <button 
+        onClick={onClose}
+        className="ml-auto"
+      >
+        <X className="h-4 w-4" />
+      </button>
+    </motion.div>
+  );
+});
+
+const FilterPanel = memo(({ 
   filters, 
   onFilterChange, 
   onReset, 
@@ -31,8 +88,8 @@ const FilterPanel = ({
     type: 'success' // success, error, info
   });
 
-  // Detectar si hay algún filtro activo
-  const hasActiveFilters = () => {
+  // Detectar si hay algún filtro activo - memoizado para evitar cálculos repetidos
+  const hasActiveFilters = useMemo(() => {
     return (
       filters.search || 
       filters.subcategory || 
@@ -40,7 +97,7 @@ const FilterPanel = ({
       filters.maxPrice < 1000 || 
       filters.sortBy !== 'nameAsc'
     );
-  };
+  }, [filters.search, filters.subcategory, filters.minPrice, filters.maxPrice, filters.sortBy]);
 
   useEffect(() => {
     setLocalFilters(filters);
@@ -61,28 +118,28 @@ const FilterPanel = ({
     });
   }, [filters, subcategories]);
 
-  const handlePriceChange = (type, value) => {
+  const handlePriceChange = useCallback((type, value) => {
     setPriceRange(prev => ({
       ...prev,
       [type]: value
     }));
-  };
+  }, []);
 
-  const handleApply = () => {
+  const handleApply = useCallback(() => {
     onFilterChange('minPrice', priceRange.min);
     onFilterChange('maxPrice', priceRange.max);
     onApply();
     showNotification('Filtros aplicados correctamente', 'success');
-  };
+  }, [priceRange.min, priceRange.max, onFilterChange, onApply]);
 
-  const handleReset = () => {
+  const handleReset = useCallback(() => {
     setPriceRange({ min: 0, max: 1000 });
     setActiveSubcategories([]);
     onReset();
     showNotification('Todos los filtros han sido restablecidos', 'info');
-  };
+  }, [onReset]);
 
-  const getColorByType = (type) => {
+  const getColorByType = useCallback((type) => {
     switch (type) {
       case 'product':
         return 'indigo';
@@ -93,18 +150,18 @@ const FilterPanel = ({
       default:
         return 'indigo';
     }
-  };
+  }, []);
 
-  const color = getColorByType(type);
+  const color = useMemo(() => getColorByType(type), [type, getColorByType]);
 
-  const toggleExpanded = (section) => {
+  const toggleExpanded = useCallback((section) => {
     setExpanded(prev => ({
       ...prev,
       [section]: !prev[section]
     }));
-  };
+  }, []);
 
-  const showNotification = (message, type = 'success') => {
+  const showNotification = useCallback((message, type = 'success') => {
     setNotification({
       show: true,
       message,
@@ -115,9 +172,9 @@ const FilterPanel = ({
     setTimeout(() => {
       setNotification(prev => ({ ...prev, show: false }));
     }, 3000);
-  };
+  }, []);
 
-  const handleRemoveFilter = (filterType, value = null) => {
+  const handleRemoveFilter = useCallback((filterType, value = null) => {
     if (filterType === 'subcategory') {
       setActiveSubcategories([]);
       onFilterChange('subcategory', '');
@@ -137,66 +194,52 @@ const FilterPanel = ({
       handleReset();
     }
     onApply();
-  };
+  }, [onFilterChange, onApply, handleReset, showNotification]);
 
-  // Renderizar chips de filtros activos
-  const renderActiveFilters = () => {
-    if (!hasActiveFilters()) return null;
+  const handleNotificationClose = useCallback(() => {
+    setNotification(prev => ({ ...prev, show: false }));
+  }, []);
+
+  // Renderizar chips de filtros activos - memoizado para evitar re-renderizados
+  const renderActiveFilters = useMemo(() => {
+    if (!hasActiveFilters) return null;
 
     const chips = [];
 
     if (filters.search) {
       chips.push(
-        <motion.div 
+        <FilterChip 
           key="search" 
-          className={`inline-flex items-center px-3 py-1 rounded-full bg-${color}-100 text-${color}-800 text-xs font-medium mr-2 mb-2`}
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.8 }}
-        >
-          <Search className="h-3 w-3 mr-1" />
-          <span className="truncate max-w-[120px]">{filters.search}</span>
-          <button onClick={() => handleRemoveFilter('search')} className="ml-1 p-0.5 hover:bg-white rounded-full">
-            <X className="h-3 w-3" />
-          </button>
-        </motion.div>
+          icon={Search}
+          label={filters.search}
+          color={color}
+          onRemove={() => handleRemoveFilter('search')} 
+        />
       );
     }
 
     if (activeSubcategories.length > 0) {
       activeSubcategories.forEach(subcat => {
         chips.push(
-          <motion.div 
+          <FilterChip 
             key={`subcat-${subcat.id}`} 
-            className={`inline-flex items-center px-3 py-1 rounded-full bg-${color}-100 text-${color}-800 text-xs font-medium mr-2 mb-2`}
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.8 }}
-          >
-            <Tag className="h-3 w-3 mr-1" />
-            <span>{subcat.name}</span>
-            <button onClick={() => handleRemoveFilter('subcategory')} className="ml-1 p-0.5 hover:bg-white rounded-full">
-              <X className="h-3 w-3" />
-            </button>
-          </motion.div>
+            icon={Tag}
+            label={subcat.name}
+            color={color}
+            onRemove={() => handleRemoveFilter('subcategory')} 
+          />
         );
       });
     }
 
     if (filters.minPrice > 0 || filters.maxPrice < 1000) {
       chips.push(
-        <motion.div 
+        <FilterChip 
           key="price" 
-          className={`inline-flex items-center px-3 py-1 rounded-full bg-${color}-100 text-${color}-800 text-xs font-medium mr-2 mb-2`}
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.8 }}
-        >
-          <span>${filters.minPrice} - ${filters.maxPrice}</span>
-          <button onClick={() => handleRemoveFilter('price')} className="ml-1 p-0.5 hover:bg-white rounded-full">
-            <X className="h-3 w-3" />
-          </button>
-        </motion.div>
+          label={`$${filters.minPrice} - $${filters.maxPrice}`}
+          color={color}
+          onRemove={() => handleRemoveFilter('price')} 
+        />
       );
     }
 
@@ -209,22 +252,16 @@ const FilterPanel = ({
       };
       
       chips.push(
-        <motion.div 
+        <FilterChip 
           key="sort" 
-          className={`inline-flex items-center px-3 py-1 rounded-full bg-${color}-100 text-${color}-800 text-xs font-medium mr-2 mb-2`}
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.8 }}
-        >
-          <span>{sortLabels[filters.sortBy]}</span>
-          <button onClick={() => handleRemoveFilter('sortBy')} className="ml-1 p-0.5 hover:bg-white rounded-full">
-            <X className="h-3 w-3" />
-          </button>
-        </motion.div>
+          label={sortLabels[filters.sortBy]}
+          color={color}
+          onRemove={() => handleRemoveFilter('sortBy')} 
+        />
       );
     }
 
-    return (
+  return (
       <div className="flex flex-wrap items-center">
         {chips}
         {chips.length > 1 && (
@@ -241,42 +278,7 @@ const FilterPanel = ({
         )}
       </div>
     );
-  };
-
-  // Componente de notificación
-  const Notification = () => {
-    if (!notification.show) return null;
-    
-    const bgColor = notification.type === 'success' 
-      ? 'bg-green-100 border-green-500 text-green-800' 
-      : notification.type === 'error' 
-        ? 'bg-red-100 border-red-500 text-red-800' 
-        : 'bg-blue-100 border-blue-500 text-blue-800';
-    
-    const Icon = notification.type === 'success' 
-      ? CheckCircle 
-      : notification.type === 'error' 
-        ? AlertCircle 
-        : CheckCircle;
-    
-    return (
-      <motion.div 
-        className={`fixed top-4 left-1/2 transform -translate-x-1/2 z-50 rounded-lg shadow-lg px-4 py-3 flex items-center space-x-2 border-l-4 ${bgColor} max-w-sm`}
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -20 }}
-      >
-        <Icon className="h-5 w-5" />
-        <span className="text-sm font-medium">{notification.message}</span>
-        <button 
-          onClick={() => setNotification(prev => ({ ...prev, show: false }))}
-          className="ml-auto"
-        >
-          <X className="h-4 w-4" />
-        </button>
-      </motion.div>
-    );
-  };
+  }, [filters, activeSubcategories, color, handleRemoveFilter, hasActiveFilters]);
 
   // Renderización móvil con buscador externo
   if (isMobile) {
@@ -284,48 +286,55 @@ const FilterPanel = ({
       <>
         {/* Notificación */}
         <AnimatePresence>
-          {notification.show && <Notification />}
+          {notification.show && (
+            <NotificationComponent 
+              notification={notification} 
+              onClose={handleNotificationClose} 
+            />
+          )}
         </AnimatePresence>
         
         {/* Área de filtros activos siempre visible en la parte superior */}
         <div className="mb-4">
           <AnimatePresence>
-            {renderActiveFilters()}
+            {renderActiveFilters}
           </AnimatePresence>
         </div>
       
-        {/* Panel modal para móvil */}
-        <AnimatePresence>
-          {isOpen && (
-            <motion.div
+        {/* Panel modal para móvil - precargar height para evitar CLS */}
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
+          transition={{ duration: 0.2 }}
               className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-end justify-center"
-            >
-              <motion.div
+              style={{ height: '100vh', width: '100vw' }}
+        >
+          <motion.div
                 initial={{ y: "100%" }}
                 animate={{ y: 0 }}
                 exit={{ y: "100%" }}
                 transition={{ type: "spring", damping: 25, stiffness: 300 }}
                 className="bg-white rounded-t-xl shadow-xl w-full max-h-[80vh] overflow-y-auto"
+                style={{ minHeight: '300px' }}  /* Establecer altura mínima para evitar CLS */
               >
                 <div className="sticky top-0 p-4 border-b border-gray-200 flex items-center justify-between bg-white z-10">
-                  <div className="flex items-center gap-2">
-                    <SlidersHorizontal className={`h-5 w-5 text-${color}-600`} />
-                    <h3 className="text-lg font-semibold text-gray-900">Filtros</h3>
-                  </div>
-                  <button
-                    onClick={onClose}
-                    className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-                  >
-                    <X className="h-5 w-5 text-gray-500" />
-                  </button>
-                </div>
+              <div className="flex items-center gap-2">
+                <SlidersHorizontal className={`h-5 w-5 text-${color}-600`} />
+                <h3 className="text-lg font-semibold text-gray-900">Filtros</h3>
+              </div>
+              <button
+                onClick={onClose}
+                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+              >
+                <X className="h-5 w-5 text-gray-500" />
+              </button>
+            </div>
 
                 <div className="p-4 space-y-4 pb-24">
-                  {/* Subcategorías */}
+              {/* Subcategorías */}
                   <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
                     <button
                       onClick={() => toggleExpanded('subcategories')}
@@ -348,11 +357,12 @@ const FilterPanel = ({
                           exit={{ height: 0, opacity: 0 }}
                           transition={{ duration: 0.3 }}
                           className="overflow-hidden"
+                          style={{ maxHeight: '300px' }}  /* Establecer altura máxima fija */
                         >
                           <div className="p-3 grid grid-cols-1 gap-2">
                             {subcategories.map(subcat => (
-                              <button
-                                key={subcat.id}
+                    <button
+                      key={subcat.id}
                                 onClick={() => {
                                   onFilterChange('subcategory', localFilters.subcategory === subcat.id ? '' : subcat.id);
                                   setActiveSubcategories(prev => 
@@ -363,7 +373,7 @@ const FilterPanel = ({
                                   showNotification(`Subcategoría "${subcat.name}" ${localFilters.subcategory === subcat.id ? 'eliminada' : 'aplicada'}`, 'success');
                                 }}
                                 className={`px-3 py-2.5 rounded-lg text-sm font-medium transition-colors text-left flex items-center justify-between ${
-                                  localFilters.subcategory === subcat.id
+                        localFilters.subcategory === subcat.id
                                     ? `bg-${color}-100 text-${color}-700 border border-${color}-200`
                                     : 'bg-gray-50 text-gray-700 hover:bg-gray-100 border border-gray-100'
                                 }`}
@@ -403,6 +413,7 @@ const FilterPanel = ({
                           exit={{ height: 0, opacity: 0 }}
                           transition={{ duration: 0.3 }}
                           className="overflow-hidden"
+                          style={{ height: expanded.price ? 'auto' : '0px', minHeight: expanded.price ? '180px' : '0px' }}
                         >
                           <div className="p-4 space-y-6">
                             <div className="flex items-center justify-between gap-4">
@@ -432,32 +443,32 @@ const FilterPanel = ({
                                   className={`w-full pl-7 pr-2 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-${color}-500 focus:border-${color}-500 text-center`}
                                 />
                                 <label className="block text-xs text-gray-500 mt-1 text-center">Máximo</label>
-                              </div>
-                            </div>
-                            
-                            <div>
-                              <input
-                                type="range"
-                                min="0"
-                                max="1000"
-                                value={priceRange.min}
-                                onChange={(e) => handlePriceChange('min', parseInt(e.target.value))}
-                                className={`w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer mb-4 range-${color}`}
+                </div>
+              </div>
+
+              <div>
+                    <input
+                      type="range"
+                      min="0"
+                      max="1000"
+                      value={priceRange.min}
+                      onChange={(e) => handlePriceChange('min', parseInt(e.target.value))}
+                                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer mb-4"
                                 style={{
                                   background: `linear-gradient(to right, #e5e7eb ${priceRange.min / 10}%, #${color === 'indigo' ? '6366f1' : color === 'amber' ? 'f59e0b' : 'a855f7'} ${priceRange.min / 10}% ${priceRange.max / 10}%, #e5e7eb ${priceRange.max / 10}%)`
                                 }}
-                              />
-                              <input
-                                type="range"
-                                min="0"
-                                max="1000"
-                                value={priceRange.max}
-                                onChange={(e) => handlePriceChange('max', parseInt(e.target.value))}
-                                className={`w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer range-${color}`}
+                    />
+                    <input
+                      type="range"
+                      min="0"
+                      max="1000"
+                      value={priceRange.max}
+                      onChange={(e) => handlePriceChange('max', parseInt(e.target.value))}
+                      className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
                                 style={{
                                   background: `linear-gradient(to right, #e5e7eb ${priceRange.min / 10}%, #${color === 'indigo' ? '6366f1' : color === 'amber' ? 'f59e0b' : 'a855f7'} ${priceRange.min / 10}% ${priceRange.max / 10}%, #e5e7eb ${priceRange.max / 10}%)`
                                 }}
-                              />
+                    />
                             </div>
                           </div>
                         </motion.div>
@@ -488,6 +499,7 @@ const FilterPanel = ({
                           exit={{ height: 0, opacity: 0 }}
                           transition={{ duration: 0.3 }}
                           className="overflow-hidden"
+                          style={{ height: expanded.sort ? 'auto' : '0px', minHeight: expanded.sort ? '200px' : '0px' }}
                         >
                           <div className="p-3 space-y-2">
                             {[
@@ -518,27 +530,27 @@ const FilterPanel = ({
                         </motion.div>
                       )}
                     </AnimatePresence>
-                  </div>
                 </div>
+              </div>
 
                 <div className="fixed bottom-0 left-0 right-0 p-4 border-t border-gray-200 flex justify-between gap-3 bg-white">
-                  <button
-                    onClick={handleReset}
+                  <FilterButton
+                onClick={handleReset}
                     className={`px-4 py-3 text-${color}-600 hover:text-${color}-800 transition-colors bg-white border border-gray-200 rounded-lg flex-1`}
-                  >
-                    Restablecer
-                  </button>
-                  <button
-                    onClick={handleApply}
+              >
+                Restablecer
+                  </FilterButton>
+                  <FilterButton
+                onClick={handleApply}
                     className={`px-4 py-3 bg-${color}-600 text-white rounded-lg hover:bg-${color}-700 transition-colors flex-[2]`}
-                  >
-                    Aplicar Filtros
-                  </button>
-                </div>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+              >
+                Aplicar Filtros
+                  </FilterButton>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
       </>
     );
   }
@@ -549,7 +561,12 @@ const FilterPanel = ({
       <>
         {/* Notificación */}
         <AnimatePresence>
-          {notification.show && <Notification />}
+          {notification.show && (
+            <NotificationComponent 
+              notification={notification} 
+              onClose={handleNotificationClose} 
+            />
+          )}
         </AnimatePresence>
       </>
     );
@@ -559,30 +576,38 @@ const FilterPanel = ({
     <>
       {/* Notificación */}
       <AnimatePresence>
-        {notification.show && <Notification />}
+        {notification.show && (
+          <NotificationComponent 
+            notification={notification} 
+            onClose={handleNotificationClose} 
+          />
+        )}
       </AnimatePresence>
       
       {/* Filtros activos como chips */}
       <AnimatePresence>
-        {renderActiveFilters()}
+        {renderActiveFilters}
       </AnimatePresence>
       
       {/* Contenedor principal de filtros */}
-      <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden mb-6">
+      <div 
+        className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden mb-6"
+        style={{ minHeight: '200px' }} /* Altura mínima para evitar CLS */
+      >
         {/* Cabecera de filtros */}
         <div className="px-4 py-3 bg-gray-50 border-b border-gray-200 flex items-center justify-between">
           <div className="flex items-center">
             <SlidersHorizontal className={`h-4 w-4 mr-2 text-${color}-500`} />
             <span className="font-medium text-gray-700">Filtros</span>
           </div>
-          {hasActiveFilters() && (
-            <button
+          {hasActiveFilters && (
+            <FilterButton
               onClick={handleReset}
               className={`text-xs text-${color}-600 hover:text-${color}-800 flex items-center gap-1`}
             >
               <Trash2 className="h-3 w-3" />
               Limpiar todo
-            </button>
+            </FilterButton>
           )}
         </div>
         
@@ -596,7 +621,7 @@ const FilterPanel = ({
             </h3>
             <div className="space-y-2 max-h-[250px] overflow-y-auto pr-1">
               {subcategories.map(subcat => (
-                <button
+                <FilterButton
                   key={subcat.id}
                   onClick={() => {
                     onFilterChange('subcategory', localFilters.subcategory === subcat.id ? '' : subcat.id);
@@ -618,7 +643,7 @@ const FilterPanel = ({
                   {localFilters.subcategory === subcat.id && (
                     <div className={`h-2 w-2 rounded-full bg-${color}-500`}></div>
                   )}
-                </button>
+                </FilterButton>
               ))}
             </div>
           </div>
@@ -691,7 +716,7 @@ const FilterPanel = ({
                       onFilterChange('minPrice', parseInt(e.target.value));
                       onApply();
                     }}
-                    className={`absolute w-full h-2 opacity-0 cursor-pointer top-2 range-${color}`}
+                    className="absolute w-full h-2 opacity-0 cursor-pointer top-2"
                   />
                   <input
                     type="range"
@@ -703,7 +728,7 @@ const FilterPanel = ({
                       onFilterChange('maxPrice', parseInt(e.target.value));
                       onApply();
                     }}
-                    className={`absolute w-full h-2 opacity-0 cursor-pointer top-2 range-${color}`}
+                    className="absolute w-full h-2 opacity-0 cursor-pointer top-2"
                   />
                 </div>
                 <div className="flex justify-between mt-4 text-xs text-gray-500">
@@ -720,6 +745,6 @@ const FilterPanel = ({
       </div>
     </>
   );
-};
+});
 
 export default FilterPanel; 
