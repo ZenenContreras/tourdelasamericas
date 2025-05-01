@@ -41,12 +41,58 @@ const SEO = ({
       <meta name="description" content={description} />
       <link rel="canonical" href={canonical} />
       
+      {/* Precarga de fuentes críticas para evitar CLS */}
+      <link 
+        rel="preload" 
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" 
+        as="style" 
+        crossOrigin="anonymous" 
+      />
+      <link 
+        rel="preload" 
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" 
+        as="style" 
+        crossOrigin="anonymous" 
+      />
+
+      {/* Carga efectiva de fuentes */}
+      <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet"
+        crossOrigin="anonymous"
+      />
+      <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet"
+        crossOrigin="anonymous"
+      />
+      
+      {/* Precarga imágenes críticas para rutas principales */}
+      <link 
+        rel="preload" 
+        href="/fondoEscritorio.png" 
+        as="image" 
+        media="(min-width: 1024px)" 
+      />
+      <link 
+        rel="preload" 
+        href="/fondoTablet.png" 
+        as="image" 
+        media="(min-width: 768px) and (max-width: 1023px)" 
+      />
+      <link 
+        rel="preload" 
+        href="/fondoMobile2.png" 
+        as="image" 
+        media="(max-width: 767px)" 
+      />
+      
       {/* Metadatos Open Graph para redes sociales */}
       <meta property="og:site_name" content="Tour de las Américas" />
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
       <meta property="og:url" content={canonical} />
-      <meta property="og:image" content={`${siteUrl}${ogImage}`} />
+      <meta property="og:image" content={ogImage} />
       <meta property="og:type" content={section === 'home' ? 'website' : 'article'} />
       <meta property="og:locale" content={locales[language]} />
       
@@ -54,7 +100,7 @@ const SEO = ({
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
-      <meta name="twitter:image" content={`${siteUrl}${ogImage}`} />
+      <meta name="twitter:image" content={ogImage} />
       
       {/* Metadatos estructurados para Google (JSON-LD) */}
       <script type="application/ld+json">
@@ -76,6 +122,47 @@ const SEO = ({
           }
         `}
       </script>
+      
+      {/* Mejoras para móviles */}
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+      <meta name="theme-color" content="#4f46e5" />
+      
+      {/* Dimensiones reservadas para elementos críticos */}
+      <style type="text/css">{`
+        body {
+          overflow-x: hidden;
+        }
+        
+        /* Reservar espacio para imágenes críticas */
+        .hero-image-container {
+          min-height: 500px;
+          height: 100vh;
+          max-height: 900px;
+          width: 100%;
+          background-color: #f3f4f6;
+          contain: layout size style;
+        }
+        
+        /* Reservar espacio para tarjetas de productos */
+        .product-card {
+          min-height: 400px;
+          aspect-ratio: 3/4;
+          contain: layout size style;
+        }
+        
+        /* Reservar espacio para imágenes de productos */
+        .product-image {
+          aspect-ratio: 1/1;
+          background-color: #f3f4f6;
+          contain: layout size style;
+        }
+        
+        @media screen and (min-width: 768px) {
+          .hero-image-container {
+            min-height: 600px;
+          }
+        }
+      `}</style>
     </Helmet>
   );
 };

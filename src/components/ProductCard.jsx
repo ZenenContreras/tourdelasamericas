@@ -62,10 +62,19 @@ const ProductCard = ({ product, type = 'product' }) => {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 20 }}
       className={`bg-white rounded-xl shadow-sm overflow-hidden group hover:shadow-lg transition-all duration-300 border border-${config.accent}-100 hover:border-${config.accent}-300 h-full flex flex-col`}
-      style={{ minHeight: '400px' }}
+      style={{ 
+        minHeight: '400px',
+        height: '100%'
+      }}
     >
-      {/* Contenedor de imagen con aspect ratio fijo y placeholder */}
-      <div className="relative aspect-square w-full overflow-hidden bg-gray-100">
+      {/* Contenedor de imagen con aspect ratio fijo */}
+      <div 
+        className="relative overflow-hidden bg-gray-100"
+        style={{ 
+          aspectRatio: '1/1',
+          width: '100%'
+        }}
+      >
         {product.imagen_url ? (
           <div className={`w-full h-full bg-gradient-to-br ${config.gradient}`}>
             <img
@@ -75,9 +84,9 @@ const ProductCard = ({ product, type = 'product' }) => {
               loading="lazy"
               width="400"
               height="400"
-              style={{ 
-                aspectRatio: '1/1',
-                backgroundColor: '#f3f4f6'
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = '/placeholder-product.png';
               }}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -97,7 +106,10 @@ const ProductCard = ({ product, type = 'product' }) => {
       </div>
       
       {/* Contenido del card con altura fija y dimensiones reservadas */}
-      <div className="p-2 sm:p-3 md:p-4 flex flex-col flex-grow" style={{ minHeight: '200px' }}>
+      <div 
+        className="p-2 sm:p-3 md:p-4 flex flex-col flex-grow" 
+        style={{ minHeight: '200px' }}
+      >
         <div className="mb-1 sm:mb-2 flex flex-wrap gap-0.5 sm:gap-1">
           {product.categoria && (
             <span className={`text-[10px] sm:text-xs font-medium text-${config.accent}-600 bg-${config.accent}-50 px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-full`}>
@@ -124,7 +136,7 @@ const ProductCard = ({ product, type = 'product' }) => {
         )}
         
         {/* Footer del card con precio y botón */}
-        <div className="flex flex-col items-center sm:flex-row items-start sm:items-center justify-between pt-2 sm:pt-3 border-t border-gray-100 mt-auto gap-2">
+        <div className="flex flex-col sm:flex-row items-center sm:items-center justify-center pt-2 sm:pt-3 border-t border-gray-100 mt-auto gap-2">
           <div className="flex flex-col">
             {product.precio_anterior && (
               <span className="text-[10px] sm:text-xs text-gray-500 line-through">

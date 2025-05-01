@@ -67,10 +67,27 @@ const ImageCarousel = () => {
 
   // Precargar imágenes
   useEffect(() => {
-    const imagePath = isMobile ? "/fondoMobile2.png" : isTablet ? "/fondoTablet.png" : "/fondoEscritorio.png";
-    const img = new Image();
-    img.src = imagePath;
-    img.onload = () => setIsImageLoaded(true);
+    // Establecer dimensiones inmediatamente para prevenir CLS
+    setIsImageLoaded(false);
+    
+    const imagePaths = {
+      mobile: "/fondoMobile2.png",
+      tablet: "/fondoTablet.png",
+      desktop: "/fondoEscritorio.png"
+    };
+    
+    // Precarga todas las imágenes al iniciar
+    Object.values(imagePaths).forEach(path => {
+      const img = new Image();
+      img.src = path;
+      
+      // Solo actualizar el estado cuando la imagen actual se carga
+      if ((isMobile && path === imagePaths.mobile) || 
+          (isTablet && path === imagePaths.tablet) || 
+          (!isMobile && !isTablet && path === imagePaths.desktop)) {
+        img.onload = () => setIsImageLoaded(true);
+      }
+    });
   }, [isMobile, isTablet]);
 
   // Memoizar las categorías
@@ -95,44 +112,57 @@ const ImageCarousel = () => {
     }
   ];
 
+  // Dimensiones predefinidas para cada tipo de dispositivo
+  const imageDimensions = {
+    mobile: { width: 640, height: 960 },
+    tablet: { width: 1024, height: 1366 },
+    desktop: { width: 1920, height: 1080 }
+  };
+
+  // Determinar las dimensiones actuales
+  const currentDimensions = isMobile 
+    ? imageDimensions.mobile 
+    : isTablet 
+      ? imageDimensions.tablet 
+      : imageDimensions.desktop;
+
   return (
     <div className="relative w-full h-screen min-h-[500px] sm:min-h-[600px] md:min-h-[700px] lg:min-h-[800px] max-h-[900px] overflow-hidden">
       <div className="relative h-full">
-        {/* Fondo de carga con dimensiones fijas y placeholder */}
+        {/* Contenedor con dimensiones fijas para evitar CLS */}
         <div 
-          className={`absolute inset-0 bg-gradient-to-br from-indigo-50 to-purple-50 transition-opacity duration-700 ${isImageLoaded ? 'opacity-0' : 'opacity-100'}`}
+          className="absolute inset-0 bg-gradient-to-br from-indigo-50 to-purple-50"
           style={{ 
-            aspectRatio: '16/9',
+            width: '100%',
+            height: '100%',
             minHeight: 'inherit'
           }}
-        />
-        
-        {/* Imagen de fondo con dimensiones reservadas y placeholder */}
-        <picture className="block w-full h-full">
-          <source media="(min-width: 1024px)" srcSet="/fondoEscritorio.png" />
-          <source media="(min-width: 768px)" srcSet="/fondoTablet.png" />
-          <source media="(max-width: 767px)" srcSet="/fondoMobile2.png" />
-          <img
-            src={isMobile ? "/fondoMobile2.png" : isTablet ? "/fondoTablet.png" : "/fondoEscritorio.png"}
-            alt="Fondo de la página"
-            className="w-full h-full object-cover filter blur-[0.5px]"
-            loading="eager"
-            fetchpriority="high"
-            width="1920"
-            height="1080"
-            style={{ 
-              aspectRatio: '16/9',
-              minHeight: 'inherit',
-              backgroundColor: '#f3f4f6'
-            }}
+        >
+          {/* Imagen de fondo con dimensiones predefinidas */}
+          <picture className="block w-full h-full">
+            <source media="(min-width: 1024px)" srcSet="/fondoEscritorio.png" />
+            <source media="(min-width: 768px)" srcSet="/fondoTablet.png" />
+            <source media="(max-width: 767px)" srcSet="/fondoMobile2.png" />
+            <img
+              src={isMobile ? "/fondoMobile2.png" : isTablet ? "/fondoTablet.png" : "/fondoEscritorio.png"}
+              alt="Fondo de la página"
+              className={`w-full h-full object-cover filter blur-[0.5px] transition-opacity duration-300 ${isImageLoaded ? 'opacity-100' : 'opacity-0'}`}
+              width={currentDimensions.width}
+              height={currentDimensions.height}
+              loading="eager"
+              fetchpriority="high"
+              style={{ 
+                backgroundColor: '#f3f4f6',
+                objectPosition: 'center'
+              }}
+            />
+          </picture>
+          
+          {/* Gradiente superpuesto */}
+          <div 
+            className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent"
           />
-        </picture>
-        
-        {/* Gradiente mejorado con dimensiones fijas */}
-        <div 
-          className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent"
-          style={{ minHeight: 'inherit' }}
-        />
+        </div>
       
         {/* Contenido principal con mejor organización */}
         <div className="absolute inset-0 flex flex-col justify-center px-3 sm:px-4 md:px-6 lg:px-8">
@@ -166,7 +196,6 @@ const ImageCarousel = () => {
                             background: 'linear-gradient(to right, #ffffff, #ffffff)',
                             WebkitBackgroundClip: 'text',
                             WebkitTextFillColor: 'transparent',
-                            opacity: 1
                           }}>
                         A un
                       </h1>
@@ -177,7 +206,6 @@ const ImageCarousel = () => {
                             background: 'linear-gradient(to right, #ffffff, #ffffff)',
                             WebkitBackgroundClip: 'text',
                             WebkitTextFillColor: 'transparent',
-                            opacity: 1
                           }}>
                         Clic la
                         <motion.div 
@@ -248,55 +276,32 @@ const ImageCarousel = () => {
                 </div>
               </motion.div>
               
-              {/* Categorías versión móvil mejorada */}
-              <motion.div 
-                className="grid grid-cols-3 gap-3 sm:gap-4 w-full md:hidden"
+              {/* Categorías en móvil (3 columnas) */}
+              <motion.div
+                className="md:hidden w-full mt-6 sm:mt-8"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.7 }}
+                transition={{ duration: 0.8, delay: 0.3 }}
               >
-                {categories.map((category, index) => (
-                  <MobileCategoryCard key={index} {...category} />
-                ))}
+                <div className="grid grid-cols-3 gap-2 sm:gap-3">
+                  {categories.map((category, index) => (
+                    <MobileCategoryCard key={index} icon={category.icon} title={category.title} gradient={category.gradient} />
+                  ))}
+                </div>
               </motion.div>
             </div>
           </div>
         </div>
-        
-        {/* Indicador de desplazamiento mejorado */}
-        <motion.div 
-          className="absolute bottom-4 sm:bottom-6 md:bottom-8 left-0 right-0 mx-auto flex flex-col items-center text-white w-full pointer-events-none"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1, duration: 0.8 }}
-        >
-          <span className="text-xs sm:text-sm uppercase tracking-widest mb-1 sm:mb-2 md:mb-3 font-light drop-shadow-md" style={{ textShadow: '0 1px 3px rgba(0, 0, 0, 0.4)' }}>
-            {t('scrollDown')}
-          </span>
-          <motion.div 
-            className="w-4 h-6 sm:w-5 sm:h-8 md:w-6 md:h-10 border border-white/50 rounded-full flex justify-center pt-1 sm:pt-1.5 md:pt-2 mx-auto bg-black/5 shadow-lg pointer-events-auto cursor-pointer hover:bg-black/10 transition-colors"
-            animate={{ y: [0, 6, 0] }}
-            transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-            onClick={() => {
-              const element = document.getElementById('products');
-              if (element) {
-                element.scrollIntoView({ behavior: 'smooth' });
-              }
-            }}
-          >
-            <motion.div className="w-1 h-1 sm:w-1.5 sm:h-1.5 bg-white rounded-full" />
-          </motion.div>
-        </motion.div>
       </div>
-
-      {/* Modal de autenticación */}
-      <AuthModal
-        isOpen={isAuthModalOpen}
-        onClose={() => setIsAuthModalOpen(false)}
-        initialMode="register"
-      />
+      
+      {isAuthModalOpen && (
+        <AuthModal
+          isOpen={isAuthModalOpen}
+          onClose={() => setIsAuthModalOpen(false)}
+        />
+      )}
     </div>
   );
 };
 
-export default memo(ImageCarousel);
+export default ImageCarousel;
