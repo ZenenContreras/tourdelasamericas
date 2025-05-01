@@ -1,31 +1,46 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Utensils, Filter, X } from 'lucide-react';
+import { UtensilsCrossed, Search, SlidersHorizontal } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import * as productService from '../services/productService';
 import ProductCard from '../components/ProductCard';
 import ProductCardSkeleton from '../components/ProductCardSkeleton';
 import FilterPanel from '../components/FilterPanel';
 
-export default function FoodPage() {
+const FoodPage = () => {
   const { t } = useLanguage();
-  const [food, setFood] = useState([]);
+  const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showFilters, setShowFilters] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const [filters, setFilters] = useState({
     search: '',
-    minPrice: '',
-    maxPrice: '',
+    minPrice: 0,
+    maxPrice: 1000,
     sortBy: 'nameAsc',
     subcategory: ''
   });
 
   const subcategories = [
-    { id: '4', name: t('food.filters.subcategories.northAmerica') },
-    { id: '5', name: t('food.filters.subcategories.centralAmerica') },
-    { id: '6', name: t('food.filters.subcategories.southAmerica') }
+    { id: '1', name: t('food.filters.subcategories.bakery') },
+    { id: '2', name: t('food.filters.subcategories.preparados') },
+    { id: '3', name: t('food.filters.subcategories.desserts') }
   ];
+
+  // Detectar si es dispositivo móvil
+  useLayoutEffect(() => {
+    const checkIsMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkIsMobile();
+    window.addEventListener('resize', checkIsMobile);
+    
+    return () => {
+      window.removeEventListener('resize', checkIsMobile);
+    };
+  }, []);
 
   useEffect(() => {
     // Obtener subcategoría de la URL
@@ -39,21 +54,18 @@ export default function FoodPage() {
       }));
     }
     
-    loadFood();
+    loadProducts();
   }, []);
 
-  const loadFood = async () => {
-    setLoading(true);
-    setError(null);
+  const loadProducts = async () => {
     try {
-      const result = await productService.loadProducts(filters, 2); // 2 para comidas
-      if (result.error) {
-        setError(result.error);
-      } else {
-        setFood(result.data || []);
-      }
+      setLoading(true);
+      const result = await productService.loadProducts(filters, 2); // 2 para comida
+      if (result.error) throw new Error(result.error);
+      setProducts(result.data || []);
     } catch (err) {
       setError(t('food.errorLoading'));
+      console.error('Error loading food products:', err);
     } finally {
       setLoading(false);
     }
@@ -64,27 +76,27 @@ export default function FoodPage() {
   };
 
   const handleApplyFilters = () => {
-    loadFood();
+    loadProducts();
     setShowFilters(false);
   };
 
   const handleResetFilters = () => {
     setFilters({
       search: '',
-      minPrice: '',
-      maxPrice: '',
+      minPrice: 0,
+      maxPrice: 1000,
       sortBy: 'nameAsc',
       subcategory: ''
     });
-    loadFood();
+    loadProducts();
   };
 
-  const filteredFood = food.filter(item => {
-    const matchesSearch = item.nombre.toLowerCase().includes(filters.search.toLowerCase()) ||
-                        item.descripcion.toLowerCase().includes(filters.search.toLowerCase());
-    const matchesMinPrice = !filters.minPrice || item.precio >= Number(filters.minPrice);
-    const matchesMaxPrice = !filters.maxPrice || item.precio <= Number(filters.maxPrice);
-    const matchesSubcategory = !filters.subcategory || item.subcategoria_id === Number(filters.subcategory);
+  const filteredProducts = products.filter(product => {
+    const matchesSearch = product.nombre.toLowerCase().includes(filters.search.toLowerCase()) ||
+                          product.descripcion.toLowerCase().includes(filters.search.toLowerCase());
+    const matchesMinPrice = !filters.minPrice || product.precio >= Number(filters.minPrice);
+    const matchesMaxPrice = !filters.maxPrice || product.precio <= Number(filters.maxPrice);
+    const matchesSubcategory = !filters.subcategory || product.subcategoria_id === Number(filters.subcategory);
     return matchesSearch && matchesMinPrice && matchesMaxPrice && matchesSubcategory;
   }).sort((a, b) => {
     switch (filters.sortBy) {
@@ -101,70 +113,183 @@ export default function FoodPage() {
     }
   });
 
-  return (
-    <main className="min-h-screen bg-gradient-to-br from-amber-50 via-white to-orange-50 py-8 sm:py-12">
-      <div className="max-w-[95rem] mt-10 mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 flex items-center mb-2">
-              <Utensils className="h-8 w-8 text-amber-600 mr-3" />
-              {t('food.title')}
-            </h1>
-            <p className="text-sm sm:text-base text-gray-600 max-w-2xl">
-              {t('food.description')}
-            </p>
-          </div>
-          
+  // Componente de barra de búsqueda reutilizable
+  const SearchBar = ({ className = "" }) => (
+    <div className={`flex items-stretch gap-3 ${className}`}>
+      <div className="relative flex-grow">
+        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+          <Search className="h-5 w-5 text-indigo-500" />
+        </div>
+        <input
+          type="text"
+          value={filters.search}
+          onChange={(e) => { 
+            handleFilterChange('search', e.target.value);
+            handleApplyFilters();
+          }}
+          placeholder="Buscar productos..."
+          className="w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-gray-50 h-full"
+        />
+      </div>
+      
+      <select
+        value={filters.sortBy}
+        onChange={(e) => {
+          handleFilterChange('sortBy', e.target.value);
+          handleApplyFilters();
+        }}
+        className="px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white"
+      >
+        <option value="nameAsc">Nombre (A-Z)</option>
+        <option value="nameDesc">Nombre (Z-A)</option>
+        <option value="priceAsc">Precio (Menor a Mayor)</option>
+        <option value="priceDesc">Precio (Mayor a Menor)</option>
+      </select>
+    </div>
+  );
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-blue-50 flex items-center justify-center p-4">
+        <div className="text-center">
+          <div className="text-red-500 text-xl font-medium mb-2">{error}</div>
           <button
-            onClick={() => setShowFilters(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors"
+            onClick={loadProducts}
+            className="text-indigo-600 hover:text-indigo-700 font-medium"
           >
-            <Filter className="h-5 w-5" />
-            <span>{t('food.filters')}</span>
+            {t('common.tryAgain')}
           </button>
         </div>
+      </div>
+    );
+  }
 
-        <FilterPanel
-          isOpen={showFilters}
-          onClose={() => setShowFilters(false)}
-          filters={filters}
-          onFilterChange={handleFilterChange}
-          onReset={handleResetFilters}
-          onApply={handleApplyFilters}
-          subcategories={subcategories}
-          type="food"
-        />
+  // Vista móvil
+  if (isMobile) {
+    return (
+      <main className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-blue-50 py-8">
+        <div className="max-w-[95rem] mx-auto px-4 sm:px-6 mt-10">
+          <div className="flex flex-col justify-between items-start mb-6 gap-4">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900 flex items-center mb-2">
+                <UtensilsCrossed className="h-7 w-7 text-indigo-600 mr-3" />
+                {t('food.title')}
+              </h1>
+              <p className="text-sm text-gray-600 max-w-2xl mb-4">
+                {t('food.description')}
+              </p>
+            </div>
+            
+            {/* Barra de búsqueda móvil */}
+            <SearchBar className="w-full mb-3" />
+            
+            <button
+              onClick={() => setShowFilters(true)}
+              className="flex items-center gap-2 px-4 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors w-full justify-center"
+            >
+              <SlidersHorizontal className="h-5 w-5" />
+              <span>{t('food.filters.title')}</span>
+            </button>
+          </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
-          {loading ? (
-            Array.from({ length: 12 }).map((_, index) => (
-              <ProductCardSkeleton key={index} type="food" />
-            ))
-          ) : error ? (
-            <div className="col-span-full text-center py-8">
-              <div className="text-red-500 text-xl font-medium mb-2">{error}</div>
-              <button
-                onClick={loadFood}
-                className="text-amber-600 hover:text-amber-700 font-medium"
-              >
-                {t('common.tryAgain')}
-              </button>
-            </div>
-          ) : filteredFood.length === 0 ? (
-            <div className="col-span-full text-center py-8">
-              <Utensils className="mx-auto h-12 w-12 text-amber-300" />
-              <h3 className="mt-2 text-lg font-medium text-gray-900">{t('food.noFood')}</h3>
-              <p className="mt-1 text-gray-500">{t('food.noFoodMessage')}</p>
-            </div>
-          ) : (
-            <AnimatePresence>
-              {filteredFood.map(item => (
-                <ProductCard key={item.id} product={item} type="food" />
-              ))}
-            </AnimatePresence>
-          )}
+          {/* Panel de filtros - Modal móvil */}
+          <FilterPanel
+            isOpen={showFilters}
+            onClose={() => setShowFilters(false)}
+            filters={filters}
+            onFilterChange={handleFilterChange}
+            onReset={handleResetFilters}
+            onApply={handleApplyFilters}
+            subcategories={subcategories}
+            type="food"
+            isMobile={true}
+          />
+
+          <div className="grid grid-cols-2 gap-3 mt-4">
+            {loading ? (
+              Array.from({ length: 6 }).map((_, index) => (
+                <ProductCardSkeleton key={index} type="food" />
+              ))
+            ) : filteredProducts.length === 0 ? (
+              <div className="col-span-2 text-center py-8 bg-white rounded-lg shadow-sm border border-gray-200">
+                <UtensilsCrossed className="mx-auto h-12 w-12 text-indigo-300" />
+                <h3 className="mt-2 text-lg font-medium text-gray-900">{t('food.noProducts')}</h3>
+                <p className="mt-1 text-gray-500">{t('food.noProductsMessage')}</p>
+              </div>
+            ) : (
+              <AnimatePresence>
+                {filteredProducts.map(product => (
+                  <ProductCard key={product.id} product={product} type="food" />
+                ))}
+              </AnimatePresence>
+            )}
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  // Vista desktop
+  return (
+    <main className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-blue-50 py-8 sm:py-12">
+      <div className="max-w-[95rem] mx-auto px-4 sm:px-6 lg:px-8 mt-10">
+        <div className="flex flex-col items-start mb-6">
+          <div className="w-full">
+            <h1 className="text-3xl font-bold text-gray-900 flex items-center mb-2">
+              <UtensilsCrossed className="h-8 w-8 text-indigo-600 mr-3" />
+              {t('food.title')}
+            </h1>
+            <p className="text-base text-gray-600 max-w-3xl mb-4">
+              {t('food.description')}
+            </p>
+            
+            {/* Barra de búsqueda desktop */}
+            <SearchBar />
+          </div>
+        </div>
+
+        <div className="flex flex-row gap-6">
+          {/* Columna de filtros (25% del ancho) */}
+          <div className="w-1/4 flex-shrink-0">
+            <FilterPanel
+              filters={filters}
+              onFilterChange={handleFilterChange}
+              onReset={handleResetFilters}
+              onApply={handleApplyFilters}
+              subcategories={subcategories}
+              type="food"
+              isMobile={false}
+            />
+          </div>
+          
+          {/* Columna de productos (75% del ancho) */}
+          <div className="w-3/4 flex-grow-0">
+            {loading ? (
+              <div className="grid grid-cols-3 gap-4">
+                {Array.from({ length: 9 }).map((_, index) => (
+                  <ProductCardSkeleton key={index} type="food" />
+                ))}
+              </div>
+            ) : filteredProducts.length === 0 ? (
+              <div className="text-center py-12 bg-white rounded-lg shadow-sm border border-gray-200">
+                <UtensilsCrossed className="mx-auto h-16 w-16 text-indigo-300" />
+                <h3 className="mt-4 text-xl font-medium text-gray-900">{t('food.noProducts')}</h3>
+                <p className="mt-2 text-gray-500 max-w-md mx-auto">{t('food.noProductsMessage')}</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4">
+                <AnimatePresence>
+                  {filteredProducts.map(product => (
+                    <ProductCard key={product.id} product={product} type="food" />
+                  ))}
+                </AnimatePresence>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </main>
   );
-} 
+};
+
+export default FoodPage; 
