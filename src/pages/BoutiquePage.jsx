@@ -5,6 +5,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import * as productService from '../services/productService';
 import ProductCard from '../components/ProductCard';
 import ProductCardSkeleton from '../components/ProductCardSkeleton';
+import FilterPanel from '../components/FilterPanel';
 
 export default function BoutiquePage() {
   const { t } = useLanguage();
@@ -115,113 +116,24 @@ export default function BoutiquePage() {
           </div>
           
           <button
-            onClick={() => setShowFilters(!showFilters)}
+            onClick={() => setShowFilters(true)}
             className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
           >
-            {showFilters ? <X className="h-5 w-5" /> : <Filter className="h-5 w-5" />}
+            <Filter className="h-5 w-5" />
             <span>{t('boutique.filters')}</span>
           </button>
         </div>
 
-        <AnimatePresence>
-          {showFilters && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 'auto', opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              className="bg-white rounded-lg shadow-lg p-4 mb-8"
-            >
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    {t('boutique.search')}
-                  </label>
-                  <input
-                    type="text"
-                    value={filters.search}
-                    onChange={(e) => handleFilterChange('search', e.target.value)}
-                    placeholder={t('boutique.searchPlaceholder')}
-                    className="w-full p-2 border rounded-md"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    {t('boutique.filters.subcategory')}
-                  </label>
-                  <select
-                    value={filters.subcategory}
-                    onChange={(e) => handleFilterChange('subcategory', e.target.value)}
-                    className="w-full p-2 border rounded-md"
-                  >
-                    <option value="">{t('boutique.filters.allSubcategories')}</option>
-                    {subcategories.map(subcat => (
-                      <option key={subcat.id} value={subcat.id}>
-                        {subcat.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    {t('boutique.minPrice')}
-                  </label>
-                  <input
-                    type="number"
-                    value={filters.minPrice}
-                    onChange={(e) => handleFilterChange('minPrice', e.target.value)}
-                    className="w-full p-2 border rounded-md"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    {t('boutique.maxPrice')}
-                  </label>
-                  <input
-                    type="number"
-                    value={filters.maxPrice}
-                    onChange={(e) => handleFilterChange('maxPrice', e.target.value)}
-                    className="w-full p-2 border rounded-md"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    {t('boutique.sortBy')}
-                  </label>
-                  <select
-                    value={filters.sortBy}
-                    onChange={(e) => handleFilterChange('sortBy', e.target.value)}
-                    className="w-full p-2 border rounded-md"
-                  >
-                    <option value="nameAsc">{t('boutique.sortOptions.nameAsc')}</option>
-                    <option value="nameDesc">{t('boutique.sortOptions.nameDesc')}</option>
-                    <option value="priceAsc">{t('boutique.sortOptions.priceAsc')}</option>
-                    <option value="priceDesc">{t('boutique.sortOptions.priceDesc')}</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="flex justify-end gap-4 mt-4">
-                <button
-                  onClick={handleResetFilters}
-                  className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
-                >
-                  {t('boutique.resetFilters')}
-                </button>
-                <button
-                  onClick={handleApplyFilters}
-                  className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
-                >
-                  {t('common.filters.apply')}
-                </button>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        <FilterPanel
+          isOpen={showFilters}
+          onClose={() => setShowFilters(false)}
+          filters={filters}
+          onFilterChange={handleFilterChange}
+          onReset={handleResetFilters}
+          onApply={handleApplyFilters}
+          subcategories={subcategories}
+          type="boutique"
+        />
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
           {loading ? (

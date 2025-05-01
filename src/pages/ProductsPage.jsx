@@ -6,6 +6,7 @@ import { useCart } from '../contexts/CartContext';
 import * as productService from '../services/productService';
 import ProductCard from '../components/ProductCard';
 import ProductCardSkeleton from '../components/ProductCardSkeleton';
+import FilterPanel from '../components/FilterPanel';
 
 const ProductsPage = () => {
   const { t } = useLanguage();
@@ -60,7 +61,12 @@ const ProductsPage = () => {
     setFilters(prev => ({ ...prev, [name]: value }));
   };
 
-  const resetFilters = () => {
+  const handleApplyFilters = () => {
+    loadProducts();
+    setShowFilters(false);
+  };
+
+  const handleResetFilters = () => {
     setFilters({
       search: '',
       minPrice: '',
@@ -68,6 +74,7 @@ const ProductsPage = () => {
       sortBy: 'nameAsc',
       subcategory: ''
     });
+    loadProducts();
   };
 
   const filteredProducts = products.filter(product => {
@@ -110,7 +117,7 @@ const ProductsPage = () => {
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-blue-50 py-8 sm:py-12">
-      <div className="max-w-[95rem] mx-auto px-4 sm:px-6 lg:px-8 mt-10 ">
+      <div className="max-w-[95rem] mx-auto px-4 sm:px-6 lg:px-8 mt-10">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 flex items-center mb-2">
@@ -123,115 +130,24 @@ const ProductsPage = () => {
           </div>
           
           <button
-            onClick={() => setShowFilters(!showFilters)}
+            onClick={() => setShowFilters(true)}
             className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
           >
-            {showFilters ? <X className="h-5 w-5" /> : <Filter className="h-5 w-5" />}
+            <Filter className="h-5 w-5" />
             <span>{t('products.filters.title')}</span>
           </button>
         </div>
 
-        <AnimatePresence>
-          {showFilters && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 'auto', opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              className="bg-white rounded-lg shadow-lg p-4 mb-8"
-            >
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-                <div className="space-y-2">
-                  <label className="block text-sm font-medium text-gray-700">
-                    {t('products.filters.search')}
-                  </label>
-                  <input
-                    type="text"
-                    value={filters.search}
-                    onChange={(e) => handleFilterChange('search', e.target.value)}
-                    placeholder={t('products.filters.searchPlaceholder')}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <label className="block text-sm font-medium text-gray-700">
-                    {t('products.filters.subcategory')}
-                  </label>
-                  <select
-                    value={filters.subcategory}
-                    onChange={(e) => handleFilterChange('subcategory', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-                  >
-                    <option value="">{t('products.filters.allSubcategories')}</option>
-                    {subcategories.map(subcat => (
-                      <option key={subcat.id} value={subcat.id}>
-                        {subcat.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="space-y-2">
-                  <label className="block text-sm font-medium text-gray-700">
-                    {t('products.filters.minPrice')}
-                  </label>
-                  <input
-                    type="number"
-                    value={filters.minPrice}
-                    onChange={(e) => handleFilterChange('minPrice', e.target.value)}
-                    min="0"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <label className="block text-sm font-medium text-gray-700">
-                    {t('products.filters.maxPrice')}
-                  </label>
-                  <input
-                    type="number"
-                    value={filters.maxPrice}
-                    onChange={(e) => handleFilterChange('maxPrice', e.target.value)}
-                    min="0"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <label className="block text-sm font-medium text-gray-700">
-                    {t('products.filters.sortBy')}
-                  </label>
-                  <select
-                    value={filters.sortBy}
-                    onChange={(e) => handleFilterChange('sortBy', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-                  >
-                    <option value="nameAsc">{t('products.filters.sortOptions.nameAsc')}</option>
-                    <option value="nameDesc">{t('products.filters.sortOptions.nameDesc')}</option>
-                    <option value="priceAsc">{t('products.filters.sortOptions.priceAsc')}</option>
-                    <option value="priceDesc">{t('products.filters.sortOptions.priceDesc')}</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="flex justify-end gap-4 mt-4">
-                <button
-                  onClick={resetFilters}
-                  className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 transition-colors"
-                >
-                  {t('products.filters.reset')}
-                </button>
-                <button
-                  onClick={() => setShowFilters(false)}
-                  className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors"
-                >
-                  {t('products.filters.apply')}
-                </button>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        <FilterPanel
+          isOpen={showFilters}
+          onClose={() => setShowFilters(false)}
+          filters={filters}
+          onFilterChange={handleFilterChange}
+          onReset={handleResetFilters}
+          onApply={handleApplyFilters}
+          subcategories={subcategories}
+          type="product"
+        />
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
           {loading ? (
