@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 import { supabase } from '../config/supabase';
 import { signInWithEmail, signInWithGoogle, signUp, signOut } from '../services/authService';
 
@@ -8,27 +8,27 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    // Obtener la sesión actual
-    const getSession = async () => {
-      try {
-        const { data: { session }, error } = await supabase.auth.getSession();
-        if (error) {
-          console.error('Error al obtener la sesión:', error);
-          setUser(null);
-        } else if (session) {
-          setUser(session.user);
-        } else {
-          setUser(null);
-        }
-      } catch (error) {
+  // Memoizar la función de obtener sesión
+  const getSession = useCallback(async () => {
+    try {
+      const { data: { session }, error } = await supabase.auth.getSession();
+      if (error) {
         console.error('Error al obtener la sesión:', error);
         setUser(null);
-      } finally {
-        setLoading(false);
+      } else if (session) {
+        setUser(session.user);
+      } else {
+        setUser(null);
       }
-    };
+    } catch (error) {
+      console.error('Error al obtener la sesión:', error);
+      setUser(null);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
+  useEffect(() => {
     getSession();
 
     // Suscribirse a cambios en la autenticación
@@ -44,34 +44,34 @@ export function AuthProvider({ children }) {
     return () => {
       if (subscription) subscription.unsubscribe();
     };
-  }, []);
+  }, [getSession]);
 
-  const handleSignOut = async () => {
+  // Memoizar la función de cerrar sesión
+  const handleSignOut = useCallback(async () => {
     try {
       setLoading(true);
       const { error } = await signOut();
       if (error) {
         console.error('Error en handleSignOut:', error);
       }
-      // Independientemente del resultado, limpiamos el estado
       setUser(null);
     } catch (error) {
       console.error('Error en handleSignOut:', error);
-      // En caso de error, también limpiamos el estado
       setUser(null);
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const value = {
+  // Memoizar el valor del contexto
+  const value = useMemo(() => ({
     user,
     loading,
     signInWithEmail,
     signInWithGoogle,
     signUp,
     signOut: handleSignOut,
-  };
+  }), [user, loading, handleSignOut]);
 
   return (
     <AuthContext.Provider value={value}>

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, Suspense, lazy, useState } from 'react';
+import React, { useEffect, useRef, Suspense, lazy, useState, useCallback, memo } from 'react';
 import { Routes, Route, useLocation, Navigate, useNavigate } from 'react-router-dom';
 import { motion, useScroll, useSpring } from 'framer-motion';
 import { useLanguage } from './contexts/LanguageContext';
@@ -12,27 +12,27 @@ import LoadingScreen from './components/LoadingScreen';
 import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/react"
 
-// Carga perezosa de componentes
-const ProductsSection = lazy(() => import('./components/ProductsSection'));
-const FoodsSection = lazy(() => import('./components/FoodsSection'));
-const BoutiqueSection = lazy(() => import('./components/BoutiqueSection'));
-const ProductsPage = lazy(() => import('./pages/ProductsPage'));
-const FoodPage = lazy(() => import('./pages/FoodPage'));
-const BoutiquePage = lazy(() => import('./pages/BoutiquePage'));
-const ProfilePage = lazy(() => import('./pages/ProfilePage'));
-const OrdersPage = lazy(() => import('./pages/OrdersPage'));
-const CartPage = lazy(() => import('./pages/CartPage'));
-const FavoritesPage = lazy(() => import('./pages/FavoritesPage'));
+// Carga perezosa de componentes con prefetch
+const ProductsSection = lazy(() => import(/* webpackPrefetch: true */ './components/ProductsSection'));
+const FoodsSection = lazy(() => import(/* webpackPrefetch: true */ './components/FoodsSection'));
+const BoutiqueSection = lazy(() => import(/* webpackPrefetch: true */ './components/BoutiqueSection'));
+const ProductsPage = lazy(() => import(/* webpackPrefetch: true */ './pages/ProductsPage'));
+const FoodPage = lazy(() => import(/* webpackPrefetch: true */ './pages/FoodPage'));
+const BoutiquePage = lazy(() => import(/* webpackPrefetch: true */ './pages/BoutiquePage'));
+const ProfilePage = lazy(() => import(/* webpackPrefetch: true */ './pages/ProfilePage'));
+const OrdersPage = lazy(() => import(/* webpackPrefetch: true */ './pages/OrdersPage'));
+const CartPage = lazy(() => import(/* webpackPrefetch: true */ './pages/CartPage'));
+const FavoritesPage = lazy(() => import(/* webpackPrefetch: true */ './pages/FavoritesPage'));
 
-// Componente de carga
-const Loading = () => (
+// Componente de carga optimizado
+const Loading = memo(() => (
   <div className="flex justify-center items-center py-20">
     <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
   </div>
-);
+));
 
-// Componente para rutas protegidas
-const ProtectedRoute = ({ children }) => {
+// Componente para rutas protegidas optimizado
+const ProtectedRoute = memo(({ children }) => {
   const { user, loading } = useAuth();
   const location = useLocation();
 
@@ -45,7 +45,40 @@ const ProtectedRoute = ({ children }) => {
   }
 
   return children;
-};
+});
+
+// Componente de error optimizado
+const ErrorBoundary = memo(({ children }) => {
+  const [hasError, setHasError] = useState(false);
+
+  useEffect(() => {
+    const handleError = (error) => {
+      console.error('Error en la aplicación:', error);
+      setHasError(true);
+    };
+
+    window.addEventListener('error', handleError);
+    return () => window.removeEventListener('error', handleError);
+  }, []);
+
+  if (hasError) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">Algo salió mal</h1>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors"
+          >
+            Recargar página
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return children;
+});
 
 function App() {
   const { t } = useLanguage();
@@ -66,7 +99,8 @@ function App() {
   const foodsRef = useRef(null);
   const boutiqueRef = useRef(null);
 
-  const scrollToRef = (ref) => {
+  // Memoizar la función de scroll
+  const scrollToRef = useCallback((ref) => {
     if (ref && ref.current) {
       const yOffset = -80;
       const element = ref.current;
@@ -77,9 +111,9 @@ function App() {
         behavior: 'smooth'
       });
     }
-  };
+  }, []);
 
-  // Configuración de SEO
+  // Memoizar la configuración de SEO
   const seoConfig = {
     home: {
       title: `${t('hero.origen')} ${t('hero.america')} | ${t('nav.home')}`,
@@ -117,119 +151,89 @@ function App() {
     return <LoadingScreen />;
   }
 
-  const HomePage = () => (
-    <>
-      <div 
-        ref={homeRef} 
-        id="home" 
-        className="relative h-screen w-full section-container"
-        style={{ scrollMarginTop: '80px' }}
-      >
-        <ImageCarousel />
-      </div>
-      
-      <Suspense fallback={<Loading />}>
-        <div 
-          ref={productsRef} 
-          id="products" 
-          className="section-container"
-          style={{ scrollMarginTop: '80px' }}
-        >
-          <ProductsSection />
-        </div>
-        
-        <div 
-          ref={foodsRef} 
-          id="foods" 
-          className="section-container"
-          style={{ scrollMarginTop: '80px' }}
-        >
-          <FoodsSection />
-        </div>
-        
-        <div 
-          ref={boutiqueRef} 
-          id="boutique" 
-          className="section-container"
-          style={{ scrollMarginTop: '80px' }}
-        >
-          <BoutiqueSection />
-        </div>
-      </Suspense>
-    </>
-  );
-
   return (
-    <CartProvider>
-      <div className="min-h-screen bg-white overflow-x-hidden">
-        <SEO 
-          title={currentSectionConfig.title}
-          description={currentSectionConfig.description}
-          ogImage={currentSectionConfig.ogImage}
-          section={currentSection}
-        />
-        
-        <motion.div
-          className="fixed top-0 left-0 right-0 h-1 bg-indigo-600 z-50 origin-left"
-          style={{ scaleX }}
-        />
-        
-        <Navbar scrollToRef={scrollToRef} homeRef={homeRef} currentSection={currentSection} />
-        
-        <main className="pt-14 sm:pt-16">
+    <ErrorBoundary>
+      <CartProvider>
+        <div className="min-h-screen bg-gray-50">
+          {/* Barra de progreso de scroll */}
+          <motion.div
+            className="fixed top-0 left-0 right-0 h-1 bg-indigo-600 origin-left z-50"
+            style={{ scaleX }}
+          />
+
+          {/* SEO */}
+          <SEO {...currentSectionConfig} />
+
+          {/* Navbar */}
+          <Navbar
+            scrollToRef={scrollToRef}
+            homeRef={homeRef}
+            currentSection={currentSection}
+          />
+
+          {/* Rutas */}
           <Suspense fallback={<Loading />}>
             <Routes>
-              <Route path="/" element={<HomePage />} />
+              <Route
+                path="/"
+                element={
+                  <>
+                    <div ref={homeRef}>
+                      <ImageCarousel />
+                    </div>
+                    <div ref={productsRef}>
+                      <ProductsSection />
+                    </div>
+                    <div ref={foodsRef}>
+                      <FoodsSection />
+                    </div>
+                    <div ref={boutiqueRef}>
+                      <BoutiqueSection />
+                    </div>
+                  </>
+                }
+              />
               <Route path="/productos" element={<ProductsPage />} />
               <Route path="/comidas" element={<FoodPage />} />
               <Route path="/boutique" element={<BoutiquePage />} />
-              
-              {/* Rutas protegidas */}
-              <Route 
-                path="/perfil" 
+              <Route
+                path="/perfil"
                 element={
                   <ProtectedRoute>
                     <ProfilePage />
                   </ProtectedRoute>
-                } 
+                }
               />
-              <Route 
-                path="/pedidos" 
+              <Route
+                path="/pedidos"
                 element={
                   <ProtectedRoute>
                     <OrdersPage />
                   </ProtectedRoute>
-                } 
+                }
               />
-              <Route 
-                path="/carrito" 
-                element={
-                  <ProtectedRoute>
-                    <CartPage />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/favoritos" 
+              <Route path="/carrito" element={<CartPage />} />
+              <Route
+                path="/favoritos"
                 element={
                   <ProtectedRoute>
                     <FavoritesPage />
                   </ProtectedRoute>
-                } 
+                }
               />
-              
-              {/* Ruta para manejar páginas no encontradas */}
-              <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </Suspense>
-        </main>
-        
-        <Footer />
-        <Analytics />
-        <SpeedInsights/>
-      </div>
-    </CartProvider>
+
+          {/* Footer */}
+          <Footer />
+
+          {/* Analytics */}
+          <Analytics />
+          <SpeedInsights />
+        </div>
+      </CartProvider>
+    </ErrorBoundary>
   );
 }
 
-export default App;
+export default memo(App);

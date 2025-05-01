@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 import { useAuth } from './AuthContext';
 import { useLanguage } from './LanguageContext';
 import { toast } from 'react-hot-toast';
@@ -14,27 +14,10 @@ export const CartProvider = ({ children }) => {
   const [error, setError] = useState(null);
   const [total, setTotal] = useState(0);
 
-  // Cargar el carrito cuando el usuario inicia sesión
-  useEffect(() => {
-    if (user) {
-      loadCart();
-    } else {
-      setCartItems([]);
-      setLoading(false);
-    }
-  }, [user]);
-
-  // Actualizar total cuando cambian los items
-  useEffect(() => {
-    if (user && cartItems.length > 0) {
-      updateCartTotal();
-    } else {
-      setTotal(0);
-    }
-  }, [cartItems, user]);
-
-  // Cargar el carrito
-  const loadCart = async () => {
+  // Memoizar la función de cargar el carrito
+  const loadCart = useCallback(async () => {
+    if (!user) return;
+    
     try {
       setLoading(true);
       const { data, error } = await cartService.loadCart(user.id);
@@ -49,10 +32,15 @@ export const CartProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user, t]);
 
-  // Actualizar total del carrito
-  const updateCartTotal = async () => {
+  // Memoizar la función de actualizar el total
+  const updateCartTotal = useCallback(async () => {
+    if (!user || cartItems.length === 0) {
+      setTotal(0);
+      return;
+    }
+
     try {
       const { total, error } = await cartService.calculateCartTotal(user.id);
       
@@ -63,100 +51,106 @@ export const CartProvider = ({ children }) => {
       console.error('Error al calcular total:', error);
       toast.error(t('cart.errorCalculatingTotal'));
     }
-  };
+  }, [user, cartItems.length, t]);
 
-  // Agregar al carrito
-  const addToCart = async (product, quantity = 1) => {
+  // Cargar el carrito cuando el usuario inicia sesión
+  useEffect(() => {
+    if (user) {
+      loadCart();
+    } else {
+      setCartItems([]);
+      setLoading(false);
+    }
+  }, [user, loadCart]);
+
+  // Actualizar total cuando cambian los items
+  useEffect(() => {
+    if (user && cartItems.length > 0) {
+      updateCartTotal();
+    } else {
+      setTotal(0);
+    }
+  }, [cartItems, user, updateCartTotal]);
+
+  // Memoizar la función de agregar al carrito
+  const addToCart = useCallback(async (product) => {
     if (!user) {
       toast.error(t('cart.loginRequired'));
       return;
     }
 
     try {
-      const { data, error } = await cartService.addToCart(user.id, product.id, quantity);
+      setLoading(true);
+      const { data, error } = await cartService.addToCart(user.id, product);
       
       if (error) throw error;
       
-      await loadCart(); // Recargar carrito para obtener datos actualizados
+      setCartItems(prev => [...prev, data]);
       toast.success(t('cart.addedToCart'));
     } catch (error) {
       console.error('Error al agregar al carrito:', error);
-      toast.error(error.message || t('cart.errorAdding'));
+      toast.error(t('cart.errorAdding'));
+    } finally {
+      setLoading(false);
     }
-  };
+  }, [user, t]);
 
-  // Actualizar cantidad
-  const updateQuantity = async (cartItemId, newQuantity) => {
+  // Memoizar la función de actualizar cantidad
+  const updateQuantity = useCallback(async (productId, quantity) => {
+    if (!user) return;
+
     try {
-      const { error } = await cartService.updateCartItem(user.id, cartItemId, newQuantity);
+      setLoading(true);
+      const { error } = await cartService.updateCartItemQuantity(user.id, productId, quantity);
       
       if (error) throw error;
       
-      await loadCart(); // Recargar carrito para obtener datos actualizados
-      toast.success(t('cart.updated'));
+      setCartItems(prev => 
+        prev.map(item => 
+          item.id === productId ? { ...item, quantity } : item
+        )
+      );
     } catch (error) {
       console.error('Error al actualizar cantidad:', error);
-      toast.error(error.message || t('cart.errorUpdating'));
+      toast.error(t('cart.errorUpdating'));
+    } finally {
+      setLoading(false);
     }
-  };
+  }, [user, t]);
 
-  // Eliminar del carrito
-  const removeFromCart = async (cartItemId) => {
+  // Memoizar la función de eliminar del carrito
+  const removeFromCart = useCallback(async (productId) => {
+    if (!user) return;
+
     try {
-      const { error } = await cartService.removeFromCart(user.id, cartItemId);
+      setLoading(true);
+      const { error } = await cartService.removeFromCart(user.id, productId);
       
       if (error) throw error;
       
-      await loadCart(); // Recargar carrito para obtener datos actualizados
-      toast.success(t('cart.removed'));
+      setCartItems(prev => prev.filter(item => item.id !== productId));
+      toast.success(t('cart.removedFromCart'));
     } catch (error) {
       console.error('Error al eliminar del carrito:', error);
       toast.error(t('cart.errorRemoving'));
+    } finally {
+      setLoading(false);
     }
-  };
+  }, [user, t]);
 
-  // Vaciar carrito
-  const clearCart = async () => {
-    try {
-      const { error } = await cartService.clearCart(user.id);
-      
-      if (error) throw error;
-      
-      setCartItems([]);
-      setTotal(0);
-      toast.success(t('cart.cleared'));
-    } catch (error) {
-      console.error('Error al vaciar el carrito:', error);
-      toast.error(t('cart.errorClearing'));
-    }
-  };
+  // Memoizar la función de verificar si un producto está en el carrito
+  const isInCart = useCallback((productId) => {
+    return cartItems.some(item => item.id === productId);
+  }, [cartItems]);
 
-  // Preparar carrito para Stripe
-  const prepareForCheckout = async () => {
-    try {
-      const { lineItems, error } = await cartService.prepareCartForStripe(user.id);
-      
-      if (error) throw error;
-      
-      return { lineItems, error: null };
-    } catch (error) {
-      console.error('Error al preparar checkout:', error);
-      return { lineItems: [], error: error.message };
-    }
-  };
+  // Memoizar la función de obtener la cantidad de un producto
+  const getItemQuantity = useCallback((productId) => {
+    const item = cartItems.find(item => item.id === productId);
+    return item ? item.quantity : 0;
+  }, [cartItems]);
 
-  // Verificar si un producto está en el carrito
-  const isInCart = (productId) => {
-    return cartItems.some(item => item.producto_id === productId);
-  };
-
-  // Obtener la cantidad de un producto en el carrito
-  const getItemQuantity = (productId) => {
-    const item = cartItems.find(item => item.producto_id === productId);
-    return item ? item.cantidad : 0;
-  };
-
-  const value = {
+  // Memoizar el valor del contexto
+  const value = useMemo(() => ({
     cartItems,
     loading,
     error,
@@ -164,11 +158,19 @@ export const CartProvider = ({ children }) => {
     addToCart,
     updateQuantity,
     removeFromCart,
-    clearCart,
     isInCart,
-    getItemQuantity,
-    prepareForCheckout
-  };
+    getItemQuantity
+  }), [
+    cartItems,
+    loading,
+    error,
+    total,
+    addToCart,
+    updateQuantity,
+    removeFromCart,
+    isInCart,
+    getItemQuantity
+  ]);
 
   return (
     <CartContext.Provider value={value}>
@@ -179,7 +181,7 @@ export const CartProvider = ({ children }) => {
 
 export const useCart = () => {
   const context = useContext(CartContext);
-  if (context === undefined) {
+  if (!context) {
     throw new Error('useCart must be used within a CartProvider');
   }
   return context;

@@ -82,7 +82,7 @@ export default function FoodPage() {
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-amber-50 via-white to-orange-50 py-8 sm:py-12">
-      <div className="max-w-[95rem] mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[95rem] mt-10 mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 flex items-center mb-2">

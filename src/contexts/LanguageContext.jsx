@@ -1,21 +1,33 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext, useMemo, useCallback } from 'react';
 import { translations } from '../i18n/translations';
 
 const LanguageContext = createContext();
 
 export function LanguageProvider({ children }) {
-  const [language, setLanguage] = useState('es');
+  const [language, setLanguage] = useState(() => {
+    // Intentar obtener el idioma guardado en localStorage
+    const savedLanguage = localStorage.getItem('language');
+    // Verificar si el idioma guardado es válido
+    return savedLanguage && translations[savedLanguage] ? savedLanguage : 'es';
+  });
 
-  const getNestedTranslation = (obj, path) => {
+  // Memoizar la función de traducción
+  const getNestedTranslation = useCallback((obj, path) => {
     return path.split('.').reduce((acc, part) => {
       if (acc === undefined) return undefined;
       return acc[part];
     }, obj);
-  };
+  }, []);
 
-  const value = {
+  // Memoizar el valor del contexto
+  const value = useMemo(() => ({
     language,
-    setLanguage,
+    setLanguage: (newLanguage) => {
+      if (translations[newLanguage]) {
+        setLanguage(newLanguage);
+        localStorage.setItem('language', newLanguage);
+      }
+    },
     t: (key) => {
       const translation = getNestedTranslation(translations[language], key);
       if (translation === undefined) {
@@ -24,7 +36,7 @@ export function LanguageProvider({ children }) {
       }
       return translation;
     }
-  };
+  }), [language, getNestedTranslation]);
 
   return (
     <LanguageContext.Provider value={value}>

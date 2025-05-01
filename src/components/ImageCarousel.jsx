@@ -1,8 +1,49 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, memo } from 'react';
 import { motion } from 'framer-motion';
 import { useLanguage } from '../contexts/LanguageContext';
 import { ShoppingBag, Utensils, Store, ChevronDown } from 'lucide-react';
 import AuthModal from './AuthModal';
+
+// Componentes memoizados para evitar re-renders innecesarios
+const CategoryCard = memo(({ icon: Icon, title, description, gradient }) => (
+  <motion.div 
+    className={`group relative bg-gradient-to-br ${gradient} p-4 sm:p-5 md:p-6 rounded-2xl flex items-center h-20 sm:h-24 md:h-28 border border-white/10 shadow-lg backdrop-blur-sm hover:backdrop-blur-md transition-all duration-300 overflow-hidden`}
+    whileHover={{ scale: 1.02 }}
+    whileTap={{ scale: 0.98 }}
+  >
+    <div className={`absolute inset-0 bg-gradient-to-br ${gradient.replace('/20', '/0')} group-hover:${gradient.replace('/20', '/10')} transition-all duration-300`} />
+    <div className="relative z-10 flex items-center w-full">
+      <div className="flex-shrink-0 mr-3">
+        <Icon className="h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10 text-white group-hover:scale-110 transition-transform duration-300" />
+      </div>
+      <div className="flex-grow">
+        <h3 className="text-white font-semibold text-base sm:text-lg md:text-xl mb-0.5 drop-shadow-lg" 
+            style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.4)' }}>
+          {title}
+        </h3>
+        <p className="text-white/90 text-xs sm:text-sm md:text-base drop-shadow-md line-clamp-2" 
+           style={{ textShadow: '0 1px 3px rgba(0, 0, 0, 0.4)' }}>
+          {description}
+        </p>
+      </div>
+    </div>
+  </motion.div>
+));
+
+const MobileCategoryCard = memo(({ icon: Icon, title, gradient }) => (
+  <motion.div 
+    className={`group relative bg-gradient-to-br ${gradient} p-3 sm:p-4 rounded-xl flex flex-col items-center justify-center h-20 sm:h-24 border border-white/10 backdrop-blur-sm hover:backdrop-blur-md transition-all duration-300 overflow-hidden`}
+    whileHover={{ scale: 1.03 }}
+    whileTap={{ scale: 0.97 }}
+  >
+    <div className={`absolute inset-0 bg-gradient-to-br ${gradient.replace('/20', '/0')} group-hover:${gradient.replace('/20', '/10')} transition-all duration-300`} />
+    <Icon className="h-6 w-6 sm:h-8 sm:w-8 text-white mb-2 group-hover:scale-110 transition-transform duration-300" />
+    <span className="text-white font-medium text-xs sm:text-sm text-center drop-shadow-lg relative z-10 px-1" 
+          style={{ textShadow: '0 1px 2px rgba(0, 0, 0, 0.4)' }}>
+      {title}
+    </span>
+  </motion.div>
+));
 
 const ImageCarousel = () => {
   const { t } = useLanguage();
@@ -11,27 +52,48 @@ const ImageCarousel = () => {
   const [isTablet, setIsTablet] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
-  useEffect(() => {
-    const checkDevice = () => {
-      const width = window.innerWidth;
-      setIsMobile(width < 768);
-      setIsTablet(width >= 768 && width < 1024);
-    };
-    
-    checkDevice();
-    window.addEventListener('resize', checkDevice);
-    
-    return () => {
-      window.removeEventListener('resize', checkDevice);
-    };
+  // Memoizar la función de verificación de dispositivo
+  const checkDevice = useCallback(() => {
+    const width = window.innerWidth;
+    setIsMobile(width < 768);
+    setIsTablet(width >= 768 && width < 1024);
   }, []);
 
+  useEffect(() => {
+    checkDevice();
+    window.addEventListener('resize', checkDevice);
+    return () => window.removeEventListener('resize', checkDevice);
+  }, [checkDevice]);
+
+  // Precargar imágenes
   useEffect(() => {
     const imagePath = isMobile ? "/fondoMobile2.png" : isTablet ? "/fondoTablet.png" : "/fondoEscritorio.png";
     const img = new Image();
     img.src = imagePath;
     img.onload = () => setIsImageLoaded(true);
   }, [isMobile, isTablet]);
+
+  // Memoizar las categorías
+  const categories = [
+    {
+      icon: ShoppingBag,
+      title: t('categories.products'),
+      description: t('categories.productsDescription'),
+      gradient: 'from-indigo-600/20 to-blue-600/20'
+    },
+    {
+      icon: Utensils,
+      title: t('categories.foods'),
+      description: t('categories.foodsDescription'),
+      gradient: 'from-amber-500/20 to-orange-500/20'
+    },
+    {
+      icon: Store,
+      title: t('categories.boutiqueSouvenirs'),
+      description: t('categories.boutiqueDescription'),
+      gradient: 'from-purple-500/20 to-pink-500/20'
+    }
+  ];
 
   return (
     <div className="relative w-full h-screen min-h-[500px] sm:min-h-[600px] md:min-h-[700px] lg:min-h-[800px] max-h-[900px] overflow-hidden">
@@ -180,74 +242,9 @@ const ImageCarousel = () => {
                 transition={{ duration: 0.8, delay: 0.3 }}
               >
                 <div className="grid grid-cols-1 gap-4 sm:gap-5 max-w-md mx-auto">
-                  <motion.div 
-                    className="group relative bg-gradient-to-br from-indigo-600/20 to-blue-600/20 p-4 sm:p-5 md:p-6 rounded-2xl flex items-center h-20 sm:h-24 md:h-28 border border-white/10 shadow-lg backdrop-blur-sm hover:backdrop-blur-md transition-all duration-300 overflow-hidden"
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/0 to-blue-600/0 group-hover:from-indigo-600/10 group-hover:to-blue-600/10 transition-all duration-300" />
-                    <div className="relative z-10 flex items-center w-full">
-                      <div className="flex-shrink-0 mr-3">
-                        <ShoppingBag className="h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10 text-white group-hover:scale-110 transition-transform duration-300" />
-                      </div>
-                      <div className="flex-grow">
-                        <h3 className="text-white font-semibold text-base sm:text-lg md:text-xl mb-0.5 drop-shadow-lg" 
-                            style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.4)' }}>
-                          {t('categories.products')}
-                        </h3>
-                        <p className="text-white/90 text-xs sm:text-sm md:text-base drop-shadow-md line-clamp-2" 
-                           style={{ textShadow: '0 1px 3px rgba(0, 0, 0, 0.4)' }}>
-                          {t('categories.productsDescription')}
-                        </p>
-                      </div>
-                    </div>
-                  </motion.div>
-                  
-                  <motion.div 
-                    className="group relative bg-gradient-to-br from-amber-500/20 to-orange-500/20 p-4 sm:p-5 md:p-6 rounded-2xl flex items-center h-20 sm:h-24 md:h-28 border border-white/10 shadow-lg backdrop-blur-sm hover:backdrop-blur-md transition-all duration-300 overflow-hidden"
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    <div className="absolute inset-0 bg-gradient-to-br from-amber-500/0 to-orange-500/0 group-hover:from-amber-500/10 group-hover:to-orange-500/10 transition-all duration-300" />
-                    <div className="relative z-10 flex items-center w-full">
-                      <div className="flex-shrink-0 mr-3">
-                        <Utensils className="h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10 text-white group-hover:scale-110 transition-transform duration-300" />
-                      </div>
-                      <div className="flex-grow">
-                        <h3 className="text-white font-semibold text-base sm:text-lg md:text-xl mb-0.5 drop-shadow-lg" 
-                            style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.4)' }}>
-                          {t('categories.foods')}
-                        </h3>
-                        <p className="text-white/90 text-xs sm:text-sm md:text-base drop-shadow-md line-clamp-2" 
-                           style={{ textShadow: '0 1px 3px rgba(0, 0, 0, 0.4)' }}>
-                          {t('categories.foodsDescription')}
-                        </p>
-                      </div>
-                    </div>
-                  </motion.div>
-                  
-                  <motion.div 
-                    className="group relative bg-gradient-to-br from-purple-500/20 to-pink-500/20 p-4 sm:p-5 md:p-6 rounded-2xl flex items-center h-20 sm:h-24 md:h-28 border border-white/10 shadow-lg backdrop-blur-sm hover:backdrop-blur-md transition-all duration-300 overflow-hidden"
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    <div className="absolute inset-0 bg-gradient-to-br from-purple-500/0 to-pink-500/0 group-hover:from-purple-500/10 group-hover:to-pink-500/10 transition-all duration-300" />
-                    <div className="relative z-10 flex items-center w-full">
-                      <div className="flex-shrink-0 mr-3">
-                        <Store className="h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10 text-white group-hover:scale-110 transition-transform duration-300" />
-                      </div>
-                      <div className="flex-grow">
-                        <h3 className="text-white font-semibold text-base sm:text-lg md:text-xl mb-0.5 drop-shadow-lg" 
-                            style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.4)' }}>
-                          {t('categories.boutiqueSouvenirs')}
-                        </h3>
-                        <p className="text-white/90 text-xs sm:text-sm md:text-base drop-shadow-md line-clamp-2" 
-                           style={{ textShadow: '0 1px 3px rgba(0, 0, 0, 0.4)' }}>
-                          {t('categories.boutiqueDescription')}
-                        </p>
-                      </div>
-                    </div>
-                  </motion.div>
+                  {categories.map((category, index) => (
+                    <CategoryCard key={index} {...category} />
+                  ))}
                 </div>
               </motion.div>
               
@@ -258,44 +255,9 @@ const ImageCarousel = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.7 }}
               >
-                <motion.div 
-                  className="group relative bg-gradient-to-br from-indigo-600/20 to-blue-600/20 p-3 sm:p-4 rounded-xl flex flex-col items-center justify-center h-20 sm:h-24 border border-white/10 backdrop-blur-sm hover:backdrop-blur-md transition-all duration-300 overflow-hidden"
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.97 }}
-                >
-                  <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/0 to-blue-600/0 group-hover:from-indigo-600/10 group-hover:to-blue-600/10 transition-all duration-300" />
-                  <ShoppingBag className="h-6 w-6 sm:h-8 sm:w-8 text-white mb-2 group-hover:scale-110 transition-transform duration-300" />
-                  <span className="text-white font-medium text-xs sm:text-sm text-center drop-shadow-lg relative z-10 px-1" 
-                        style={{ textShadow: '0 1px 2px rgba(0, 0, 0, 0.4)' }}>
-                    {t('categories.products')}
-                  </span>
-                </motion.div>
-                
-                <motion.div 
-                  className="group relative bg-gradient-to-br from-amber-500/20 to-orange-500/20 p-3 sm:p-4 rounded-xl flex flex-col items-center justify-center h-20 sm:h-24 border border-white/10 backdrop-blur-sm hover:backdrop-blur-md transition-all duration-300 overflow-hidden"
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.97 }}
-                >
-                  <div className="absolute inset-0 bg-gradient-to-br from-amber-500/0 to-orange-500/0 group-hover:from-amber-500/10 group-hover:to-orange-500/10 transition-all duration-300" />
-                  <Utensils className="h-6 w-6 sm:h-8 sm:w-8 text-white mb-2 group-hover:scale-110 transition-transform duration-300" />
-                  <span className="text-white font-medium text-xs sm:text-sm text-center drop-shadow-lg relative z-10 px-1" 
-                        style={{ textShadow: '0 1px 2px rgba(0, 0, 0, 0.4)' }}>
-                    {t('categories.foods')}
-                  </span>
-                </motion.div>
-            
-                <motion.div
-                  className="group relative bg-gradient-to-br from-purple-500/20 to-pink-500/20 p-3 sm:p-4 rounded-xl flex flex-col items-center justify-center h-20 sm:h-24 border border-white/10 backdrop-blur-sm hover:backdrop-blur-md transition-all duration-300 overflow-hidden"
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.97 }}
-                >
-                  <div className="absolute inset-0 bg-gradient-to-br from-purple-500/0 to-pink-500/0 group-hover:from-purple-500/10 group-hover:to-pink-500/10 transition-all duration-300" />
-                  <Store className="h-6 w-6 sm:h-8 sm:w-8 text-white mb-2 group-hover:scale-110 transition-transform duration-300" />
-                  <span className="text-white font-medium text-xs sm:text-sm text-center drop-shadow-lg relative z-10 px-1" 
-                        style={{ textShadow: '0 1px 2px rgba(0, 0, 0, 0.4)' }}>
-                    {t('categories.boutiqueSouvenirs')}
-                  </span>
-                </motion.div>
+                {categories.map((category, index) => (
+                  <MobileCategoryCard key={index} {...category} />
+                ))}
               </motion.div>
             </div>
           </div>
@@ -337,4 +299,4 @@ const ImageCarousel = () => {
   );
 };
 
-export default ImageCarousel;
+export default memo(ImageCarousel);
