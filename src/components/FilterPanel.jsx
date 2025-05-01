@@ -360,7 +360,7 @@ const FilterPanel = memo(({
                           style={{ maxHeight: '300px' }}  /* Establecer altura máxima fija */
                         >
                           <div className="p-3 grid grid-cols-1 gap-2">
-                            {subcategories.map(subcat => (
+                  {subcategories.map(subcat => (
                     <button
                       key={subcat.id}
                                 onClick={() => {
@@ -469,7 +469,7 @@ const FilterPanel = memo(({
                                   background: `linear-gradient(to right, #e5e7eb ${priceRange.min / 10}%, #${color === 'indigo' ? '6366f1' : color === 'amber' ? 'f59e0b' : 'a855f7'} ${priceRange.min / 10}% ${priceRange.max / 10}%, #e5e7eb ${priceRange.max / 10}%)`
                                 }}
                     />
-                            </div>
+                  </div>
                           </div>
                         </motion.div>
                       )}

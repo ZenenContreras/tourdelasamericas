@@ -135,10 +135,53 @@ export const translations = {
         email: 'Email',
         password: 'Password',
         confirmPassword: 'Confirm Password',
+        nombre: 'Name',
         submit: 'Create Account',
         orContinueWith: 'Or continue with',
         haveAccount: 'Already have an account?',
         login: 'Sign In'
+      },
+      resetPassword: {
+        title: 'Reset Password',
+        instruction: 'Enter a new password for your account',
+        verifying: 'Verifying your request...',
+        invalidToken: 'Invalid or expired password reset link. Please request a new one.',
+        error: 'Password Reset Error',
+        backToHome: 'Back to Home',
+        newPassword: 'New Password',
+        confirmPassword: 'Confirm Password',
+        passwordRequirement: 'Must be at least 6 characters',
+        submit: 'Reset Password',
+        updating: 'Updating...',
+        successTitle: 'Password Updated Successfully',
+        successMessage: 'Your password has been reset. You can now sign in with your new password.',
+        redirecting: 'Redirecting in {seconds} seconds...',
+        updateError: 'Error updating password. Please try again.'
+      },
+      forgotPassword: {
+        title: 'Forgot Password',
+        instruction: 'Enter your email address and we\'ll send you a link to reset your password',
+        email: 'Email',
+        submit: 'Send Reset Link',
+        sending: 'Sending...',
+        successTitle: 'Check Your Email',
+        successMessage: 'If an account exists for that email, we\'ve sent instructions to reset your password.',
+        backToLogin: 'Back to Login',
+        error: 'An error occurred. Please try again.'
+      },
+      signin: {
+        completing: 'Completing Sign In',
+        redirecting: 'You will be redirected in a moment...'
+      },
+      verification: {
+        title: 'Verify your email',
+        description: 'We have sent a verification email to:',
+        instructions: 'Click on the link in the email to activate your account and sign in.',
+        resend: 'Resend verification email',
+        resendSuccess: 'Verification email resent successfully.',
+        or: 'or',
+        backToLogin: 'Back to login',
+        checkSpam: 'Can\'t find the email? Check your spam or junk folder.'
       },
       userMenu: {
         profile: 'My Profile',
@@ -153,9 +196,15 @@ export const translations = {
         passwordsDontMatch: 'Passwords do not match',
         emailInUse: 'Email already in use',
         invalidCredentials: 'Invalid email or password',
-        genericError: 'An error occurred. Please try again.'
+        genericError: 'An error occurred. Please try again.',
+        nombreRequired: 'Name is required',
+        termsNotice: 'By continuing, you agree to our',
+        termsOfService: 'Terms of Service',
+        privacyPolicy: 'Privacy Policy',
+        and: 'and'
       }
     },
+    redirecting: 'Redirecting to the homepage...',
     profile: {
       title: 'My Profile',
       edit: 'Edit Profile',
@@ -443,7 +492,8 @@ export const translations = {
         lowStock: "Last units!",
         outOfStock: "Out of stock"
       }
-    }
+    },
+    loading: 'Loading...'
   },
   es: {
     nav: {
@@ -525,11 +575,11 @@ export const translations = {
         centralAmerica: {
           name: 'Centro América',
           description: 'Explora la gastronomía colorée de Guatemala, Costa Rica, Panamá, Honduras y más países centroamericanos',
-          countries: ['Guatemala', 'Costa Rica', 'Panamá', 'Honduras']
+          countries: ['Guatemala', 'Costa Rica', 'Panama', 'Honduras']
         },
         southAmerica: {
           name: 'Sur América',
-          description: 'Disfruta de los platos típicos de Argentina, Brasil, Perú, Colombia y otros países sudamericanos',
+          description: 'Savourez les plats typiques d\'Argentine, du Brésil, du Pérou, de Colombie et d\'autres pays d\'Amérique du Sud',
           countries: ['Argentina', 'Brasil', 'Perú', 'Colombia', 'Chile']
         }
       },
@@ -581,10 +631,53 @@ export const translations = {
         email: 'Correo electrónico',
         password: 'Contraseña',
         confirmPassword: 'Confirmar Contraseña',
+        nombre: 'Nombre',
         submit: 'Crear Cuenta',
         orContinueWith: 'O continúa con',
         haveAccount: '¿Ya tienes una cuenta?',
         login: 'Iniciar Sesión'
+      },
+      resetPassword: {
+        title: 'Restablecer Contraseña',
+        instruction: 'Ingresa una nueva contraseña para tu cuenta',
+        verifying: 'Verificando tu solicitud...',
+        invalidToken: 'Enlace de restablecimiento inválido o expirado. Por favor solicita uno nuevo.',
+        error: 'Error de Restablecimiento',
+        backToHome: 'Volver al Inicio',
+        newPassword: 'Nueva Contraseña',
+        confirmPassword: 'Confirmar Contraseña',
+        passwordRequirement: 'Debe tener al menos 6 caracteres',
+        submit: 'Restablecer Contraseña',
+        updating: 'Actualizando...',
+        successTitle: 'Contraseña Actualizada',
+        successMessage: 'Tu contraseña ha sido restablecida. Ahora puedes iniciar sesión con tu nueva contraseña.',
+        redirecting: 'Redirigiendo en {seconds} segundos...',
+        updateError: 'Error al actualizar la contraseña. Por favor, intenta de nuevo.'
+      },
+      forgotPassword: {
+        title: 'Recuperar Contraseña',
+        instruction: 'Ingresa tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña',
+        email: 'Correo electrónico',
+        submit: 'Enviar Enlace',
+        sending: 'Enviando...',
+        successTitle: 'Revisa tu Correo',
+        successMessage: 'Si existe una cuenta con ese correo electrónico, hemos enviado instrucciones para restablecer tu contraseña.',
+        backToLogin: 'Volver a Iniciar Sesión',
+        error: 'Ocurrió un error. Por favor, intenta de nuevo.'
+      },
+      signin: {
+        completing: 'Completando Inicio de Sesión',
+        redirecting: 'Serás redirigido en un momento...'
+      },
+      verification: {
+        title: 'Verifica tu correo electrónico',
+        description: 'Hemos enviado un correo de verificación a:',
+        instructions: 'Haz clic en el enlace del correo para activar tu cuenta y poder iniciar sesión.',
+        resend: 'Reenviar correo de verificación',
+        resendSuccess: 'Correo de verificación reenviado con éxito.',
+        or: 'o',
+        backToLogin: 'Volver a inicio de sesión',
+        checkSpam: '¿No encuentras el correo? Revisa tu carpeta de spam o correo no deseado.'
       },
       userMenu: {
         profile: 'Mi Perfil',
@@ -599,9 +692,15 @@ export const translations = {
         passwordsDontMatch: 'Las contraseñas no coinciden',
         emailInUse: 'El correo electrónico ya está en uso',
         invalidCredentials: 'Correo electrónico o contraseña inválidos',
-        genericError: 'Ocurrió un error. Por favor, intenta de nuevo.'
+        genericError: 'Ocurrió un error. Por favor, intenta de nuevo.',
+        nombreRequired: 'El nombre es requerido',
+        termsNotice: 'Al continuar, aceptas nuestros',
+        termsOfService: 'Términos de Servicio',
+        privacyPolicy: 'Política de Privacidad',
+        and: 'y'
       }
     },
+    redirecting: 'Redirigiendo a la página principal...',
     profile: {
       title: 'Mi Perfil',
       edit: 'Editar Perfil',
@@ -798,7 +897,7 @@ export const translations = {
       errorLoading: "Erreur lors du chargement des articles",
       categories: {
         all: "Tous les articles",
-        clothing: "Ropa",
+        clothing: "Vêtements",
         accessories: "Accessoires",
         crafts: "Artesanías",
         souvenirs: "Souvenirs"
@@ -820,11 +919,11 @@ export const translations = {
         wood: "Wood",
         ceramic: "Ceramic"
       },
-      subcategory: "Categoría",
-      allSubcategories: "Todas las categorías",
+      subcategory: "Catégorie",
+      allSubcategories: "Toutes les catégories",
       subcategories: {
-        clothing: "Ropa",
-        accessories: "Accesorios",
+        clothing: "Vêtements",
+        accessories: "Accessoires",
         souvenirs: "Souvenirs"
       }
     },
@@ -856,7 +955,7 @@ export const translations = {
       confirmRemove: "¿Estás seguro que deseas eliminar este producto?",
       confirmClear: "¿Estás seguro que deseas vaciar el carrito?",
       stockLimit: "Stock disponible : {{stock}}",
-      outOfStock: "En rupture de stock"
+      outOfStock: "En ruptura de stock"
     },
     common: {
       featured: "Destacado",
@@ -872,12 +971,12 @@ export const translations = {
     product: {
       addToCart: "Agregar al carrito",
       lowStock: "¡Solo quedan {{stock}} unidades!",
-      outOfStock: "Agotado"
+      outOfStock: "En ruptura de stock"
     },
     productCard: {
       addToCart: "Agregar al carrito",
       addMore: "Agregar más",
-      outOfStock: "En rupture de stock",
+      outOfStock: "En ruptura de stock",
       lowStock: "Dernières unités !",
       featured: "Destacado",
       category: "Categoría",
@@ -889,7 +988,8 @@ export const translations = {
         lowStock: "Dernières unités !",
         outOfStock: "En rupture de stock"
       }
-    }
+    },
+    loading: 'Cargando...'
   },
   fr: {
     nav: {
@@ -1027,10 +1127,53 @@ export const translations = {
         email: 'Email',
         password: 'Mot de passe',
         confirmPassword: 'Confirmer le mot de passe',
+        nombre: 'Nom',
         submit: 'Créer un compte',
         orContinueWith: 'Ou continuer avec',
         haveAccount: 'Vous avez déjà un compte ?',
         login: 'Se connecter'
+      },
+      resetPassword: {
+        title: 'Réinitialiser le mot de passe',
+        instruction: 'Entrez un nouveau mot de passe pour votre compte',
+        verifying: 'Vérification de votre demande...',
+        invalidToken: 'Lien de réinitialisation invalide ou expiré. Veuillez en demander un nouveau.',
+        error: 'Erreur de réinitialisation',
+        backToHome: "Retour à l'accueil",
+        newPassword: 'Nouveau mot de passe',
+        confirmPassword: 'Confirmer le mot de passe',
+        passwordRequirement: 'Doit contenir au moins 6 caractères',
+        submit: 'Réinitialiser le mot de passe',
+        updating: 'Mise à jour...',
+        successTitle: 'Mot de passe mis à jour',
+        successMessage: 'Votre mot de passe a été réinitialisé. Vous pouvez maintenant vous connecter avec votre nouveau mot de passe.',
+        redirecting: 'Redirection dans {seconds} secondes...',
+        updateError: 'Erreur lors de la mise à jour du mot de passe. Veuillez réessayer.'
+      },
+      forgotPassword: {
+        title: 'Mot de passe oublié',
+        instruction: 'Entrez votre adresse email et nous vous enverrons un lien pour réinitialiser votre mot de passe',
+        email: 'Email',
+        submit: 'Envoyer le lien',
+        sending: 'Envoi en cours...',
+        successTitle: 'Vérifiez votre email',
+        successMessage: "Si un compte existe avec cet email, nous avons envoyé des instructions pour réinitialiser votre mot de passe.",
+        backToLogin: 'Retour à la connexion',
+        error: 'Une erreur est survenue. Veuillez réessayer.'
+      },
+      signin: {
+        completing: 'Finalisation de la connexion',
+        redirecting: 'Vous serez redirigé dans un instant...'
+      },
+      verification: {
+        title: 'Vérifiez votre email',
+        description: 'Nous avons envoyé un email de vérification à:',
+        instructions: 'Cliquez sur le lien dans l\'email pour activer votre compte et vous connecter.',
+        resend: 'Renvoyer l\'email de vérification',
+        resendSuccess: 'Email de vérification renvoyé avec succès.',
+        or: 'ou',
+        backToLogin: 'Retour à la connexion',
+        checkSpam: 'Vous ne trouvez pas l\'email? Vérifiez votre dossier spam ou courrier indésirable.'
       },
       userMenu: {
         profile: 'Mon Profil',
@@ -1045,9 +1188,15 @@ export const translations = {
         passwordsDontMatch: 'Les mots de passe ne correspondent pas',
         emailInUse: 'Cet email est déjà utilisé',
         invalidCredentials: 'Email ou mot de passe invalide',
-        genericError: 'Une erreur est survenue. Veuillez réessayer.'
+        genericError: 'Une erreur est survenue. Veuillez réessayer.',
+        nombreRequired: 'Le nom est requis',
+        termsNotice: 'En continuant, vous acceptez nos',
+        termsOfService: 'Conditions d\'utilisation',
+        privacyPolicy: 'Politique de confidentialité',
+        and: 'et'
       }
     },
+    redirecting: 'Redirection vers la page d\'accueil...',
     profile: {
       title: 'Mon Profil',
       edit: 'Modifier le Profil',
@@ -1335,6 +1484,7 @@ export const translations = {
         lowStock: "Dernières unités !",
         outOfStock: "En rupture de stock"
       }
-    }
+    },
+    loading: 'Chargement...'
   }
 };

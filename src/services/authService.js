@@ -86,9 +86,13 @@ export const signInWithGoogle = async () => {
   }
 };
 
-export const signUp = async (email, password) => {
+export const signUp = async (email, password, nombre) => {
   if (!email || !password) {
     throw new Error('El correo y la contraseña son requeridos');
+  }
+
+  if (!nombre || nombre.trim() === '') {
+    throw new Error('El nombre es requerido');
   }
 
   try {
@@ -110,14 +114,15 @@ export const signUp = async (email, password) => {
 
     if (authError) throw handleAuthError(authError);
 
-    // Crear perfil de usuario
+    // Crear perfil de usuario con el nombre de columna correcto
     const { error: profileError } = await supabase
       .from('usuarios')
       .insert([
         {
           email,
-          created_at: new Date(),
-          nombre: email.split('@')[0],
+          nombre: nombre,
+          fecha_creacion: new Date(), // Usar el nombre correcto de la columna
+          autenticacion_social: false
         }
       ]);
 
@@ -402,6 +407,30 @@ export const getSession = async () => {
     return {
       session: null,
       error: handleAuthError(error)
+    };
+  }
+};
+
+export const resendVerificationEmail = async (email) => {
+  try {
+    // Supabase no tiene una función dedicada para reenviar correos de verificación,
+    // pero podemos usar la función de restablecimiento de contraseña con un mensaje personalizado
+    const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/auth/callback`,
+    });
+
+    if (error) throw error;
+
+    return { data, error: null };
+  } catch (error) {
+    console.error('Error al reenviar correo de verificación:', error);
+    return { 
+      data: null, 
+      error: {
+        message: error.message,
+        code: error.code,
+        status: error.status
+      }
     };
   }
 }; 

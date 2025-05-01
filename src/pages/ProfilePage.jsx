@@ -4,6 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { User, Mail, Phone, MapPin, Edit2, Save, X, Lock, Shield, CreditCard, Bell } from 'lucide-react';
 import { updateProfile, getProfile } from '../services/authService';
+import ForgotPasswordModal from '../components/ForgotPasswordModal';
 
 const ProfilePage = () => {
   const { t } = useLanguage();
@@ -24,6 +25,7 @@ const ProfilePage = () => {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -374,7 +376,10 @@ const ProfilePage = () => {
                     <div className="bg-white p-4 rounded-lg border border-gray-200">
                       <h3 className="text-lg font-medium text-gray-900 mb-2">{t('profile.security.password.title')}</h3>
                       <p className="text-sm text-gray-600 mb-4">{t('profile.security.password.description')}</p>
-                      <button className="w-full bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors">
+                      <button 
+                        className="w-full bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors"
+                        onClick={() => setShowPasswordModal(true)}
+                      >
                         {t('profile.security.password.changeButton')}
                       </button>
                     </div>
@@ -382,9 +387,13 @@ const ProfilePage = () => {
                     <div className="bg-white p-4 rounded-lg border border-gray-200">
                       <h3 className="text-lg font-medium text-gray-900 mb-2">{t('profile.security.twoFactor.title')}</h3>
                       <p className="text-sm text-gray-600 mb-4">{t('profile.security.twoFactor.description')}</p>
-                      <button className="w-full bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors">
+                      <button 
+                        className="w-full bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors disabled:bg-indigo-300 disabled:cursor-not-allowed"
+                        disabled={true}
+                      >
                         {t('profile.security.twoFactor.setupButton')}
                       </button>
+                      <p className="text-xs text-gray-500 mt-2 text-center">Próximamente</p>
                     </div>
                   </div>
                 </div>
@@ -434,6 +443,15 @@ const ProfilePage = () => {
           </div>
         </motion.div>
       </div>
+      
+      {/* Modal de cambio de contraseña */}
+      {showPasswordModal && (
+        <ForgotPasswordModal 
+          isOpen={showPasswordModal} 
+          onClose={() => setShowPasswordModal(false)} 
+          email={user.email} 
+        />
+      )}
     </div>
   );
 };

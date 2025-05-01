@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 import { supabase } from '../config/supabase';
-import { signInWithEmail, signInWithGoogle, signUp, signOut } from '../services/authService';
+import { signInWithEmail, signInWithGoogle, signUp, signOut, resetPassword, updatePassword, getCurrentUser } from '../services/authService';
 
 const AuthContext = createContext();
 
@@ -16,7 +16,9 @@ export function AuthProvider({ children }) {
         console.error('Error al obtener la sesión:', error);
         setUser(null);
       } else if (session) {
-        setUser(session.user);
+        // Obtener datos adicionales del usuario
+        const { user: currentUser } = await getCurrentUser();
+        setUser(currentUser);
       } else {
         setUser(null);
       }
@@ -34,7 +36,9 @@ export function AuthProvider({ children }) {
     // Suscribirse a cambios en la autenticación
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
       if (session) {
-        setUser(session.user);
+        // Actualizar con los datos del usuario completos
+        const { user: currentUser } = await getCurrentUser();
+        setUser(currentUser);
       } else {
         setUser(null);
       }
@@ -63,6 +67,16 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
+  // Memoizar la función de recuperar contraseña
+  const handleResetPassword = useCallback(async (email) => {
+    return resetPassword(email);
+  }, []);
+
+  // Memoizar la función de actualizar contraseña
+  const handleUpdatePassword = useCallback(async (newPassword) => {
+    return updatePassword(newPassword);
+  }, []);
+
   // Memoizar el valor del contexto
   const value = useMemo(() => ({
     user,
@@ -71,7 +85,9 @@ export function AuthProvider({ children }) {
     signInWithGoogle,
     signUp,
     signOut: handleSignOut,
-  }), [user, loading, handleSignOut]);
+    resetPassword: handleResetPassword,
+    updatePassword: handleUpdatePassword
+  }), [user, loading, handleSignOut, handleResetPassword, handleUpdatePassword]);
 
   return (
     <AuthContext.Provider value={value}>
