@@ -27,6 +27,17 @@ export default function BoutiquePage() {
   ];
 
   useEffect(() => {
+    // Obtener subcategoría de la URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const subcategoriaFromUrl = urlParams.get('subcategoria');
+    
+    if (subcategoriaFromUrl) {
+      setFilters(prev => ({
+        ...prev,
+        subcategory: subcategoriaFromUrl
+      }));
+    }
+    
     loadBoutique();
   }, []);
 

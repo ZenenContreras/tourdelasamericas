@@ -45,7 +45,7 @@ export const loadProducts = async (filters = {}, categoria_id = null) => {
     if (filters.search) {
       query = query.ilike('nombre', `%${filters.search}%`);
     }
-    if (filters.subcategory) {
+    if (filters.subcategory && filters.subcategory !== '') {
       query = query.eq('subcategoria_id', parseInt(filters.subcategory));
     }
 
