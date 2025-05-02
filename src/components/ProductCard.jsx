@@ -21,9 +21,9 @@ const ProductCard = ({ product, type = 'product' }) => {
       button: 'indigo',
       gradient: 'from-indigo-50 to-blue-50',
       translations: {
-        addToCart: 'products.addToCart',
-        outOfStock: 'products.outOfStock',
-        lowStock: 'products.lowStock'
+        addToCart: 'product.addToCart',
+        outOfStock: 'product.outOfStock',
+        lowStock: 'product.lowStock'
       }
     },
     food: {
