@@ -3,14 +3,28 @@ import { supabase } from '../config/supabase';
 // Obtener ID numérico del usuario
 const getUserNumericId = async (authUser) => {
   try {
+    if (!authUser || !authUser.email) {
+      throw new Error('Usuario no autenticado o email no disponible');
+    }
+
     const { data, error } = await supabase
       .from('usuarios')
       .select('id')
       .eq('email', authUser.email)
       .single();
 
-    if (error) throw error;
-    return data?.id;
+    if (error) {
+      if (error.code === 'PGRST116') {
+        throw new Error('Usuario no encontrado');
+      }
+      throw error;
+    }
+
+    if (!data || !data.id) {
+      throw new Error('ID de usuario no encontrado');
+    }
+
+    return data.id;
   } catch (error) {
     console.error('Error obteniendo ID numérico del usuario:', error);
     throw error;
@@ -23,7 +37,11 @@ export const getProductReviews = async (productId) => {
     const { data, error } = await supabase
       .from('reviews')
       .select(`
-        *,
+        id,
+        estrellas,
+        comentario,
+        fecha_creacion,
+        usuario_id,
         usuarios (
           id,
           nombre,
@@ -36,19 +54,19 @@ export const getProductReviews = async (productId) => {
     if (error) throw error;
 
     return {
-      data,
+      data: data || [],
       error: null
     };
   } catch (error) {
     console.error('Error obteniendo reviews:', error);
     return {
-      data: null,
+      data: [],
       error: error.message
     };
   }
 };
 
-// Obtener el promedio de estrellas de un producto
+// Obtener el rating promedio de un producto
 export const getProductRating = async (productId) => {
   try {
     const { data, error } = await supabase
@@ -58,24 +76,19 @@ export const getProductRating = async (productId) => {
 
     if (error) throw error;
 
-    if (!data || data.length === 0) {
-      return {
-        averageRating: 0,
-        totalReviews: 0,
-        error: null
-      };
-    }
-
-    const totalStars = data.reduce((sum, review) => sum + review.estrellas, 0);
-    const averageRating = totalStars / data.length;
+    const reviews = data || [];
+    const totalReviews = reviews.length;
+    const averageRating = totalReviews > 0
+      ? reviews.reduce((sum, review) => sum + review.estrellas, 0) / totalReviews
+      : 0;
 
     return {
       averageRating,
-      totalReviews: data.length,
+      totalReviews,
       error: null
     };
   } catch (error) {
-    console.error('Error calculando rating:', error);
+    console.error('Error obteniendo rating:', error);
     return {
       averageRating: 0,
       totalReviews: 0,
@@ -84,25 +97,42 @@ export const getProductRating = async (productId) => {
   }
 };
 
-// Crear una nueva review
-export const createReview = async (authUser, productId, rating, comment) => {
+// Verificar si un usuario ya ha dejado una review
+export const hasUserReviewed = async (authUser, productId) => {
   try {
-    // Obtener ID numérico del usuario
     const userId = await getUserNumericId(authUser);
-    if (!userId) throw new Error('Usuario no encontrado');
 
-    // Verificar si el usuario ya ha dejado una review para este producto
-    const { data: existingReview, error: checkError } = await supabase
+    const { data, error } = await supabase
       .from('reviews')
       .select('id')
       .eq('usuario_id', userId)
       .eq('producto_id', productId)
-      .single();
+      .maybeSingle();
 
-    if (checkError && checkError.code !== 'PGRST116') throw checkError;
-    
-    if (existingReview) {
-      throw new Error('Ya has dejado una reseña para este producto');
+    if (error && error.code !== 'PGRST116') throw error;
+
+    return {
+      hasReviewed: !!data,
+      error: null
+    };
+  } catch (error) {
+    console.error('Error verificando review:', error);
+    return {
+      hasReviewed: false,
+      error: error.message
+    };
+  }
+};
+
+// Crear una nueva review
+export const createReview = async (authUser, productId, rating, comment) => {
+  try {
+    const userId = await getUserNumericId(authUser);
+
+    // Verificar si ya existe una review
+    const { hasReviewed } = await hasUserReviewed(authUser, productId);
+    if (hasReviewed) {
+      throw new Error('Ya has dejado una review para este producto');
     }
 
     const { data, error } = await supabase
@@ -114,7 +144,11 @@ export const createReview = async (authUser, productId, rating, comment) => {
         comentario: comment
       })
       .select(`
-        *,
+        id,
+        estrellas,
+        comentario,
+        fecha_creacion,
+        usuario_id,
         usuarios (
           id,
           nombre,
@@ -181,7 +215,6 @@ export const updateReview = async (reviewId, authUser, rating, comment) => {
 export const deleteReview = async (reviewId, authUser) => {
   try {
     const userId = await getUserNumericId(authUser);
-    if (!userId) throw new Error('Usuario no encontrado');
 
     const { error } = await supabase
       .from('reviews')
@@ -195,33 +228,5 @@ export const deleteReview = async (reviewId, authUser) => {
   } catch (error) {
     console.error('Error eliminando review:', error);
     return { error: error.message };
-  }
-};
-
-// Verificar si un usuario ya ha dejado una review
-export const hasUserReviewed = async (authUser, productId) => {
-  try {
-    const userId = await getUserNumericId(authUser);
-    if (!userId) throw new Error('Usuario no encontrado');
-
-    const { data, error } = await supabase
-      .from('reviews')
-      .select('id')
-      .eq('usuario_id', userId)
-      .eq('producto_id', productId)
-      .single();
-
-    if (error && error.code !== 'PGRST116') throw error;
-
-    return {
-      hasReviewed: !!data,
-      error: null
-    };
-  } catch (error) {
-    console.error('Error verificando review de usuario:', error);
-    return {
-      hasReviewed: false,
-      error: error.message
-    };
   }
 }; 

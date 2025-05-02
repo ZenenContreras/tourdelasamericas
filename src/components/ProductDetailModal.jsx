@@ -266,13 +266,256 @@ const ProductDetailModal = ({ product, onClose, type = 'product' }) => {
   if (isMobile) {
     return (
       <motion.div
-        initial={{ opacity: 0, x: 300 }}
-        animate={{ opacity: 1, x: 0 }}
-        exit={{ opacity: 0, x: 300 }}
-        className="fixed inset-y-0 right-0 w-full md:w-[600px] lg:w-[800px] bg-white shadow-2xl z-50 overflow-y-auto"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 z-50 bg-black bg-opacity-50"
+        onClick={onClose}
       >
-        {/* Contenido actual del modal móvil */}
-        {/* ... */}
+        <motion.div
+          initial={{ x: '100%' }}
+          animate={{ x: 0 }}
+          exit={{ x: '100%' }}
+          transition={{ type: "spring", damping: 25, stiffness: 300 }}
+          className="fixed inset-y-0 right-0 w-full md:w-[600px] bg-white shadow-xl overflow-y-auto"
+          onClick={e => e.stopPropagation()}
+        >
+          {/* Header */}
+          <div className="sticky top-0 z-10 bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between">
+            <button
+              onClick={onClose}
+              className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+            >
+              <ChevronLeft className="h-6 w-6 text-gray-500" />
+            </button>
+            
+            <button
+              onClick={handleToggleFavorite}
+              disabled={isLoading}
+              className={`p-2 rounded-full transition-colors ${
+                isFavorite 
+                  ? 'text-red-500 hover:bg-red-50' 
+                  : 'text-gray-500 hover:bg-gray-100'
+              }`}
+            >
+              <Heart className={`h-6 w-6 ${isFavorite ? 'fill-current' : ''}`} />
+            </button>
+          </div>
+
+          {/* Imagen */}
+          <div className="relative aspect-square bg-gray-100">
+            <img
+              src={product.imagen_url || '/placeholder-product.png'}
+              alt={product.nombre}
+              className="w-full h-full object-cover"
+            />
+            {product.stock < 30 && (
+              <div className="absolute top-4 left-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+                ¡Últimas unidades!
+              </div>
+            )}
+          </div>
+
+          {/* Contenido */}
+          <div className="p-4 space-y-4">
+            {/* Categoría y nombre */}
+            <div>
+              {product.categoria && (
+                <span className={`text-sm font-medium text-${config.accent}-600 bg-${config.accent}-50 px-2 py-1 rounded-full`}>
+                  {product.categoria}
+                </span>
+              )}
+              <h1 className="text-xl font-bold text-gray-900 mt-2">{product.nombre}</h1>
+            </div>
+
+            {/* Rating */}
+            <div className="flex items-center gap-2">
+              <div className="flex items-center">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <Star
+                    key={star}
+                    className={`h-5 w-5 ${
+                      star <= averageRating
+                        ? 'text-yellow-400 fill-current'
+                        : 'text-gray-300'
+                    }`}
+                  />
+                ))}
+              </div>
+              <span className="text-sm text-gray-600">
+                ({totalReviews} {totalReviews === 1 ? 'reseña' : 'reseñas'})
+              </span>
+            </div>
+
+            {/* Descripción */}
+            <p className="text-gray-600">{product.descripcion}</p>
+
+            {/* Precio y stock */}
+            <div className="bg-gray-50 rounded-lg p-4">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  {product.precio_anterior && (
+                    <span className="text-sm text-gray-500 line-through block">
+                      ${product.precio_anterior.toFixed(2)}
+                    </span>
+                  )}
+                  <span className="text-2xl font-bold text-gray-900">
+                    ${product.precio.toFixed(2)}
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <div className={`w-3 h-3 rounded-full ${product.stock > 0 ? 'bg-green-500' : 'bg-red-500'}`} />
+                  <span className="text-sm text-gray-600">
+                    {product.stock > 0 
+                      ? `${product.stock} unidades disponibles`
+                      : 'Agotado'}
+                  </span>
+                </div>
+              </div>
+
+              {productInCart ? (
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center border border-gray-300 rounded-lg flex-1">
+                    <button
+                      onClick={() => handleUpdateQuantity(-1)}
+                      disabled={isLoading}
+                      className="p-3 hover:bg-gray-100 transition-colors"
+                    >
+                      <Minus className="h-5 w-5 text-gray-600" />
+                    </button>
+                    <span className="px-4 py-2 text-gray-900 font-medium border-x border-gray-300">
+                      {quantity}
+                    </span>
+                    <button
+                      onClick={() => handleUpdateQuantity(1)}
+                      disabled={isLoading || quantity >= product.stock}
+                      className="p-3 hover:bg-gray-100 transition-colors"
+                    >
+                      <Plus className="h-5 w-5 text-gray-600" />
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <button
+                  onClick={handleAddToCart}
+                  disabled={isLoading || product.stock === 0}
+                  className={`
+                    w-full flex items-center justify-center gap-2 px-6 py-3 rounded-lg text-white font-medium
+                    ${product.stock === 0 
+                      ? 'bg-gray-400 cursor-not-allowed' 
+                      : `bg-${config.button}-600 hover:bg-${config.button}-700`}
+                    disabled:opacity-50
+                  `}
+                >
+                  <ShoppingCart className="h-5 w-5" />
+                  <span>
+                    {product.stock === 0 
+                      ? t('product.outOfStock')
+                      : t('product.addToCart')}
+                  </span>
+                </button>
+              )}
+            </div>
+
+            {/* Reseñas */}
+            <div className="border-t border-gray-200 pt-4">
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">Reseñas</h2>
+
+              {/* Formulario para agregar reseña */}
+              {user && !userReview && (
+                <div className="mb-6 p-4 bg-gray-50 rounded-lg">
+                  <h3 className="text-sm font-medium text-gray-900 mb-2">Deja tu reseña</h3>
+                  <div className="flex items-center mb-3">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <button
+                        key={star}
+                        onClick={() => setNewReview(prev => ({ ...prev, rating: star }))}
+                        className="p-1"
+                      >
+                        <Star
+                          className={`h-6 w-6 ${
+                            star <= newReview.rating
+                              ? 'text-yellow-400 fill-current'
+                              : 'text-gray-300'
+                          }`}
+                        />
+                      </button>
+                    ))}
+                  </div>
+                  <textarea
+                    value={newReview.comment}
+                    onChange={(e) => setNewReview(prev => ({ ...prev, comment: e.target.value }))}
+                    placeholder="Escribe tu opinión sobre el producto..."
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    rows="3"
+                  />
+                  <button
+                    onClick={handleSubmitReview}
+                    disabled={isAddingReview || !newReview.comment.trim()}
+                    className={`mt-3 px-4 py-2 bg-${config.button}-600 text-white rounded-lg hover:bg-${config.button}-700 disabled:opacity-50 w-full`}
+                  >
+                    {isAddingReview ? 'Enviando...' : 'Enviar reseña'}
+                  </button>
+                </div>
+              )}
+
+              {/* Lista de reseñas */}
+              <div className="space-y-4">
+                {reviews.map((review) => (
+                  <div key={review.id} className="border-b border-gray-200 pb-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center">
+                        <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
+                          <span className="text-sm font-medium text-gray-600">
+                            {review.usuarios.nombre.charAt(0).toUpperCase()}
+                          </span>
+                        </div>
+                        <div className="ml-3">
+                          <p className="text-sm font-medium text-gray-900">
+                            {review.usuarios.nombre}
+                          </p>
+                          <div className="flex items-center">
+                            {[1, 2, 3, 4, 5].map((star) => (
+                              <Star
+                                key={star}
+                                className={`h-4 w-4 ${
+                                  star <= review.estrellas
+                                    ? 'text-yellow-400 fill-current'
+                                    : 'text-gray-300'
+                                }`}
+                              />
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                      {user && review.usuario_id === user.id && (
+                        <button
+                          onClick={() => handleDeleteReview(review.id)}
+                          className="p-1 text-red-500 hover:bg-red-50 rounded-full transition-colors"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      )}
+                    </div>
+                    <p className="mt-2 text-gray-600">{review.comentario}</p>
+                  </div>
+                ))}
+
+                {reviews.length === 0 && (
+                  <p className="text-center text-gray-500 py-4">
+                    No hay reseñas aún. ¡Sé el primero en opinar!
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
+        <AuthModal
+          isOpen={isAuthModalOpen}
+          onClose={() => setIsAuthModalOpen(false)}
+        />
       </motion.div>
     );
   }

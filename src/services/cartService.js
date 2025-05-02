@@ -23,14 +23,28 @@ const getImageUrl = async (imagePath) => {
 // Función para obtener el ID numérico del usuario usando su email
 const getUserNumericId = async (authUser) => {
   try {
+    if (!authUser || !authUser.email) {
+      throw new Error('Usuario no autenticado o email no disponible');
+    }
+
     const { data, error } = await supabase
       .from('usuarios')
       .select('id')
       .eq('email', authUser.email)
       .single();
 
-    if (error) throw error;
-    return data?.id;
+    if (error) {
+      if (error.code === 'PGRST116') {
+        throw new Error('Usuario no encontrado');
+      }
+      throw error;
+    }
+
+    if (!data || !data.id) {
+      throw new Error('ID de usuario no encontrado');
+    }
+
+    return data.id;
   } catch (error) {
     console.error('Error obteniendo ID numérico del usuario:', error);
     throw error;
@@ -40,8 +54,11 @@ const getUserNumericId = async (authUser) => {
 // Cargar el carrito del usuario con información completa
 export const loadCart = async (authUser) => {
   try {
+    if (!authUser) {
+      throw new Error('Usuario no autenticado');
+    }
+
     const userId = await getUserNumericId(authUser);
-    if (!userId) throw new Error('Usuario no encontrado');
 
     const { data, error } = await supabase
       .from('carrito')
@@ -71,8 +88,8 @@ export const loadCart = async (authUser) => {
     if (error) throw error;
 
     // Procesar y formatear los datos del carrito
-    const formattedCartItems = await Promise.all(data.map(async item => {
-      const imageUrl = await getImageUrl(item.productos.imagen_principal);
+    const formattedCartItems = await Promise.all((data || []).map(async item => {
+      const imageUrl = await getImageUrl(item.productos?.imagen_principal);
       
       return {
         id: item.id,
@@ -80,9 +97,9 @@ export const loadCart = async (authUser) => {
         cantidad: item.cantidad,
         producto: {
           ...item.productos,
-          precio: parseFloat(item.productos.precio),
-          categoria: item.productos.categorias?.nombre || null,
-          subcategoria: item.productos.subcategorias?.nombre || null,
+          precio: parseFloat(item.productos?.precio || 0),
+          categoria: item.productos?.categorias?.nombre || null,
+          subcategoria: item.productos?.subcategorias?.nombre || null,
           imagen_url: imageUrl
         }
       };
@@ -95,7 +112,48 @@ export const loadCart = async (authUser) => {
   } catch (error) {
     console.error('Error cargando carrito:', error);
     return {
-      data: null,
+      data: [],
+      error: error.message
+    };
+  }
+};
+
+// Verificar disponibilidad de stock para todos los items
+export const verifyStockAvailability = async (authUser) => {
+  try {
+    if (!authUser) {
+      throw new Error('Usuario no autenticado');
+    }
+
+    const userId = await getUserNumericId(authUser);
+
+    const { data: cartItems, error } = await loadCart(authUser);
+    
+    if (error) throw error;
+
+    const stockIssues = [];
+
+    for (const item of cartItems) {
+      if (item.cantidad > item.producto.stock) {
+        stockIssues.push({
+          producto_id: item.producto_id,
+          nombre: item.producto.nombre,
+          stock_disponible: item.producto.stock,
+          cantidad_solicitada: item.cantidad
+        });
+      }
+    }
+
+    return {
+      available: stockIssues.length === 0,
+      issues: stockIssues,
+      error: null
+    };
+  } catch (error) {
+    console.error('Error verificando stock:', error);
+    return {
+      available: false,
+      issues: [],
       error: error.message
     };
   }
@@ -104,8 +162,11 @@ export const loadCart = async (authUser) => {
 // Agregar producto al carrito con validaciones
 export const addToCart = async (authUser, productId, quantity = 1) => {
   try {
+    if (!authUser) {
+      throw new Error('Usuario no autenticado');
+    }
+
     const userId = await getUserNumericId(authUser);
-    if (!userId) throw new Error('Usuario no encontrado');
 
     // Validar cantidad
     if (quantity <= 0) {
@@ -113,18 +174,25 @@ export const addToCart = async (authUser, productId, quantity = 1) => {
     }
 
     // Verificar stock disponible
-    const { available, currentStock, error: stockError } = await checkStock(productId, quantity);
-    
-    if (stockError) throw new Error(stockError);
-    if (!available) throw new Error('Stock no disponible');
+    const { data: product, error: productError } = await supabase
+      .from('productos')
+      .select('stock')
+      .eq('id', productId)
+      .single();
+
+    if (productError) throw productError;
+    if (!product) throw new Error('Producto no encontrado');
+    if (product.stock < quantity) throw new Error('Stock insuficiente');
 
     // Verificar si el producto ya está en el carrito
-    const { data: existingItem } = await supabase
+    const { data: existingItem, error: checkError } = await supabase
       .from('carrito')
       .select('id, cantidad')
       .eq('usuario_id', userId)
       .eq('producto_id', productId)
-      .single();
+      .maybeSingle();
+
+    if (checkError) throw checkError;
 
     let result;
     
@@ -133,7 +201,7 @@ export const addToCart = async (authUser, productId, quantity = 1) => {
       const newQuantity = existingItem.cantidad + quantity;
       
       // Verificar stock para la nueva cantidad
-      if (newQuantity > currentStock) {
+      if (newQuantity > product.stock) {
         throw new Error('Stock insuficiente');
       }
 
@@ -159,29 +227,11 @@ export const addToCart = async (authUser, productId, quantity = 1) => {
     if (result.error) throw result.error;
 
     // Obtener información completa del producto
-    const { data: productData } = await supabase
-      .from('productos')
-      .select(`
-        *,
-        categorias (nombre),
-        subcategorias (nombre)
-      `)
-      .eq('id', productId)
-      .single();
-
-    const imageUrl = await getImageUrl(productData.imagen_principal);
+    const { data: cartItem } = await loadCart(authUser);
+    const addedItem = cartItem.find(item => item.id === result.data.id);
 
     return {
-      data: {
-        ...result.data,
-        producto: {
-          ...productData,
-          precio: parseFloat(productData.precio),
-          categoria: productData.categorias?.nombre || null,
-          subcategoria: productData.subcategorias?.nombre || null,
-          imagen_url: imageUrl
-        }
-      },
+      data: addedItem,
       error: null
     };
   } catch (error) {
@@ -194,10 +244,13 @@ export const addToCart = async (authUser, productId, quantity = 1) => {
 };
 
 // Actualizar cantidad en el carrito con validaciones
-export const updateCartItem = async (authUser, cartItemId, newQuantity) => {
+export const updateQuantity = async (authUser, cartItemId, newQuantity) => {
   try {
+    if (!authUser) {
+      throw new Error('Usuario no autenticado');
+    }
+
     const userId = await getUserNumericId(authUser);
-    if (!userId) throw new Error('Usuario no encontrado');
 
     // Validar cantidad
     if (newQuantity < 0) {
@@ -220,10 +273,15 @@ export const updateCartItem = async (authUser, cartItemId, newQuantity) => {
     }
 
     // Verificar stock disponible
-    const { available, error: stockError } = await checkStock(cartItem.producto_id, newQuantity);
-    
-    if (stockError) throw new Error(stockError);
-    if (!available) throw new Error('Stock no disponible');
+    const { data: product, error: productError } = await supabase
+      .from('productos')
+      .select('stock')
+      .eq('id', cartItem.producto_id)
+      .single();
+
+    if (productError) throw productError;
+    if (!product) throw new Error('Producto no encontrado');
+    if (product.stock < newQuantity) throw new Error('Stock insuficiente');
 
     // Actualizar cantidad
     const { data, error } = await supabase
@@ -252,8 +310,11 @@ export const updateCartItem = async (authUser, cartItemId, newQuantity) => {
 // Eliminar item del carrito
 export const removeFromCart = async (authUser, cartItemId) => {
   try {
+    if (!authUser) {
+      throw new Error('Usuario no autenticado');
+    }
+
     const userId = await getUserNumericId(authUser);
-    if (!userId) throw new Error('Usuario no encontrado');
 
     const { error } = await supabase
       .from('carrito')
@@ -273,8 +334,11 @@ export const removeFromCart = async (authUser, cartItemId) => {
 // Vaciar carrito
 export const clearCart = async (authUser) => {
   try {
+    if (!authUser) {
+      throw new Error('Usuario no autenticado');
+    }
+
     const userId = await getUserNumericId(authUser);
-    if (!userId) throw new Error('Usuario no encontrado');
 
     const { error } = await supabase
       .from('carrito')
@@ -380,44 +444,6 @@ export const prepareCartForStripe = async (authUser) => {
     console.error('Error preparando carrito para Stripe:', error);
     return {
       lineItems: [],
-      error: error.message
-    };
-  }
-};
-
-// Verificar disponibilidad de stock para todos los items
-export const verifyStockAvailability = async (authUser) => {
-  try {
-    const userId = await getUserNumericId(authUser);
-    if (!userId) throw new Error('Usuario no encontrado');
-
-    const { data: cartItems, error } = await loadCart(authUser);
-    
-    if (error) throw error;
-
-    const stockIssues = [];
-
-    for (const item of cartItems) {
-      if (item.cantidad > item.producto.stock) {
-        stockIssues.push({
-          producto_id: item.producto_id,
-          nombre: item.producto.nombre,
-          stock_disponible: item.producto.stock,
-          cantidad_solicitada: item.cantidad
-        });
-      }
-    }
-
-    return {
-      available: stockIssues.length === 0,
-      issues: stockIssues,
-      error: null
-    };
-  } catch (error) {
-    console.error('Error verificando stock:', error);
-    return {
-      available: false,
-      issues: [],
       error: error.message
     };
   }

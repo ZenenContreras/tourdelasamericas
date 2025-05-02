@@ -7,6 +7,7 @@ import { ShoppingCart, Trash2, Plus, Minus, Package, Truck, CreditCard, AlertTri
 import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import AuthModal from '../components/AuthModal';
+import * as cartService from '../services/cartService';
 
 const CartPage = () => {
   const { t } = useLanguage();
@@ -42,8 +43,15 @@ const CartPage = () => {
   }, [user, cartItems]);
 
   const checkStockAvailability = async () => {
-    const { available, issues } = await verifyStockAvailability(user.id);
-    setStockIssues(issues);
+    if (user && cartItems.length > 0) {
+      try {
+        const { available, issues } = await cartService.verifyStockAvailability(user);
+        setStockIssues(issues || []);
+      } catch (error) {
+        console.error('Error verificando stock:', error);
+        toast.error(t('cart.errorCheckingStock'));
+      }
+    }
   };
 
   const handleQuantityChange = async (id, change) => {
