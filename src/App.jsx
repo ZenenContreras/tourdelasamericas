@@ -30,6 +30,8 @@ const CartPage = lazy(() => import('./pages/CartPage'));
 const FavoritesPage = lazy(() => import('./pages/FavoritesPage'));
 const ResetPasswordPage = lazy(() => import('./pages/ResetPasswordPage'));
 const AuthCallback = lazy(() => import('./pages/AuthCallback'));
+const TermsOfService = lazy(() => import('./pages/TermsOfService'));
+const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
 
 // Componente para rutas protegidas optimizado
 const ProtectedRoute = memo(({ children }) => {
@@ -250,7 +252,9 @@ function App() {
                     </ProtectedRoute>
                   }
                 />
-                <Route path="/auth/reset-password" element={<ResetPasswordPage />} />
+                <Route path="/terminos-de-servicio" element={<TermsOfService />} />
+                <Route path="/politica-de-privacidad" element={<PrivacyPolicy />} />
+                <Route path="/reset-password" element={<ResetPasswordPage />} />
                 <Route path="/auth/callback" element={<AuthCallback />} />
               </Routes>
             </Suspense>

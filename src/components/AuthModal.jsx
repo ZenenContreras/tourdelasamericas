@@ -24,6 +24,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [showEmailVerification, setShowEmailVerification] = useState(false);
   const [registeredEmail, setRegisteredEmail] = useState('');
+  const [rememberMe, setRememberMe] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -88,7 +89,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
 
     try {
       if (mode === 'login') {
-        const { error } = await signInWithEmail(formData.email, formData.password);
+        const { error } = await signInWithEmail(formData.email, formData.password, rememberMe);
         if (error) throw error;
         onClose();
       } else {
@@ -294,7 +295,18 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
             )}
 
             {mode === 'login' && (
-              <div className="flex justify-end">
+              <div className="flex items-center justify-between">
+                <label className="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
+                    className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                  />
+                  <span className="ml-2 text-xs sm:text-sm text-gray-600">
+                    {t('auth.login.rememberMe')}
+                  </span>
+                </label>
                 <button
                   type="button"
                   onClick={() => setShowForgotPassword(true)}
@@ -305,25 +317,30 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
               </div>
             )}
 
-            <div>
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="w-full flex justify-center py-2 sm:py-2.5 px-4 border border-transparent rounded-xl shadow-sm text-xs sm:text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-indigo-400 transition-colors duration-200"
-              >
-                {isLoading ? (
-                  <span className="flex items-center">
-                    <svg className="animate-spin -ml-1 mr-2 sm:mr-3 h-4 w-4 sm:h-5 sm:w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    {t('loading')}
-                  </span>
-                ) : (
-                  t(mode === 'login' ? 'auth.login.submit' : 'auth.register.submit')
-                )}
-              </button>
+            <div className="mt-4 text-center">
+              <p className="text-xs text-gray-600">
+                {t('auth.errors.termsNotice')}{' '}
+                <a href="/terminos-de-servicio" className="text-indigo-600 hover:text-indigo-500" target="_blank" rel="noopener noreferrer">
+                  {t('auth.errors.termsOfService')}
+                </a>{' '}
+                {t('auth.errors.and')}{' '}
+                <a href="/politica-de-privacidad" className="text-indigo-600 hover:text-indigo-500" target="_blank" rel="noopener noreferrer">
+                  {t('auth.errors.privacyPolicy')}
+                </a>
+              </p>
             </div>
+
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              {isLoading ? (
+                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              ) : (
+                t(mode === 'login' ? 'auth.login.submit' : 'auth.register.submit')
+              )}
+            </button>
 
             <div className="flex items-center text-xs sm:text-sm my-2 sm:my-3">
               <div className="h-px bg-gray-300 flex-1"></div>
@@ -379,13 +396,6 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
               </button>
             </p>
           )}
-        </div>
-
-        <div className="bg-gray-100 px-3 sm:px-6 py-2 text-[10px] sm:text-xs text-center text-gray-500">
-          {t('auth.errors.termsNotice', 'Al continuar, aceptas nuestros')}{' '}
-          <a href="#" className="text-indigo-600 hover:underline">{t('auth.errors.termsOfService', 'Términos de servicio')}</a>{' '}
-          {t('auth.errors.and', 'y')}{' '}
-          <a href="#" className="text-indigo-600 hover:underline">{t('auth.errors.privacyPolicy', 'Política de privacidad')}</a>
         </div>
       </motion.div>
     </motion.div>

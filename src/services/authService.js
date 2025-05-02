@@ -19,7 +19,7 @@ const handleAuthError = (error) => {
   return new Error(message);
 };
 
-export const signInWithEmail = async (email, password) => {
+export const signInWithEmail = async (email, password, rememberMe = false) => {
   if (!email || !password) {
     throw new Error('El correo y la contraseña son requeridos');
   }
@@ -28,6 +28,9 @@ export const signInWithEmail = async (email, password) => {
     const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
       email,
       password,
+      options: {
+        persistSession: rememberMe
+      }
     });
 
     if (authError) throw handleAuthError(authError);

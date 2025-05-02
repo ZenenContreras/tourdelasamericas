@@ -125,9 +125,10 @@ export const translations = {
         rememberMe: 'Remember me',
         forgotPassword: 'Forgot your password?',
         submit: 'Sign In',
-        orContinueWith: 'Or continue with',
+        orContinueWith: 'Or',
         noAccount: "Don't have an account?",
-        register: 'Register'
+        register: 'Register',
+        continueWithGoogle: 'Continue with Google'
       },
       register: {
         title: 'Create Account',
@@ -137,9 +138,10 @@ export const translations = {
         confirmPassword: 'Confirm Password',
         nombre: 'Name',
         submit: 'Create Account',
-        orContinueWith: 'Or continue with',
+        orContinueWith: 'Or',
         haveAccount: 'Already have an account?',
-        login: 'Sign In'
+        login: 'Sign In',
+        continueWithGoogle: 'Continue with Google'
       },
       resetPassword: {
         title: 'Reset Password',
@@ -618,12 +620,13 @@ export const translations = {
         subtitle: 'Accede a tu cuenta para continuar',
         email: 'Correo electrónico',
         password: 'Contraseña',
-        rememberMe: 'Recordarme',
+        rememberMe: 'Recuérdame',
         forgotPassword: '¿Olvidaste tu contraseña?',
         submit: 'Iniciar Sesión',
-        orContinueWith: 'O continúa con',
+        orContinueWith: 'O',
         noAccount: '¿No tienes una cuenta?',
-        register: 'Regístrate'
+        register: 'Regístrate',
+        continueWithGoogle: 'Continuar con Google'
       },
       register: {
         title: 'Crear Cuenta',
@@ -633,9 +636,10 @@ export const translations = {
         confirmPassword: 'Confirmar Contraseña',
         nombre: 'Nombre',
         submit: 'Crear Cuenta',
-        orContinueWith: 'O continúa con',
+        orContinueWith: 'O',
         haveAccount: '¿Ya tienes una cuenta?',
-        login: 'Iniciar Sesión'
+        login: 'Iniciar Sesión',
+        continueWithGoogle: 'Continuar con Google'
       },
       resetPassword: {
         title: 'Restablecer Contraseña',
@@ -1117,9 +1121,10 @@ export const translations = {
         rememberMe: 'Se souvenir de moi',
         forgotPassword: 'Mot de passe oublié ?',
         submit: 'Se connecter',
-        orContinueWith: 'Ou continuer avec',
+        orContinueWith: 'Ou',
         noAccount: "Vous n'avez pas de compte ?",
-        register: "S'inscrire"
+        register: "S'inscrire",
+        continueWithGoogle: 'Continuer avec Google'
       },
       register: {
         title: 'Créer un compte',
@@ -1129,9 +1134,10 @@ export const translations = {
         confirmPassword: 'Confirmer le mot de passe',
         nombre: 'Nom',
         submit: 'Créer un compte',
-        orContinueWith: 'Ou continuer avec',
+        orContinueWith: 'Ou',
         haveAccount: 'Vous avez déjà un compte ?',
-        login: 'Se connecter'
+        login: 'Se connecter',
+        continueWithGoogle: 'Continuer avec Google'
       },
       resetPassword: {
         title: 'Réinitialiser le mot de passe',
