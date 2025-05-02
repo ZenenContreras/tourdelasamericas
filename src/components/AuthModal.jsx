@@ -317,19 +317,6 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
               </div>
             )}
 
-            <div className="mt-4 text-center">
-              <p className="text-xs text-gray-600">
-                {t('auth.errors.termsNotice')}{' '}
-                <a href="/terminos-de-servicio" className="text-indigo-600 hover:text-indigo-500" target="_blank" rel="noopener noreferrer">
-                  {t('auth.errors.termsOfService')}
-                </a>{' '}
-                {t('auth.errors.and')}{' '}
-                <a href="/politica-de-privacidad" className="text-indigo-600 hover:text-indigo-500" target="_blank" rel="noopener noreferrer">
-                  {t('auth.errors.privacyPolicy')}
-                </a>
-              </p>
-            </div>
-
             <button
               type="submit"
               disabled={isLoading}
@@ -396,6 +383,19 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
               </button>
             </p>
           )}
+        </div>
+
+        <div className="px-3 sm:px-6 py-3 sm:py-4 border-t border-gray-200">
+          <p className="text-xs text-gray-600 text-center">
+            {t('auth.errors.termsNotice')}{' '}
+            <a href="/terminos-de-servicio" className="text-indigo-600 hover:text-indigo-500" target="_blank" rel="noopener noreferrer">
+              {t('auth.errors.termsOfService')}
+            </a>{' '}
+            {t('auth.errors.and')}{' '}
+            <a href="/politica-de-privacidad" className="text-indigo-600 hover:text-indigo-500" target="_blank" rel="noopener noreferrer">
+              {t('auth.errors.privacyPolicy')}
+            </a>
+          </p>
         </div>
       </motion.div>
     </motion.div>
