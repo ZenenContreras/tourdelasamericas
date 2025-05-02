@@ -5,13 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
     
     <!-- Precarga de recursos críticos -->
-    <link rel="preload" href="/LogoAunClic.svg" as="image" type="image/svg+xml">
-    <link rel="preload" href="/fondoEscritorio.png" as="image" type="image/png">
-    <link rel="preload" href="/fondoTablet.png" as="image" type="image/png">
-    <link rel="preload" href="/fondoMobile2.png" as="image" type="image/png">
-    <link rel="preload" href="/norteAmerica.png" as="image" type="image/png">
-    <link rel="preload" href="/centroAmerica.png" as="image" type="image/png">
-    <link rel="preload" href="/surAmerica.png" as="image" type="image/png">
+    <link rel="preload" href="/LogoAunClic.svg" as="image" type="image/svg+xml" fetchpriority="high">
+    <link rel="preload" href="/fondoMobile2.png" as="image" type="image/png" media="(max-width: 767px)" fetchpriority="high">
+    <link rel="preload" href="/fondoTablet.png" as="image" type="image/png" media="(min-width: 768px) and (max-width: 1023px)" fetchpriority="high">
+    <link rel="preload" href="/fondoEscritorio.png" as="image" type="image/png" media="(min-width: 1024px)" fetchpriority="high">
     
     <!-- Precarga de fuentes -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
