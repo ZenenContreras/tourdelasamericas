@@ -6,6 +6,7 @@ import * as productService from '../services/productService';
 import ProductCard from '../components/ProductCard';
 import ProductCardSkeleton from '../components/ProductCardSkeleton';
 import FilterPanel from '../components/FilterPanel';
+import ProductDetailModal from '../components/ProductDetailModal';
 
 const FoodPage = () => {
   const { t } = useLanguage();
@@ -14,6 +15,7 @@ const FoodPage = () => {
   const [error, setError] = useState(null);
   const [showFilters, setShowFilters] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
   const [filters, setFilters] = useState({
     search: '',
     minPrice: 0,
@@ -89,6 +91,14 @@ const FoodPage = () => {
       subcategory: ''
     });
     loadProducts();
+  };
+
+  const handleOpenDetail = (product) => {
+    setSelectedProduct(product);
+  };
+
+  const handleCloseDetail = () => {
+    setSelectedProduct(null);
   };
 
   const filteredProducts = products.filter(product => {
@@ -219,12 +229,28 @@ const FoodPage = () => {
             ) : (
               <AnimatePresence>
                 {filteredProducts.map(product => (
-                  <ProductCard key={product.id} product={product} type="food" />
+                  <ProductCard 
+                    key={product.id} 
+                    product={product} 
+                    type="food"
+                    onOpenDetail={handleOpenDetail}
+                  />
                 ))}
               </AnimatePresence>
             )}
           </div>
         </div>
+
+        {/* Modal de detalle */}
+        <AnimatePresence>
+          {selectedProduct && (
+            <ProductDetailModal
+              product={selectedProduct}
+              onClose={handleCloseDetail}
+              type="food"
+            />
+          )}
+        </AnimatePresence>
       </main>
     );
   }
@@ -249,8 +275,8 @@ const FoodPage = () => {
         </div>
 
         <div className="flex flex-row gap-6">
-          {/* Columna de filtros (25% del ancho) */}
-          <div className="w-1/4 flex-shrink-0">
+          {/* Columna de filtros (20% del ancho) */}
+          <div className="w-1/5 flex-shrink-0">
             <FilterPanel
               filters={filters}
               onFilterChange={handleFilterChange}
@@ -262,11 +288,11 @@ const FoodPage = () => {
             />
           </div>
           
-          {/* Columna de productos (75% del ancho) */}
-          <div className="w-3/4 flex-grow-0">
+          {/* Columna de productos (80% del ancho) */}
+          <div className="w-4/5 flex-grow-0">
             {loading ? (
-              <div className="grid grid-cols-3 gap-4">
-                {Array.from({ length: 9 }).map((_, index) => (
+              <div className="grid grid-cols-4 gap-4">
+                {Array.from({ length: 12 }).map((_, index) => (
                   <ProductCardSkeleton key={index} type="food" />
                 ))}
               </div>
@@ -277,10 +303,15 @@ const FoodPage = () => {
                 <p className="mt-2 text-gray-500 max-w-md mx-auto">{t('food.noProductsMessage')}</p>
               </div>
             ) : (
-              <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4">
+              <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 <AnimatePresence>
                   {filteredProducts.map(product => (
-                    <ProductCard key={product.id} product={product} type="food" />
+                    <ProductCard 
+                      key={product.id} 
+                      product={product} 
+                      type="food"
+                      onOpenDetail={handleOpenDetail}
+                    />
                   ))}
                 </AnimatePresence>
               </div>
@@ -288,6 +319,17 @@ const FoodPage = () => {
           </div>
         </div>
       </div>
+
+      {/* Modal de detalle */}
+      <AnimatePresence>
+        {selectedProduct && (
+          <ProductDetailModal
+            product={selectedProduct}
+            onClose={handleCloseDetail}
+            type="food"
+          />
+        )}
+      </AnimatePresence>
     </main>
   );
 };

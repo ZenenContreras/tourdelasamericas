@@ -6,6 +6,7 @@ import * as productService from '../services/productService';
 import ProductCard from '../components/ProductCard';
 import ProductCardSkeleton from '../components/ProductCardSkeleton';
 import FilterPanel from '../components/FilterPanel';
+import ProductDetailModal from '../components/ProductDetailModal';
 
 const ProductsPage = () => {
   const { t } = useLanguage();
@@ -14,6 +15,7 @@ const ProductsPage = () => {
   const [error, setError] = useState(null);
   const [showFilters, setShowFilters] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
   const [filters, setFilters] = useState({
     search: '',
     minPrice: 0,
@@ -91,6 +93,14 @@ const ProductsPage = () => {
     loadProducts();
   };
 
+  const handleOpenDetail = (product) => {
+    setSelectedProduct(product);
+  };
+
+  const handleCloseDetail = () => {
+    setSelectedProduct(null);
+  };
+
   const filteredProducts = products.filter(product => {
     const matchesSearch = product.nombre.toLowerCase().includes(filters.search.toLowerCase()) ||
                         product.descripcion.toLowerCase().includes(filters.search.toLowerCase());
@@ -115,7 +125,7 @@ const ProductsPage = () => {
 
   // Componente de barra de búsqueda reutilizable
   const SearchBar = ({ className = "" }) => (
-    <div className={`flex flex-col sm:flex-row items-stretch gap-3 ${className}`}>
+    <div className={`flex items-stretch gap-3 ${className}`}>
       <div className="relative flex-grow">
         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
           <Search className="h-5 w-5 text-indigo-500" />
@@ -219,12 +229,28 @@ const ProductsPage = () => {
             ) : (
               <AnimatePresence>
                 {filteredProducts.map(product => (
-                  <ProductCard key={product.id} product={product} type="product" />
+                  <ProductCard 
+                    key={product.id} 
+                    product={product} 
+                    type="product"
+                    onOpenDetail={handleOpenDetail}
+                  />
                 ))}
               </AnimatePresence>
             )}
           </div>
         </div>
+
+        {/* Modal de detalle */}
+        <AnimatePresence>
+          {selectedProduct && (
+            <ProductDetailModal
+              product={selectedProduct}
+              onClose={handleCloseDetail}
+              type="product"
+            />
+          )}
+        </AnimatePresence>
       </main>
     );
   }
@@ -249,8 +275,8 @@ const ProductsPage = () => {
         </div>
 
         <div className="flex flex-row gap-6">
-          {/* Columna de filtros (25% del ancho) */}
-          <div className="w-1/4 flex-shrink-0">
+          {/* Columna de filtros (20% del ancho) */}
+          <div className="w-1/5 flex-shrink-0">
             <FilterPanel
               filters={filters}
               onFilterChange={handleFilterChange}
@@ -262,11 +288,11 @@ const ProductsPage = () => {
             />
           </div>
           
-          {/* Columna de productos (75% del ancho) */}
-          <div className="w-3/4 flex-grow-0">
+          {/* Columna de productos (80% del ancho) */}
+          <div className="w-4/5 flex-grow-0">
             {loading ? (
-              <div className="grid grid-cols-3 gap-4">
-                {Array.from({ length: 9 }).map((_, index) => (
+              <div className="grid grid-cols-4 gap-4">
+                {Array.from({ length: 12 }).map((_, index) => (
                   <ProductCardSkeleton key={index} type="product" />
                 ))}
               </div>
@@ -277,10 +303,15 @@ const ProductsPage = () => {
                 <p className="mt-2 text-gray-500 max-w-md mx-auto">{t('products.noProductsMessage')}</p>
               </div>
             ) : (
-              <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4">
+              <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 <AnimatePresence>
                   {filteredProducts.map(product => (
-                    <ProductCard key={product.id} product={product} type="product" />
+                    <ProductCard 
+                      key={product.id} 
+                      product={product} 
+                      type="product"
+                      onOpenDetail={handleOpenDetail}
+                    />
                   ))}
                 </AnimatePresence>
               </div>
@@ -288,6 +319,17 @@ const ProductsPage = () => {
           </div>
         </div>
       </div>
+
+      {/* Modal de detalle */}
+      <AnimatePresence>
+        {selectedProduct && (
+          <ProductDetailModal
+            product={selectedProduct}
+            onClose={handleCloseDetail}
+            type="product"
+          />
+        )}
+      </AnimatePresence>
     </main>
   );
 };

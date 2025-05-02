@@ -1,132 +1,110 @@
 import { supabase } from '../config/supabase';
 
-// Cache para URL de imágenes para evitar recálculos
+// Cache para URLs de imágenes
 const imageUrlCache = new Map();
 
-const processImage = async (producto) => {
-  // Si ya tenemos la URL en caché, usarla en lugar de recalcular
-  if (producto.imagen_principal) {
-    const cacheKey = `productos/${producto.imagen_principal}`;
-    
-    if (imageUrlCache.has(cacheKey)) {
-      return { ...producto, imagen_url: imageUrlCache.get(cacheKey) };
-    }
-    
-    const url = supabase.storage
-      .from('productos')
-      .getPublicUrl(producto.imagen_principal).data.publicUrl;
-    
-    // Guardar en caché para uso futuro
-    imageUrlCache.set(cacheKey, url);
-    return { ...producto, imagen_url: url };
+// Función para obtener URL de imagen con caché
+const getImageUrl = async (imagePath) => {
+  if (!imagePath) return null;
+  
+  if (imageUrlCache.has(imagePath)) {
+    return imageUrlCache.get(imagePath);
   }
-  return producto;
+
+  const { data } = supabase.storage
+    .from('productos')
+    .getPublicUrl(imagePath);
+
+  imageUrlCache.set(imagePath, data.publicUrl);
+  return data.publicUrl;
 };
 
-// Función optimizada para cargar productos con filtros
+// Cargar productos con información completa
 export const loadProducts = async (filters = {}, categoria_id = null) => {
   try {
-    // Campos mínimos necesarios para mejorar rendimiento de la consulta
-    const baseQuery = supabase
+    let query = supabase
       .from('productos')
       .select(`
-        id,
-        nombre,
-        descripcion,
-        precio,
-        stock,
-        imagen_principal,
-        categoria_id,
-        subcategoria_id,
+        *,
         categorias (
           id,
           nombre
+        ),
+        subcategorias (
+          id,
+          nombre
+        ),
+        reviews (
+          id,
+          estrellas
         )
       `);
 
-    // Construir un único objeto de consulta para mejorar rendimiento
-    const queryParams = {};
-    const filterConditions = [];
-    
-    // Filtrar por categoría_id si se proporciona
+    // Aplicar filtros
     if (categoria_id) {
-      queryParams['categoria_id'] = categoria_id;
-      filterConditions.push('categoria_id.eq.' + categoria_id);
+      query = query.eq('categoria_id', categoria_id);
     }
 
-    // Aplicar filtros de precio
+    if (filters.subcategory) {
+      query = query.eq('subcategoria_id', filters.subcategory);
+    }
+
     if (filters.minPrice) {
-      filterConditions.push('precio.gte.' + parseFloat(filters.minPrice));
+      query = query.gte('precio', filters.minPrice);
     }
+
     if (filters.maxPrice) {
-      filterConditions.push('precio.lte.' + parseFloat(filters.maxPrice));
+      query = query.lte('precio', filters.maxPrice);
     }
-    
-    // Búsqueda optimizada
+
     if (filters.search) {
-      filterConditions.push(`nombre.ilike.%${filters.search}%`);
-    }
-    
-    // Subcategoría
-    if (filters.subcategory && filters.subcategory !== '') {
-      queryParams['subcategoria_id'] = parseInt(filters.subcategory);
-      filterConditions.push('subcategoria_id.eq.' + parseInt(filters.subcategory));
+      query = query.or(`nombre.ilike.%${filters.search}%,descripcion.ilike.%${filters.search}%`);
     }
 
-    // Construir consulta final
-    let query = baseQuery;
-    
-    // Aplicar filtros usando .match para consultas más eficientes cuando sea posible
-    if (Object.keys(queryParams).length > 0) {
-      query = query.match(queryParams);
-    }
-    
-    // Aplicar otros filtros complejos
-    filterConditions.forEach(condition => {
-      const [field, op, value] = condition.split('.');
-      if (op === 'ilike') {
-        query = query.ilike(field, value);
-      } else if (op === 'gte') {
-        query = query.gte(field, parseFloat(value));
-      } else if (op === 'lte') {
-        query = query.lte(field, parseFloat(value));
-      }
-      // Para eq ya está cubierto con .match
-    });
-
-    // Aplicar ordenamiento
+    // Ordenar resultados
     switch (filters.sortBy) {
+      case 'nameAsc':
+        query = query.order('nombre', { ascending: true });
+        break;
+      case 'nameDesc':
+        query = query.order('nombre', { ascending: false });
+        break;
       case 'priceAsc':
         query = query.order('precio', { ascending: true });
         break;
       case 'priceDesc':
         query = query.order('precio', { ascending: false });
         break;
-      case 'nameDesc':
-        query = query.order('nombre', { ascending: false });
-        break;
       default:
         query = query.order('nombre', { ascending: true });
     }
 
-    // Ejecutar consulta
     const { data, error } = await query;
 
     if (error) throw error;
 
-    // Procesamiento de imágenes en paralelo para mejor rendimiento
-    const processedData = await Promise.all(data.map(async (item) => {
-      const processedItem = await processImage(item);
+    // Procesar y formatear los datos
+    const formattedProducts = await Promise.all(data.map(async product => {
+      const imageUrl = await getImageUrl(product.imagen_principal);
+      
+      // Calcular rating promedio
+      const averageRating = product.reviews && product.reviews.length > 0
+        ? product.reviews.reduce((sum, review) => sum + review.estrellas, 0) / product.reviews.length
+        : 0;
+
       return {
-        ...processedItem,
-        precio: parseFloat(item.precio),
-        categoria: item.categorias?.nombre || null,
-        subcategoria_id: item.subcategoria_id
+        ...product,
+        precio: parseFloat(product.precio),
+        categoria: product.categorias?.nombre || null,
+        subcategoria: product.subcategorias?.nombre || null,
+        imagen_url: imageUrl,
+        rating: averageRating,
+        total_reviews: product.reviews?.length || 0
       };
     }));
 
     return {
-      data: processedData,
+      data: formattedProducts,
       error: null
     };
   } catch (error) {
@@ -138,54 +116,7 @@ export const loadProducts = async (filters = {}, categoria_id = null) => {
   }
 };
 
-// Función optimizada para obtener un producto por ID
-export const getProductById = async (id) => {
-  try {
-    // Verificar caché para imágenes
-    const cacheKey = `product-${id}`;
-    
-    // Consulta al servidor
-    const { data, error } = await supabase
-      .from('productos')
-      .select(`
-        id,
-        nombre,
-        descripcion,
-        precio,
-        stock,
-        imagen_principal,
-        categoria_id,
-        categorias (
-          id,
-          nombre
-        )
-      `)
-      .eq('id', id)
-      .single();
-
-    if (error) throw error;
-
-    // Procesar la imagen
-    const processedItem = await processImage(data);
-
-    return {
-      data: {
-        ...processedItem,
-        precio: parseFloat(data.precio),
-        categoria: data.categorias?.nombre || null
-      },
-      error: null
-    };
-  } catch (error) {
-    console.error('Error obteniendo producto:', error);
-    return {
-      data: null,
-      error: error.message
-    };
-  }
-};
-
-// Función para verificar stock disponible
+// Verificar stock disponible
 export const checkStock = async (productId, quantity) => {
   try {
     const { data, error } = await supabase
@@ -196,8 +127,10 @@ export const checkStock = async (productId, quantity) => {
 
     if (error) throw error;
 
+    const available = data.stock >= quantity;
+
     return {
-      available: data.stock >= quantity,
+      available,
       currentStock: data.stock,
       error: null
     };
@@ -211,24 +144,76 @@ export const checkStock = async (productId, quantity) => {
   }
 };
 
-// Función para actualizar el stock
+// Actualizar stock
 export const updateStock = async (productId, newStock) => {
+  try {
+    const { error } = await supabase
+      .from('productos')
+      .update({ stock: newStock })
+      .eq('id', productId);
+
+    if (error) throw error;
+
+    return { error: null };
+  } catch (error) {
+    console.error('Error actualizando stock:', error);
+    return { error: error.message };
+  }
+};
+
+// Obtener producto por ID con información completa
+export const getProductById = async (productId) => {
   try {
     const { data, error } = await supabase
       .from('productos')
-      .update({ stock: newStock })
+      .select(`
+        *,
+        categorias (
+          id,
+          nombre
+        ),
+        subcategorias (
+          id,
+          nombre
+        ),
+        reviews (
+          id,
+          estrellas,
+          comentario,
+          fecha_creacion,
+          usuarios (
+            id,
+            nombre,
+            email
+          )
+        )
+      `)
       .eq('id', productId)
-      .select()
       .single();
 
     if (error) throw error;
 
+    const imageUrl = await getImageUrl(data.imagen_principal);
+
+    // Calcular rating promedio
+    const averageRating = data.reviews && data.reviews.length > 0
+      ? data.reviews.reduce((sum, review) => sum + review.estrellas, 0) / data.reviews.length
+      : 0;
+
     return {
-      data,
+      data: {
+        ...data,
+        precio: parseFloat(data.precio),
+        categoria: data.categorias?.nombre || null,
+        subcategoria: data.subcategorias?.nombre || null,
+        imagen_url: imageUrl,
+        rating: averageRating,
+        total_reviews: data.reviews?.length || 0
+      },
       error: null
     };
   } catch (error) {
-    console.error('Error actualizando stock:', error);
+    console.error('Error obteniendo producto:', error);
     return {
       data: null,
       error: error.message

@@ -6,6 +6,7 @@ import * as productService from '../services/productService';
 import ProductCard from '../components/ProductCard';
 import ProductCardSkeleton from '../components/ProductCardSkeleton';
 import FilterPanel from '../components/FilterPanel';
+import ProductDetailModal from '../components/ProductDetailModal';
 
 const BoutiquePage = () => {
   const { t } = useLanguage();
@@ -14,6 +15,7 @@ const BoutiquePage = () => {
   const [error, setError] = useState(null);
   const [showFilters, setShowFilters] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
   const [filters, setFilters] = useState({
     search: '',
     minPrice: 0,
@@ -91,9 +93,17 @@ const BoutiquePage = () => {
     loadProducts();
   };
 
+  const handleOpenDetail = (product) => {
+    setSelectedProduct(product);
+  };
+
+  const handleCloseDetail = () => {
+    setSelectedProduct(null);
+  };
+
   const filteredProducts = products.filter(product => {
     const matchesSearch = product.nombre.toLowerCase().includes(filters.search.toLowerCase()) ||
-                        product.descripcion.toLowerCase().includes(filters.search.toLowerCase());
+                          product.descripcion.toLowerCase().includes(filters.search.toLowerCase());
     const matchesMinPrice = !filters.minPrice || product.precio >= Number(filters.minPrice);
     const matchesMaxPrice = !filters.maxPrice || product.precio <= Number(filters.maxPrice);
     const matchesSubcategory = !filters.subcategory || product.subcategoria_id === Number(filters.subcategory);
@@ -118,7 +128,7 @@ const BoutiquePage = () => {
     <div className={`flex items-stretch gap-3 ${className}`}>
       <div className="relative flex-grow">
         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-          <Search className="h-5 w-5 text-indigo-500" />
+          <Search className="h-5 w-5 text-purple-500" />
         </div>
         <input
           type="text"
@@ -128,7 +138,7 @@ const BoutiquePage = () => {
             handleApplyFilters();
           }}
           placeholder="Buscar productos..."
-          className="w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-gray-50 h-full"
+          className="w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 bg-gray-50 h-full"
         />
       </div>
       
@@ -138,7 +148,7 @@ const BoutiquePage = () => {
           handleFilterChange('sortBy', e.target.value);
           handleApplyFilters();
         }}
-        className="px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white"
+        className="px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 bg-white"
       >
         <option value="nameAsc">Nombre (A-Z)</option>
         <option value="nameDesc">Nombre (Z-A)</option>
@@ -150,12 +160,12 @@ const BoutiquePage = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-blue-50 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50 flex items-center justify-center p-4">
         <div className="text-center">
           <div className="text-red-500 text-xl font-medium mb-2">{error}</div>
           <button
             onClick={loadProducts}
-            className="text-indigo-600 hover:text-indigo-700 font-medium"
+            className="text-purple-600 hover:text-purple-700 font-medium"
           >
             {t('common.tryAgain')}
           </button>
@@ -167,12 +177,12 @@ const BoutiquePage = () => {
   // Vista móvil
   if (isMobile) {
     return (
-      <main className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-blue-50 py-8">
+      <main className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50 py-8">
         <div className="max-w-[95rem] mx-auto px-4 sm:px-6 mt-10">
           <div className="flex flex-col justify-between items-start mb-6 gap-4">
             <div>
               <h1 className="text-2xl font-bold text-gray-900 flex items-center mb-2">
-                <ShoppingBag className="h-7 w-7 text-indigo-600 mr-3" />
+                <ShoppingBag className="h-7 w-7 text-purple-600 mr-3" />
                 {t('boutique.title')}
               </h1>
               <p className="text-sm text-gray-600 max-w-2xl mb-4">
@@ -185,7 +195,7 @@ const BoutiquePage = () => {
             
             <button
               onClick={() => setShowFilters(true)}
-              className="flex items-center gap-2 px-4 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors w-full justify-center"
+              className="flex items-center gap-2 px-4 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors w-full justify-center"
             >
               <SlidersHorizontal className="h-5 w-5" />
               <span>{t('boutique.filters.title')}</span>
@@ -212,31 +222,47 @@ const BoutiquePage = () => {
               ))
             ) : filteredProducts.length === 0 ? (
               <div className="col-span-2 text-center py-8 bg-white rounded-lg shadow-sm border border-gray-200">
-                <ShoppingBag className="mx-auto h-12 w-12 text-indigo-300" />
+                <ShoppingBag className="mx-auto h-12 w-12 text-purple-300" />
                 <h3 className="mt-2 text-lg font-medium text-gray-900">{t('boutique.noProducts')}</h3>
                 <p className="mt-1 text-gray-500">{t('boutique.noProductsMessage')}</p>
               </div>
             ) : (
               <AnimatePresence>
                 {filteredProducts.map(product => (
-                  <ProductCard key={product.id} product={product} type="boutique" />
+                  <ProductCard 
+                    key={product.id} 
+                    product={product} 
+                    type="boutique"
+                    onOpenDetail={handleOpenDetail}
+                  />
                 ))}
               </AnimatePresence>
             )}
           </div>
         </div>
+
+        {/* Modal de detalle */}
+        <AnimatePresence>
+          {selectedProduct && (
+            <ProductDetailModal
+              product={selectedProduct}
+              onClose={handleCloseDetail}
+              type="boutique"
+            />
+          )}
+        </AnimatePresence>
       </main>
     );
   }
 
   // Vista desktop
   return (
-    <main className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-blue-50 py-8 sm:py-12">
+    <main className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50 py-8 sm:py-12">
       <div className="max-w-[95rem] mx-auto px-4 sm:px-6 lg:px-8 mt-10">
         <div className="flex flex-col items-start mb-6">
           <div className="w-full">
             <h1 className="text-3xl font-bold text-gray-900 flex items-center mb-2">
-              <ShoppingBag className="h-8 w-8 text-indigo-600 mr-3" />
+              <ShoppingBag className="h-8 w-8 text-purple-600 mr-3" />
               {t('boutique.title')}
             </h1>
             <p className="text-base text-gray-600 max-w-3xl mb-4">
@@ -249,8 +275,8 @@ const BoutiquePage = () => {
         </div>
 
         <div className="flex flex-row gap-6">
-          {/* Columna de filtros (25% del ancho) */}
-          <div className="w-1/4 flex-shrink-0">
+          {/* Columna de filtros (20% del ancho) */}
+          <div className="w-1/5 flex-shrink-0">
             <FilterPanel
               filters={filters}
               onFilterChange={handleFilterChange}
@@ -262,25 +288,30 @@ const BoutiquePage = () => {
             />
           </div>
           
-          {/* Columna de productos (75% del ancho) */}
-          <div className="w-3/4 flex-grow-0">
+          {/* Columna de productos (80% del ancho) */}
+          <div className="w-4/5 flex-grow-0">
             {loading ? (
-              <div className="grid grid-cols-3 gap-4">
-                {Array.from({ length: 9 }).map((_, index) => (
+              <div className="grid grid-cols-4 gap-4">
+                {Array.from({ length: 12 }).map((_, index) => (
                   <ProductCardSkeleton key={index} type="boutique" />
                 ))}
               </div>
             ) : filteredProducts.length === 0 ? (
               <div className="text-center py-12 bg-white rounded-lg shadow-sm border border-gray-200">
-                <ShoppingBag className="mx-auto h-16 w-16 text-indigo-300" />
+                <ShoppingBag className="mx-auto h-16 w-16 text-purple-300" />
                 <h3 className="mt-4 text-xl font-medium text-gray-900">{t('boutique.noProducts')}</h3>
                 <p className="mt-2 text-gray-500 max-w-md mx-auto">{t('boutique.noProductsMessage')}</p>
               </div>
             ) : (
-              <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4">
+              <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 <AnimatePresence>
                   {filteredProducts.map(product => (
-                    <ProductCard key={product.id} product={product} type="boutique" />
+                    <ProductCard 
+                      key={product.id} 
+                      product={product} 
+                      type="boutique"
+                      onOpenDetail={handleOpenDetail}
+                    />
                   ))}
                 </AnimatePresence>
               </div>
@@ -288,6 +319,17 @@ const BoutiquePage = () => {
           </div>
         </div>
       </div>
+
+      {/* Modal de detalle */}
+      <AnimatePresence>
+        {selectedProduct && (
+          <ProductDetailModal
+            product={selectedProduct}
+            onClose={handleCloseDetail}
+            type="boutique"
+          />
+        )}
+      </AnimatePresence>
     </main>
   );
 };

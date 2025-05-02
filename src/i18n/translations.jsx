@@ -508,7 +508,37 @@ export const translations = {
         outOfStock: "Out of stock"
       }
     },
-    loading: 'Loading...'
+    loading: 'Loading...',
+    favorites: {
+      title: 'My Favorites',
+      empty: 'Your favorites list is empty',
+      emptyMessage: 'Add some products to your favorites!',
+      added: 'Product added to favorites',
+      removed: 'Product removed from favorites',
+      cleared: 'Favorites cleared',
+      errorLoading: 'Error loading favorites',
+      errorAdding: 'Error adding to favorites',
+      errorRemoving: 'Error removing from favorites',
+      errorClearing: 'Error clearing favorites',
+      loginRequired: 'Please log in to manage favorites'
+    },
+    reviews: {
+      title: 'Reviews',
+      writeReview: 'Write a Review',
+      noReviews: 'No reviews yet. Be the first to review!',
+      rating: 'Rating',
+      comment: 'Comment',
+      submit: 'Submit Review',
+      submitting: 'Submitting...',
+      submitted: 'Review submitted successfully',
+      deleted: 'Review deleted successfully',
+      alreadyReviewed: 'You have already reviewed this product',
+      errorSubmitting: 'Error submitting review',
+      errorDeleting: 'Error deleting review',
+      loginRequired: 'Please log in to write a review',
+      placeholder: 'Write your opinion about the product...',
+      deleteConfirm: 'Are you sure you want to delete your review?'
+    }
   },
   es: {
     nav: {
@@ -907,7 +937,7 @@ export const translations = {
         searchPlaceholder: "Buscar por nombre...",
         minPrice: "Precio mínimo",
         maxPrice: "Precio máximo",
-        sortBy: "Ordenar por",
+        sortBy: "Trier par",
         sortOptions: {
           nameAsc: "Nombre (A-Z)",
           nameDesc: "Nombre (Z-A)",
@@ -1019,7 +1049,37 @@ export const translations = {
         outOfStock: "En rupture de stock"
       }
     },
-    loading: 'Cargando...'
+    loading: 'Cargando...',
+    favorites: {
+      title: 'Mis Favoritos',
+      empty: 'Tu lista de favoritos está vacía',
+      emptyMessage: '¡Agrega algunos productos a tus favoritos!',
+      added: 'Producto agregado a favoritos',
+      removed: 'Producto eliminado de favoritos',
+      cleared: 'Lista de favoritos vaciada',
+      errorLoading: 'Error al cargar favoritos',
+      errorAdding: 'Error al agregar a favoritos',
+      errorRemoving: 'Error al eliminar de favoritos',
+      errorClearing: 'Error al vaciar favoritos',
+      loginRequired: 'Por favor inicia sesión para gestionar favoritos'
+    },
+    reviews: {
+      title: 'Reseñas',
+      writeReview: 'Escribir Reseña',
+      noReviews: '¡No hay reseñas aún. ¡Sé el primero en opinar!',
+      rating: 'Calificación',
+      comment: 'Comentario',
+      submit: 'Enviar Reseña',
+      submitting: 'Enviando...',
+      submitted: 'Reseña enviada exitosamente',
+      deleted: 'Reseña eliminada exitosamente',
+      alreadyReviewed: 'Ya has dejado una reseña para este producto',
+      errorSubmitting: 'Error al enviar reseña',
+      errorDeleting: 'Error al eliminar reseña',
+      loginRequired: 'Por favor inicia sesión para escribir una reseña',
+      placeholder: 'Escribe tu opinión sobre el producto...',
+      deleteConfirm: '¿Estás seguro de que deseas eliminar tu reseña?'
+    }
   },
   fr: {
     nav: {
@@ -1530,6 +1590,36 @@ export const translations = {
         outOfStock: "En rupture de stock"
       }
     },
-    loading: 'Chargement...'
+    loading: 'Chargement...',
+    favorites: {
+      title: 'Mes Favoris',
+      empty: 'Votre liste de favoris est vide',
+      emptyMessage: 'Ajoutez des produits à vos favoris !',
+      added: 'Produit ajouté aux favoris',
+      removed: 'Produit retiré des favoris',
+      cleared: 'Liste des favoris vidée',
+      errorLoading: 'Erreur lors du chargement des favoris',
+      errorAdding: 'Erreur lors de l\'ajout aux favoris',
+      errorRemoving: 'Erreur lors de la suppression des favoris',
+      errorClearing: 'Erreur lors de la suppression des favoris',
+      loginRequired: 'Veuillez vous connecter pour gérer les favoris'
+    },
+    reviews: {
+      title: 'Avis',
+      writeReview: 'Écrire un Avis',
+      noReviews: 'Pas encore d\'avis. Soyez le premier à donner votre avis !',
+      rating: 'Note',
+      comment: 'Commentaire',
+      submit: 'Envoyer l\'Avis',
+      submitting: 'Envoi en cours...',
+      submitted: 'Avis envoyé avec succès',
+      deleted: 'Avis supprimé avec succès',
+      alreadyReviewed: 'Vous avez déjà donné votre avis sur ce produit',
+      errorSubmitting: 'Erreur lors de l\'envoi de l\'avis',
+      errorDeleting: 'Erreur lors de la suppression de l\'avis',
+      loginRequired: 'Veuillez vous connecter pour écrire un avis',
+      placeholder: 'Écrivez votre opinion sur le produit...',
+      deleteConfirm: 'Êtes-vous sûr de vouloir supprimer votre avis ?'
+    }
   }
 };
