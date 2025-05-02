@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingCart, Star, AlertTriangle, Plus, Minus, Check } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../contexts/AuthContext';
 import { toast } from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
+import AuthModal from './AuthModal';
 
 const ProductCard = ({ product, type = 'product' }) => {
   const { t } = useLanguage();
@@ -12,6 +14,9 @@ const ProductCard = ({ product, type = 'product' }) => {
   const { addToCart, updateQuantity, isInCart, getItemQuantity } = useCart();
   const [isLoading, setIsLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const cardRef = useRef(null);
+  const navigate = useNavigate();
 
   // Configuración de colores y traducciones según el tipo de producto
   const typeConfig = {
@@ -54,7 +59,7 @@ const ProductCard = ({ product, type = 'product' }) => {
 
   const handleAddToCart = async () => {
     if (!user) {
-      toast.error(t('cart.loginRequired'));
+      setIsAuthModalOpen(true);
       return;
     }
 
@@ -64,7 +69,7 @@ const ProductCard = ({ product, type = 'product' }) => {
       
       if (error) {
         if (error === 'login_required') {
-          toast.error(t('cart.loginRequired'));
+          setIsAuthModalOpen(true);
         } else {
           throw new Error(error);
         }
@@ -73,23 +78,99 @@ const ProductCard = ({ product, type = 'product' }) => {
 
       // Mostrar animación de éxito
       setShowSuccess(true);
-      setTimeout(() => setShowSuccess(false), 1500);
 
-      // Mostrar notificación
-      toast.custom((t) => (
-        <div className="bg-white rounded-lg shadow-lg p-4 flex items-center gap-3">
-          <div className="flex-shrink-0 bg-green-100 rounded-full p-2">
-            <Check className="h-4 w-4 text-green-600" />
-          </div>
-          <div>
-            <p className="font-medium text-gray-900">{product.nombre}</p>
-            <p className="text-sm text-gray-500">{t('cart.addedToCart')}</p>
-          </div>
-        </div>
-      ), {
-        duration: 2000,
-        position: 'bottom-right',
-      });
+      // Animar el producto "volando" al carrito
+      if (cardRef.current) {
+        const card = cardRef.current;
+        const cardRect = card.getBoundingClientRect();
+        const cartIcon = document.querySelector('.cart-icon');
+        
+        if (cartIcon) {
+          const cartRect = cartIcon.getBoundingClientRect();
+          
+          // Crear elemento para la animación
+          const flyingItem = document.createElement('div');
+          flyingItem.style.cssText = `
+            position: fixed;
+            z-index: 100;
+            width: ${cardRect.width}px;
+            height: ${cardRect.height}px;
+            background-image: url(${product.imagen_url || '/placeholder-product.png'});
+            background-size: cover;
+            background-position: center;
+            border-radius: 0.75rem;
+            left: ${cardRect.left}px;
+            top: ${cardRect.top}px;
+            transition: all 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+          `;
+          
+          document.body.appendChild(flyingItem);
+          
+          // Forzar reflow
+          flyingItem.offsetHeight;
+          
+          // Animar hacia el carrito
+          flyingItem.style.transform = 'scale(0.2) rotate(-10deg)';
+          flyingItem.style.opacity = '0';
+          flyingItem.style.left = `${cartRect.left + cartRect.width/2 - cardRect.width/10}px`;
+          flyingItem.style.top = `${cartRect.top + cartRect.height/2 - cardRect.height/10}px`;
+          
+          // Animar el icono del carrito
+          cartIcon.style.transform = 'scale(1.2)';
+          cartIcon.style.transition = 'transform 0.3s ease';
+          
+          // Remover después de la animación
+          setTimeout(() => {
+            document.body.removeChild(flyingItem);
+            setShowSuccess(false);
+            cartIcon.style.transform = 'scale(1)';
+          }, 1200);
+
+          // Mostrar notificación de éxito
+          toast.custom((t) => (
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="max-w-md w-full bg-white shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5"
+            >
+              <div className="flex-1 w-0 p-4">
+                <div className="flex items-start">
+                  <div className="flex-shrink-0 pt-0.5">
+                    <img
+                      className="h-12 w-12 rounded-lg object-cover"
+                      src={product.imagen_url || '/placeholder-product.png'}
+                      alt={product.nombre}
+                    />
+                  </div>
+                  <div className="ml-3 flex-1">
+                    <p className="text-sm font-medium text-gray-900">
+                      ¡Producto agregado!
+                    </p>
+                    <p className="mt-1 text-sm text-gray-500">
+                      {product.nombre} se ha agregado a tu carrito
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="flex border-l border-gray-200">
+                <button
+                  onClick={() => toast.dismiss(t.id)}
+                  className="w-full border border-transparent rounded-none rounded-r-lg p-4 flex items-center justify-center text-sm font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                >
+                  <Check className="h-5 w-5" />
+                </button>
+              </div>
+            </motion.div>
+          ), {
+            position: "top-right",
+            duration: 3000,
+          });
+        }
+      }
+
     } catch (error) {
       console.error('Error adding to cart:', error);
       toast.error(error.message || t('cart.errorAdding'));
@@ -100,7 +181,7 @@ const ProductCard = ({ product, type = 'product' }) => {
 
   const handleUpdateQuantity = async (change) => {
     if (!user) {
-      toast.error(t('cart.loginRequired'));
+      setIsAuthModalOpen(true);
       return;
     }
 
@@ -119,7 +200,7 @@ const ProductCard = ({ product, type = 'product' }) => {
       
       if (error) {
         if (error === 'login_required') {
-          toast.error(t('cart.loginRequired'));
+          setIsAuthModalOpen(true);
         } else {
           throw new Error(error);
         }
@@ -172,174 +253,182 @@ const ProductCard = ({ product, type = 'product' }) => {
   const quantity = getItemQuantity(product.id);
 
   return (
-    <motion.div
-      layout
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: 20 }}
-      className={`bg-white rounded-xl shadow-sm overflow-hidden group hover:shadow-lg transition-all duration-300 border border-${config.accent}-100 hover:border-${config.accent}-300 h-full flex flex-col relative`}
-      style={{ 
-        minHeight: '400px',
-        height: '100%'
-      }}
-    >
-      {/* Animación de éxito al agregar al carrito */}
-      <AnimatePresence>
-        {showSuccess && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.5 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.5 }}
-            className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-10"
-          >
-            <div className="bg-white rounded-full p-4">
-              <Check className="h-8 w-8 text-green-500" />
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Contenedor de imagen con aspect ratio fijo */}
-      <div 
-        className="relative overflow-hidden bg-gray-100"
+    <>
+      <motion.div
+        ref={cardRef}
+        layout
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 20 }}
+        className={`bg-white rounded-xl shadow-sm overflow-hidden group hover:shadow-lg transition-all duration-300 border border-${config.accent}-100 hover:border-${config.accent}-300 h-full flex flex-col relative`}
         style={{ 
-          aspectRatio: '1/1',
-          width: '100%'
+          minHeight: '400px',
+          height: '100%'
         }}
       >
-        {product.imagen_url ? (
-          <div className={`w-full h-full bg-gradient-to-br ${config.gradient}`}>
-            <img
-              src={product.imagen_url}
-              alt={product.nombre}
-              className="h-full w-full object-cover object-center transform group-hover:scale-105 transition-transform duration-500"
-              loading="lazy"
-              width="400"
-              height="400"
-              onError={(e) => {
-                e.target.onerror = null;
-                e.target.src = '/placeholder-product.png';
-              }}
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-          </div>
-        ) : (
-          <div className={`w-full h-full bg-gradient-to-br ${config.gradient} flex items-center justify-center`}>
-            <ShoppingCart className={`h-8 w-8 sm:h-10 sm:w-10 text-${config.accent}-300`} />
-          </div>
-        )}
-        
-        {product.destacado && (
-          <div className="absolute top-1 right-1 sm:top-2 sm:right-2 bg-yellow-400 text-white px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium flex items-center gap-0.5">
-            <Star className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
-            {t('common.featured')}
-          </div>
-        )}
-
-        {product.stock < 30 && (
-          <div className="absolute bottom-1 left-1 sm:bottom-2 sm:left-2 bg-red-500 text-white px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium flex items-center gap-0.5">
-            <AlertTriangle className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
-            {t('common.lowStock')}
-          </div>
-        )}
-      </div>
-      
-      {/* Contenido del card con altura fija y dimensiones reservadas */}
-      <div 
-        className="p-2 sm:p-3 md:p-4 flex flex-col flex-grow" 
-        style={{ minHeight: '200px' }}
-      >
-        <div className="mb-1 sm:mb-2 flex flex-wrap gap-0.5 sm:gap-1">
-          {product.categoria && (
-            <span className={`text-[10px] sm:text-xs font-medium text-${config.accent}-600 bg-${config.accent}-50 px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-full`}>
-              {product.categoria}
-            </span>
-          )}
-        </div>
-        
-        <h3 className="text-xs sm:text-sm font-semibold text-gray-900 mb-1 sm:mb-2 line-clamp-2 min-h-[2rem] sm:min-h-[2.5rem]">
-          {product.nombre}
-        </h3>
-        
-        <p className="text-[10px] sm:text-xs text-gray-600 mb-2 sm:mb-3 line-clamp-2 flex-grow">
-          {product.descripcion}
-        </p>
-        
-        {/* Footer del card con precio y botón */}
-        <div className="flex flex-col sm:flex-row items-center sm:items-center justify-center pt-2 sm:pt-3 border-t border-gray-100 mt-auto gap-2">
-          <div className="flex flex-col">
-            {product.precio_anterior && (
-              <span className="text-[10px] sm:text-xs text-gray-500 line-through">
-                ${product.precio_anterior.toFixed(2)}
-              </span>
-            )}
-            <span className="text-sm sm:text-base font-bold text-gray-900">
-              ${product.precio.toFixed(2)}
-            </span>
-          </div>
-          
-          {productInCart ? (
-            <div className="flex items-center gap-2 w-full sm:w-auto">
-              <div className="flex items-center border border-gray-300 rounded-lg">
-                <motion.button
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                  onClick={() => handleUpdateQuantity(-1)}
-                  className="p-1.5 hover:bg-gray-100 transition-colors disabled:opacity-50"
-                  disabled={isLoading || product.stock === 0}
-                >
-                  <Minus className="h-3 w-3 sm:h-4 sm:w-4 text-gray-600" />
-                </motion.button>
-                <span className="px-2 py-1 text-xs sm:text-sm text-gray-900 min-w-[2rem] text-center">
-                  {quantity}
-                </span>
-                <motion.button
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                  onClick={() => handleUpdateQuantity(1)}
-                  className="p-1.5 hover:bg-gray-100 transition-colors disabled:opacity-50"
-                  disabled={isLoading || quantity >= product.stock}
-                >
-                  <Plus className="h-3 w-3 sm:h-4 sm:w-4 text-gray-600" />
-                </motion.button>
+        {/* Animación de éxito al agregar al carrito */}
+        <AnimatePresence>
+          {showSuccess && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.5 }}
+              className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-10"
+            >
+              <div className="bg-white rounded-full p-4">
+                <Check className="h-8 w-8 text-green-500" />
               </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Contenedor de imagen con aspect ratio fijo */}
+        <div 
+          className="relative overflow-hidden bg-gray-100"
+          style={{ 
+            aspectRatio: '1/1',
+            width: '100%'
+          }}
+        >
+          {product.imagen_url ? (
+            <div className={`w-full h-full bg-gradient-to-br ${config.gradient}`}>
+              <img
+                src={product.imagen_url}
+                alt={product.nombre}
+                className="h-full w-full object-cover object-center transform group-hover:scale-105 transition-transform duration-500"
+                loading="lazy"
+                width="400"
+                height="400"
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = '/placeholder-product.png';
+                }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             </div>
           ) : (
-            <button
-              onClick={handleAddToCart}
-              disabled={isLoading || product.stock === 0}
-              className={`
-                flex items-center justify-center gap-1.5 
-                px-3 py-1.5 
-                rounded-lg 
-                text-[11px] sm:text-xs 
-                font-medium 
-                w-full sm:w-auto 
-                whitespace-nowrap
-                transition-all duration-300
-                ${product.stock === 0 
-                  ? 'bg-gray-400 cursor-not-allowed' 
-                  : `bg-${config.button}-600 hover:bg-${config.button}-700 text-white`}
-                disabled:opacity-50 disabled:cursor-not-allowed
-              `}
-            >
-              {isLoading ? (
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-              ) : (
-                <>
-                  <ShoppingCart className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                  <span>
-                    {product.stock === 0 
-                      ? t(config.translations.outOfStock)
-                      : t(config.translations.addToCart)}
-                  </span>
-                </>
-              )}
-            </button>
+            <div className={`w-full h-full bg-gradient-to-br ${config.gradient} flex items-center justify-center`}>
+              <ShoppingCart className={`h-8 w-8 sm:h-10 sm:w-10 text-${config.accent}-300`} />
+            </div>
+          )}
+          
+          {product.destacado && (
+            <div className="absolute top-1 right-1 sm:top-2 sm:right-2 bg-yellow-400 text-white px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium flex items-center gap-0.5">
+              <Star className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+              {t('common.featured')}
+            </div>
+          )}
+
+          {product.stock < 30 && (
+            <div className="absolute bottom-1 left-1 sm:bottom-2 sm:left-2 bg-red-500 text-white px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium flex items-center gap-0.5">
+              <AlertTriangle className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+              {t('common.lowStock')}
+            </div>
           )}
         </div>
-      </div>
-    </motion.div>
+        
+        {/* Contenido del card con altura fija y dimensiones reservadas */}
+        <div 
+          className="p-2 sm:p-3 md:p-4 flex flex-col flex-grow" 
+          style={{ minHeight: '200px' }}
+        >
+          <div className="mb-1 sm:mb-2 flex flex-wrap gap-0.5 sm:gap-1">
+            {product.categoria && (
+              <span className={`text-[10px] sm:text-xs font-medium text-${config.accent}-600 bg-${config.accent}-50 px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-full`}>
+                {product.categoria}
+              </span>
+            )}
+          </div>
+          
+          <h3 className="text-xs sm:text-sm font-semibold text-gray-900 mb-1 sm:mb-2 line-clamp-2 min-h-[2rem] sm:min-h-[2.5rem]">
+            {product.nombre}
+          </h3>
+          
+          <p className="text-[10px] sm:text-xs text-gray-600 mb-2 sm:mb-3 line-clamp-2 flex-grow">
+            {product.descripcion}
+          </p>
+          
+          {/* Footer del card con precio y botón */}
+          <div className="flex flex-col sm:flex-row items-center sm:items-center justify-center pt-2 sm:pt-3 border-t border-gray-100 mt-auto gap-2">
+            <div className="flex flex-col">
+              {product.precio_anterior && (
+                <span className="text-[10px] sm:text-xs text-gray-500 line-through">
+                  ${product.precio_anterior.toFixed(2)}
+                </span>
+              )}
+              <span className="text-sm sm:text-base font-bold text-gray-900">
+                ${product.precio.toFixed(2)}
+              </span>
+            </div>
+            
+            {productInCart ? (
+              <div className="flex items-center gap-2 w-full sm:w-auto">
+                <div className="flex items-center border border-gray-300 rounded-lg">
+                  <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={() => handleUpdateQuantity(-1)}
+                    className="p-1.5 hover:bg-gray-100 transition-colors disabled:opacity-50"
+                    disabled={isLoading || product.stock === 0}
+                  >
+                    <Minus className="h-3 w-3 sm:h-4 sm:w-4 text-gray-600" />
+                  </motion.button>
+                  <span className="px-2 py-1 text-xs sm:text-sm text-gray-900 min-w-[2rem] text-center">
+                    {quantity}
+                  </span>
+                  <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={() => handleUpdateQuantity(1)}
+                    className="p-1.5 hover:bg-gray-100 transition-colors disabled:opacity-50"
+                    disabled={isLoading || quantity >= product.stock}
+                  >
+                    <Plus className="h-3 w-3 sm:h-4 sm:w-4 text-gray-600" />
+                  </motion.button>
+                </div>
+              </div>
+            ) : (
+              <button
+                onClick={handleAddToCart}
+                disabled={isLoading || product.stock === 0}
+                className={`
+                  flex items-center justify-center gap-1.5 
+                  px-3 py-1.5 
+                  rounded-lg 
+                  text-[11px] sm:text-xs 
+                  font-medium 
+                  w-full sm:w-auto 
+                  whitespace-nowrap
+                  transition-all duration-300
+                  ${product.stock === 0 
+                    ? 'bg-gray-400 cursor-not-allowed' 
+                    : `bg-${config.button}-600 hover:bg-${config.button}-700 text-white`}
+                  disabled:opacity-50 disabled:cursor-not-allowed
+                `}
+              >
+                {isLoading ? (
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <>
+                    <ShoppingCart className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                    <span>
+                      {product.stock === 0 
+                        ? t(config.translations.outOfStock)
+                        : t(config.translations.addToCart)}
+                    </span>
+                  </>
+                )}
+              </button>
+            )}
+          </div>
+        </div>
+      </motion.div>
+
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+      />
+    </>
   );
 };
 

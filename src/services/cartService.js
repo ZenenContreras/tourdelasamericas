@@ -20,9 +20,29 @@ const getImageUrl = async (imagePath) => {
   return data.publicUrl;
 };
 
-// Cargar el carrito del usuario con información completa
-export const loadCart = async (userId) => {
+// Función para obtener el ID numérico del usuario usando su email
+const getUserNumericId = async (authUser) => {
   try {
+    const { data, error } = await supabase
+      .from('usuarios')
+      .select('id')
+      .eq('email', authUser.email)
+      .single();
+
+    if (error) throw error;
+    return data?.id;
+  } catch (error) {
+    console.error('Error obteniendo ID numérico del usuario:', error);
+    throw error;
+  }
+};
+
+// Cargar el carrito del usuario con información completa
+export const loadCart = async (authUser) => {
+  try {
+    const userId = await getUserNumericId(authUser);
+    if (!userId) throw new Error('Usuario no encontrado');
+
     const { data, error } = await supabase
       .from('carrito')
       .select(`
@@ -82,8 +102,11 @@ export const loadCart = async (userId) => {
 };
 
 // Agregar producto al carrito con validaciones
-export const addToCart = async (userId, productId, quantity = 1) => {
+export const addToCart = async (authUser, productId, quantity = 1) => {
   try {
+    const userId = await getUserNumericId(authUser);
+    if (!userId) throw new Error('Usuario no encontrado');
+
     // Validar cantidad
     if (quantity <= 0) {
       throw new Error('La cantidad debe ser mayor a 0');
@@ -171,8 +194,11 @@ export const addToCart = async (userId, productId, quantity = 1) => {
 };
 
 // Actualizar cantidad en el carrito con validaciones
-export const updateCartItem = async (userId, cartItemId, newQuantity) => {
+export const updateCartItem = async (authUser, cartItemId, newQuantity) => {
   try {
+    const userId = await getUserNumericId(authUser);
+    if (!userId) throw new Error('Usuario no encontrado');
+
     // Validar cantidad
     if (newQuantity < 0) {
       throw new Error('La cantidad no puede ser negativa');
@@ -190,7 +216,7 @@ export const updateCartItem = async (userId, cartItemId, newQuantity) => {
 
     // Si la cantidad es 0, eliminar el item
     if (newQuantity === 0) {
-      return await removeFromCart(userId, cartItemId);
+      return await removeFromCart(authUser, cartItemId);
     }
 
     // Verificar stock disponible
@@ -224,8 +250,11 @@ export const updateCartItem = async (userId, cartItemId, newQuantity) => {
 };
 
 // Eliminar item del carrito
-export const removeFromCart = async (userId, cartItemId) => {
+export const removeFromCart = async (authUser, cartItemId) => {
   try {
+    const userId = await getUserNumericId(authUser);
+    if (!userId) throw new Error('Usuario no encontrado');
+
     const { error } = await supabase
       .from('carrito')
       .delete()
@@ -242,8 +271,11 @@ export const removeFromCart = async (userId, cartItemId) => {
 };
 
 // Vaciar carrito
-export const clearCart = async (userId) => {
+export const clearCart = async (authUser) => {
   try {
+    const userId = await getUserNumericId(authUser);
+    if (!userId) throw new Error('Usuario no encontrado');
+
     const { error } = await supabase
       .from('carrito')
       .delete()
@@ -259,8 +291,11 @@ export const clearCart = async (userId) => {
 };
 
 // Calcular total del carrito con descuentos
-export const calculateCartTotal = async (userId, couponCode = null) => {
+export const calculateCartTotal = async (authUser, couponCode = null) => {
   try {
+    const userId = await getUserNumericId(authUser);
+    if (!userId) throw new Error('Usuario no encontrado');
+
     // Obtener items del carrito
     const { data: cartItems, error } = await supabase
       .from('carrito')
@@ -315,9 +350,12 @@ export const calculateCartTotal = async (userId, couponCode = null) => {
 };
 
 // Preparar carrito para Stripe
-export const prepareCartForStripe = async (userId) => {
+export const prepareCartForStripe = async (authUser) => {
   try {
-    const { data: cartItems, error } = await loadCart(userId);
+    const userId = await getUserNumericId(authUser);
+    if (!userId) throw new Error('Usuario no encontrado');
+
+    const { data: cartItems, error } = await loadCart(authUser);
     
     if (error) throw error;
     
@@ -348,9 +386,12 @@ export const prepareCartForStripe = async (userId) => {
 };
 
 // Verificar disponibilidad de stock para todos los items
-export const verifyStockAvailability = async (userId) => {
+export const verifyStockAvailability = async (authUser) => {
   try {
-    const { data: cartItems, error } = await loadCart(userId);
+    const userId = await getUserNumericId(authUser);
+    if (!userId) throw new Error('Usuario no encontrado');
+
+    const { data: cartItems, error } = await loadCart(authUser);
     
     if (error) throw error;
 

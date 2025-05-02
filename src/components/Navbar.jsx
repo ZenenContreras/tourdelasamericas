@@ -21,7 +21,7 @@ import { useCart } from '../contexts/CartContext';
 const Navbar = ({ scrollToRef, homeRef, currentSection = 'home', setCurrentSection }) => {
   const { t, language, setLanguage } = useLanguage();
   const { user, signOut } = useAuth();
-  const { itemCount } = useCart();
+  const { cartItemCount } = useCart();
   const location = useLocation();
   const navigate = useNavigate();
   const [isScrolled, setIsScrolled] = useState(false);
@@ -580,19 +580,23 @@ const Navbar = ({ scrollToRef, homeRef, currentSection = 'home', setCurrentSecti
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={handleCartClick}
-                  className="relative p-1.5 lg:p-2 text-gray-700 hover:text-indigo-600 transition-colors"
+                  className="relative p-1.5 lg:p-2 text-gray-700 hover:text-indigo-600 transition-colors cart-icon"
                   aria-label={t('cart.title')}
                 >
                   <ShoppingCart className="h-5 w-5 lg:h-6 lg:w-6" />
-                  {itemCount > 0 && (
-                    <motion.span
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      className="absolute -top-1 -right-1 bg-indigo-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center"
-                    >
-                      {itemCount}
-                    </motion.span>
-                  )}
+                  <AnimatePresence>
+                    {cartItemCount > 0 && (
+                      <motion.span
+                        key="cart-count"
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        exit={{ scale: 0 }}
+                        className="absolute -top-1 -right-1 bg-indigo-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center"
+                      >
+                        {cartItemCount}
+                      </motion.span>
+                    )}
+                  </AnimatePresence>
                 </motion.button>
 
                 {user && user.email ? (
@@ -651,19 +655,23 @@ const Navbar = ({ scrollToRef, homeRef, currentSection = 'home', setCurrentSecti
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={handleCartClick}
-                  className="relative p-1 text-gray-700 hover:text-indigo-600 transition-colors"
+                  className="relative p-1 text-gray-700 hover:text-indigo-600 transition-colors cart-icon"
                   aria-label={t('cart.title')}
                 >
                   <ShoppingCart className="h-4 w-4" />
-                  {itemCount > 0 && (
-                    <motion.span
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      className="absolute -top-1 -right-1 bg-indigo-600 text-white text-[8px] rounded-full h-3.5 w-3.5 flex items-center justify-center"
-                    >
-                      {itemCount}
-                    </motion.span>
-                  )}
+                  <AnimatePresence>
+                    {cartItemCount > 0 && (
+                      <motion.span
+                        key="cart-count"
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        exit={{ scale: 0 }}
+                        className="absolute -top-1 -right-1 bg-indigo-600 text-white text-[8px] rounded-full h-3.5 w-3.5 flex items-center justify-center"
+                      >
+                        {cartItemCount}
+                      </motion.span>
+                    )}
+                  </AnimatePresence>
                 </motion.button>
 
                 <LanguageSelector isMobile={true} />
@@ -676,19 +684,23 @@ const Navbar = ({ scrollToRef, homeRef, currentSection = 'home', setCurrentSecti
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={handleCartClick}
-                className="relative p-1.5 text-gray-700 hover:text-indigo-600 transition-colors"
+                className="relative p-1.5 text-gray-700 hover:text-indigo-600 transition-colors cart-icon"
                 aria-label={t('cart.title')}
               >
                 <ShoppingCart className="h-5 w-5" />
-                {itemCount > 0 && (
-                  <motion.span
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    className="absolute -top-1 -right-1 bg-indigo-600 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center text-[10px]"
-                  >
-                    {itemCount}
-                  </motion.span>
-                )}
+                <AnimatePresence>
+                  {cartItemCount > 0 && (
+                    <motion.span
+                      key="cart-count"
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      exit={{ scale: 0 }}
+                      className="absolute -top-1 -right-1 bg-indigo-600 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center text-[10px]"
+                    >
+                      {cartItemCount}
+                    </motion.span>
+                  )}
+                </AnimatePresence>
               </motion.button>
 
               <LanguageSelector isMobile={true} />

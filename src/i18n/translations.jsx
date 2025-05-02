@@ -416,75 +416,64 @@ export const translations = {
       lowStock: "Low stock"
     },
     cart: {
-      title: "Shopping Cart",
-      empty: "Your cart is empty",
-      emptyMessage: "Add some products to start shopping",
-      total: "Total",
-      checkout: "Proceed to checkout",
-      continue: "Continue shopping",
-      remove: "Remove",
-      clear: "Clear cart",
-      quantity: "Quantity",
-      price: "Price",
+      title: "Carrito de Compras",
+      empty: "Tu carrito está vacío",
+      emptyMessage: "Agrega algunos productos para comenzar a comprar",
+      clear: "Vaciar carrito",
+      quantity: "Cantidad",
+      price: "Precio",
       subtotal: "Subtotal",
-      addedToCart: "Product added to cart",
-      updated: "Cart updated",
-      removed: "Product removed from cart",
-      cleared: "Cart cleared",
-      loginRequired: "You must be logged in to add products to cart",
-      errorLoading: "Error loading cart",
-      errorAdding: "Error adding to cart",
-      errorUpdating: "Error updating cart",
-      errorRemoving: "Error removing from cart",
-      errorClearing: "Error clearing cart",
-      addMore: "Add more",
-      itemCount: "{{count}} items",
-      itemCountSingular: "1 item",
-      confirmRemove: "Are you sure you want to remove this product?",
-      confirmClear: "Are you sure you want to clear your cart?",
-      stockLimit: "Available stock: {{stock}}",
-      outOfStock: "Out of stock",
-      coupon: {
-        title: "Discount Coupon",
-        placeholder: "Enter coupon code",
-        apply: "Apply",
-        remove: "Remove",
-        applied: "Coupon applied successfully",
-        removed: "Coupon removed",
-        invalid: "Invalid or expired coupon",
-        expired: "Coupon has expired",
-        limitReached: "Coupon has reached its usage limit",
-        error: "Error applying coupon"
-      },
-      shipping: {
-        title: "Shipping",
-        calculating: "Calculating...",
-        free: "Free Shipping",
-        standard: "Standard Shipping",
-        express: "Express Shipping"
-      },
+      addedToCart: "Producto agregado al carrito",
+      updated: "Carrito actualizado",
+      removed: "Producto eliminado del carrito",
+      cleared: "Carrito vaciado",
+      loginRequired: "Debes iniciar sesión para agregar productos al carrito",
+      errorLoading: "Error al cargar el carrito",
+      errorAdding: "Error al agregar al carrito",
+      errorUpdating: "Error al actualizar el carrito",
+      errorRemoving: "Error al eliminar del carrito",
+      errorClearing: "Error al vaciar el carrito",
+      addMore: "Agregar más",
+      itemCount: "{{count}} artículos",
+      itemCountSingular: "1 artículo",
+      confirmRemove: "¿Estás seguro de que deseas eliminar este producto?",
+      confirmClear: "¿Estás seguro de que deseas vaciar el carrito?",
+      stockLimit: "Stock disponible: {{stock}}",
+      outOfStock: "Agotado",
       summary: {
-        title: "Order Summary",
+        title: "Resumen del Pedido",
         subtotal: "Subtotal",
-        shipping: "Shipping",
-        discount: "Discount",
+        shipping: "Envío",
+        discount: "Descuento",
         total: "Total"
       },
-      checkout: {
-        title: "Checkout",
-        button: "Proceed to Checkout",
-        processing: "Processing...",
-        stockIssues: "Some products are out of stock",
-        loginRequired: "Please log in to checkout"
+      shipping: {
+        title: "Envío",
+        calculating: "Calculando...",
+        free: "Envío Gratis",
+        standard: "Envío Estándar",
+        express: "Envío Express",
+        details: "Envío gratuito en pedidos superiores a $50",
+        expressDetails: "Entrega en 24-48 horas hábiles"
       },
-      notifications: {
-        addedToCart: "Product added to cart",
-        removedFromCart: "Product removed from cart",
-        quantityIncreased: "Quantity increased",
-        quantityDecreased: "Quantity decreased",
-        stockLimit: "Maximum stock limit reached",
-        loginRequired: "Please log in to add products to cart",
-        error: "An error occurred. Please try again."
+      checkout: {
+        title: "Finalizar Compra",
+        button: "Proceder al Pago",
+        processing: "Procesando...",
+        stockIssues: "Algunos productos están agotados",
+        loginRequired: "Por favor inicia sesión para finalizar la compra"
+      },
+      coupon: {
+        title: "Cupón de Descuento",
+        placeholder: "Ingresa el código del cupón",
+        apply: "Aplicar",
+        remove: "Eliminar",
+        applied: "Cupón aplicado exitosamente",
+        removed: "Cupón eliminado",
+        invalid: "Cupón no válido o expirado",
+        expired: "El cupón ha expirado",
+        limitReached: "El cupón ha alcanzado su límite de uso",
+        error: "Error al aplicar el cupón"
       }
     },
     common: {
@@ -929,7 +918,7 @@ export const translations = {
         allSubcategories: "Todas las categorías",
         subcategories: {
           clothing: "Ropa",
-          accessories: "Accesorios",
+          accessories: "Accessoires",
           souvenirs: "Souvenirs"
         }
       },
@@ -941,10 +930,6 @@ export const translations = {
       title: "Carrito de Compras",
       empty: "Tu carrito está vacío",
       emptyMessage: "Agrega algunos productos para comenzar a comprar",
-      total: "Total",
-      checkout: "Finalizar compra",
-      continue: "Continuar comprando",
-      remove: "Eliminar",
       clear: "Vaciar carrito",
       quantity: "Cantidad",
       price: "Precio",
@@ -966,6 +951,29 @@ export const translations = {
       confirmClear: "¿Estás seguro de que deseas vaciar el carrito?",
       stockLimit: "Stock disponible: {{stock}}",
       outOfStock: "Agotado",
+      summary: {
+        title: "Resumen del Pedido",
+        subtotal: "Subtotal",
+        shipping: "Envío",
+        discount: "Descuento",
+        total: "Total"
+      },
+      shipping: {
+        title: "Envío",
+        calculating: "Calculando...",
+        free: "Envío Gratis",
+        standard: "Envío Estándar",
+        express: "Envío Express",
+        details: "Envío gratuito en pedidos superiores a $50",
+        expressDetails: "Entrega en 24-48 horas hábiles"
+      },
+      checkout: {
+        title: "Finalizar Compra",
+        button: "Proceder al Pago",
+        processing: "Procesando...",
+        stockIssues: "Algunos productos están agotados",
+        loginRequired: "Por favor inicia sesión para finalizar la compra"
+      },
       coupon: {
         title: "Cupón de Descuento",
         placeholder: "Ingresa el código del cupón",
@@ -977,36 +985,6 @@ export const translations = {
         expired: "El cupón ha expirado",
         limitReached: "El cupón ha alcanzado su límite de uso",
         error: "Error al aplicar el cupón"
-      },
-      shipping: {
-        title: "Envío",
-        calculating: "Calculando...",
-        free: "Envío Gratis",
-        standard: "Envío Estándar",
-        express: "Envío Express"
-      },
-      summary: {
-        title: "Resumen del Pedido",
-        subtotal: "Subtotal",
-        shipping: "Envío",
-        discount: "Descuento",
-        total: "Total"
-      },
-      checkout: {
-        title: "Finalizar Compra",
-        button: "Proceder al Pago",
-        processing: "Procesando...",
-        stockIssues: "Algunos productos están agotados",
-        loginRequired: "Por favor inicia sesión para finalizar la compra"
-      },
-      notifications: {
-        addedToCart: "Product added to cart",
-        removedFromCart: "Product removed from cart",
-        quantityIncreased: "Quantity increased",
-        quantityDecreased: "Quantity decreased",
-        stockLimit: "Maximum stock limit reached",
-        loginRequired: "Please log in to add products to cart",
-        error: "An error occurred. Please try again."
       }
     },
     common: {
@@ -1463,10 +1441,6 @@ export const translations = {
       title: "Panier",
       empty: "Votre panier est vide",
       emptyMessage: "Ajoutez des produits pour commencer vos achats",
-      total: "Total",
-      checkout: "Passer à la caisse",
-      continue: "Continuer les achats",
-      remove: "Supprimer",
       clear: "Vider le panier",
       quantity: "Quantité",
       price: "Prix",
@@ -1488,6 +1462,29 @@ export const translations = {
       confirmClear: "Êtes-vous sûr de vouloir vider votre panier ?",
       stockLimit: "Stock disponible : {{stock}}",
       outOfStock: "Agotado",
+      summary: {
+        title: "Resumen del Pedido",
+        subtotal: "Subtotal",
+        shipping: "Envío",
+        discount: "Descuento",
+        total: "Total"
+      },
+      shipping: {
+        title: "Envío",
+        calculating: "Calculando...",
+        free: "Envío Gratis",
+        standard: "Envío Estándar",
+        express: "Envío Express",
+        details: "Envío gratuito en pedidos superiores a $50",
+        expressDetails: "Entrega en 24-48 horas hábiles"
+      },
+      checkout: {
+        title: "Finalizar Compra",
+        button: "Proceder al Pago",
+        processing: "Procesando...",
+        stockIssues: "Algunos productos están agotados",
+        loginRequired: "Por favor inicia sesión para finalizar la compra"
+      },
       coupon: {
         title: "Cupón de Descuento",
         placeholder: "Ingresa el código del cupón",
@@ -1499,36 +1496,6 @@ export const translations = {
         expired: "El cupón ha expirado",
         limitReached: "El cupón ha alcanzado su límite de uso",
         error: "Error al aplicar el cupón"
-      },
-      shipping: {
-        title: "Envío",
-        calculating: "Calculando...",
-        free: "Envío Gratis",
-        standard: "Envío Estándar",
-        express: "Envío Express"
-      },
-      summary: {
-        title: "Resumen del Pedido",
-        subtotal: "Subtotal",
-        shipping: "Envío",
-        discount: "Descuento",
-        total: "Total"
-      },
-      checkout: {
-        title: "Finalizar Compra",
-        button: "Proceder al Pago",
-        processing: "Procesando...",
-        stockIssues: "Algunos productos están agotados",
-        loginRequired: "Por favor inicia sesión para finalizar la compra"
-      },
-      notifications: {
-        addedToCart: "Product added to cart",
-        removedFromCart: "Product removed from cart",
-        quantityIncreased: "Quantity increased",
-        quantityDecreased: "Quantity decreased",
-        stockLimit: "Maximum stock limit reached",
-        loginRequired: "Please log in to add products to cart",
-        error: "An error occurred. Please try again."
       }
     },
     common: {
