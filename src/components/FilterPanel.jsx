@@ -295,46 +295,53 @@ const FilterPanel = memo(({
         </AnimatePresence>
         
         {/* Área de filtros activos siempre visible en la parte superior */}
-        <div className="mb-4">
+        <div className="mb-4 px-4 sm:px-6">
           <AnimatePresence>
             {renderActiveFilters}
           </AnimatePresence>
         </div>
       
         {/* Panel modal para móvil - precargar height para evitar CLS */}
-    <AnimatePresence>
-      {isOpen && (
-        <motion.div
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
+              transition={{ duration: 0.2 }}
               className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-end justify-center"
-              style={{ height: '100vh', width: '100vw' }}
-        >
-          <motion.div
+              style={{ 
+                height: '100dvh', // Usar dynamic viewport height para mejor soporte móvil
+                width: '100vw',
+                touchAction: 'none' // Prevenir scroll del body cuando el modal está abierto
+              }}
+            >
+              <motion.div
                 initial={{ y: "100%" }}
                 animate={{ y: 0 }}
                 exit={{ y: "100%" }}
                 transition={{ type: "spring", damping: 25, stiffness: 300 }}
-                className="bg-white rounded-t-xl shadow-xl w-full max-h-[80vh] overflow-y-auto"
-                style={{ minHeight: '300px' }}  /* Establecer altura mínima para evitar CLS */
+                className="bg-white rounded-t-xl shadow-xl w-full max-h-[85dvh] overflow-y-auto overscroll-contain"
+                style={{ 
+                  minHeight: '300px',
+                  maxHeight: '85dvh' // Usar dynamic viewport height
+                }}
               >
                 <div className="sticky top-0 p-4 border-b border-gray-200 flex items-center justify-between bg-white z-10">
-              <div className="flex items-center gap-2">
-                <SlidersHorizontal className={`h-5 w-5 text-${color}-600`} />
-                <h3 className="text-lg font-semibold text-gray-900">Filtros</h3>
-              </div>
-              <button
-                onClick={onClose}
-                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-              >
-                <X className="h-5 w-5 text-gray-500" />
-              </button>
-            </div>
+                  <div className="flex items-center gap-2">
+                    <SlidersHorizontal className={`h-5 w-5 text-${color}-600`} />
+                    <h3 className="text-lg font-semibold text-gray-900">Filtros</h3>
+                  </div>
+                  <button
+                    onClick={onClose}
+                    className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                  >
+                    <X className="h-5 w-5 text-gray-500" />
+                  </button>
+                </div>
 
                 <div className="p-4 space-y-4 pb-24">
-              {/* Subcategorías */}
+                  {/* Subcategorías */}
                   <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
                     <button
                       onClick={() => toggleExpanded('subcategories')}
@@ -536,13 +543,13 @@ const FilterPanel = memo(({
                 <div className="fixed bottom-0 left-0 right-0 p-4 border-t border-gray-200 flex justify-between gap-3 bg-white">
                   <FilterButton
                 onClick={handleReset}
-                    className={`px-4 py-3 text-${color}-600 hover:text-${color}-800 transition-colors bg-white border border-gray-200 rounded-lg flex-1`}
+                    className={`px-4 py-3 text-${color}-600 hover:text-${color}-800 transition-colors bg-white border border-gray-200 rounded-lg flex-1 text-sm sm:text-base`}
               >
                 Restablecer
                   </FilterButton>
                   <FilterButton
                 onClick={handleApply}
-                    className={`px-4 py-3 bg-${color}-600 text-white rounded-lg hover:bg-${color}-700 transition-colors flex-[2]`}
+                    className={`px-4 py-3 bg-${color}-600 text-white rounded-lg hover:bg-${color}-700 transition-colors flex-[2] text-sm sm:text-base`}
               >
                 Aplicar Filtros
                   </FilterButton>
@@ -585,14 +592,16 @@ const FilterPanel = memo(({
       </AnimatePresence>
       
       {/* Filtros activos como chips */}
-      <AnimatePresence>
-        {renderActiveFilters}
-      </AnimatePresence>
+      <div className="px-4 sm:px-6 mb-4">
+        <AnimatePresence>
+          {renderActiveFilters}
+        </AnimatePresence>
+      </div>
       
       {/* Contenedor principal de filtros */}
       <div 
         className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden mb-6"
-        style={{ minHeight: '200px' }} /* Altura mínima para evitar CLS */
+        style={{ minHeight: '200px' }}
       >
         {/* Cabecera de filtros */}
         <div className="px-4 py-3 bg-gray-50 border-b border-gray-200 flex items-center justify-between">
