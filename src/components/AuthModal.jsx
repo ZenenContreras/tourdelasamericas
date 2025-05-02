@@ -172,17 +172,17 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
       >
         <button
           onClick={onClose}
-          className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 p-1.5 rounded-full hover:bg-gray-100 transition-colors"
+          className="absolute top-3 right-3 text-gray-500 hover:text-gray-700 p-2 rounded-full hover:bg-gray-100 transition-colors"
         >
-          <X className="h-4 w-4 sm:h-5 sm:w-5" />
+          <X className="h-5 w-5" />
         </button>
 
-        <div className="px-3 sm:px-6 py-4 sm:py-6">
-          <div className="flex justify-center mb-3 sm:mb-4">
-            <img src="/LogoAunClic.svg" alt="Á un Clic" className="h-16 sm:h-20 w-auto" />
+        <div className="px-3 sm:px-6 py-3 sm:py-4">
+          <div className="flex justify-center">
+            <img src="/LogoAunClic.svg" alt="Á un Clic" className="h-24 sm:h-24 w-auto" />
           </div>
 
-          <div className="text-center mb-3 sm:mb-4">
+          <div className="text-center mb-2 sm:mb-3">
             <h2 className="text-lg sm:text-xl font-bold text-gray-900">
               {t(mode === 'login' ? 'auth.login.title' : 'auth.register.title')}
             </h2>
@@ -192,13 +192,13 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
           </div>
 
           {error && (
-            <div className="p-2 sm:p-3 mb-3 sm:mb-4 bg-red-50 rounded-xl flex items-start space-x-2">
+            <div className="p-2 sm:p-3 mb-2 sm:mb-3 bg-red-50 rounded-xl flex items-start space-x-2">
               <AlertCircle className="h-4 w-4 sm:h-5 sm:w-5 text-red-400 mt-0.5 flex-shrink-0" />
               <p className="text-xs sm:text-sm text-red-600">{error}</p>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-2 sm:space-y-3">
             {mode === 'register' && (
               <div>
                 <label htmlFor="nombre" className="block text-xs sm:text-sm font-medium text-gray-700">
@@ -213,7 +213,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                     value={formData.nombre}
                     onChange={handleInputChange}
                     required
-                    className="w-full pl-9 sm:pl-10 pr-3 sm:pr-4 py-2 sm:py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm sm:text-base"
+                    className="w-full pl-9 sm:pl-10 pr-3 sm:pr-4 py-1.5 sm:py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm sm:text-base"
                     placeholder={t('auth.register.nombre')}
                   />
                 </div>
@@ -233,7 +233,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                   value={formData.email}
                   onChange={handleInputChange}
                   required
-                  className="w-full pl-9 sm:pl-10 pr-3 sm:pr-4 py-2 sm:py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm sm:text-base"
+                  className="w-full pl-9 sm:pl-10 pr-3 sm:pr-4 py-1.5 sm:py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm sm:text-base"
                   placeholder="you@example.com"
                 />
               </div>
@@ -252,7 +252,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                   value={formData.password}
                   onChange={handleInputChange}
                   required
-                  className="w-full pl-9 sm:pl-10 pr-9 sm:pr-10 py-2 sm:py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm sm:text-base"
+                  className="w-full pl-9 sm:pl-10 pr-9 sm:pr-10 py-1.5 sm:py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm sm:text-base"
                   placeholder="********"
                 />
                 <button
@@ -279,7 +279,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                     value={formData.confirmPassword}
                     onChange={handleInputChange}
                     required
-                    className="w-full pl-9 sm:pl-10 pr-9 sm:pr-10 py-2 sm:py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm sm:text-base"
+                    className="w-full pl-9 sm:pl-10 pr-9 sm:pr-10 py-1.5 sm:py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm sm:text-base"
                     placeholder="********"
                   />
                   <button
@@ -309,7 +309,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full flex justify-center py-2.5 sm:py-3 px-4 border border-transparent rounded-xl shadow-sm text-xs sm:text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-indigo-400 transition-colors duration-200"
+                className="w-full flex justify-center py-2 sm:py-2.5 px-4 border border-transparent rounded-xl shadow-sm text-xs sm:text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-indigo-400 transition-colors duration-200"
               >
                 {isLoading ? (
                   <span className="flex items-center">
@@ -325,7 +325,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
               </button>
             </div>
 
-            <div className="flex items-center text-xs sm:text-sm my-3 sm:my-4">
+            <div className="flex items-center text-xs sm:text-sm my-2 sm:my-3">
               <div className="h-px bg-gray-300 flex-1"></div>
               <span className="px-2 sm:px-3 text-gray-500">{t('auth.login.orContinueWith')}</span>
               <div className="h-px bg-gray-300 flex-1"></div>
@@ -335,7 +335,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
               <button
                 type="button"
                 onClick={handleGoogleAuth}
-                className="w-full flex justify-center items-center py-2.5 sm:py-3 px-4 border border-gray-300 rounded-xl shadow-sm text-xs sm:text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
+                className="w-full flex justify-center items-center py-2 sm:py-2.5 px-4 border border-gray-300 rounded-xl shadow-sm text-xs sm:text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
               >
                 <svg className="h-4 w-4 sm:h-5 sm:w-5 mr-2" viewBox="0 0 24 24" width="24" height="24">
                   <g transform="matrix(1, 0, 0, 1, 27.009001, -39.238998)">
@@ -351,7 +351,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
           </form>
         </div>
 
-        <div className="px-3 sm:px-6 py-3 sm:py-4 bg-gray-50 text-xs sm:text-sm text-center border-t border-gray-200">
+        <div className="px-3 sm:px-6 py-2 sm:py-3 bg-gray-50 text-xs sm:text-sm text-center border-t border-gray-200">
           {mode === 'login' ? (
             <p>
               {t('auth.login.noAccount')}{' '}
@@ -381,7 +381,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
           )}
         </div>
 
-        <div className="bg-gray-100 px-3 sm:px-6 py-2 sm:py-3 text-[10px] sm:text-xs text-center text-gray-500">
+        <div className="bg-gray-100 px-3 sm:px-6 py-2 text-[10px] sm:text-xs text-center text-gray-500">
           {t('auth.errors.termsNotice', 'Al continuar, aceptas nuestros')}{' '}
           <a href="#" className="text-indigo-600 hover:underline">{t('auth.errors.termsOfService', 'Términos de servicio')}</a>{' '}
           {t('auth.errors.and', 'y')}{' '}
