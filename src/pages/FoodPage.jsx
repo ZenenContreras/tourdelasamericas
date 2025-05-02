@@ -23,9 +23,9 @@ const FoodPage = () => {
   });
 
   const subcategories = [
-    { id: '1', name: t('food.filters.subcategories.bakery') },
-    { id: '2', name: t('food.filters.subcategories.preparados') },
-    { id: '3', name: t('food.filters.subcategories.desserts') }
+    { id: '4', name: t('food.filters.subcategories.northAmerica') },
+    { id: '5', name: t('food.filters.subcategories.centralAmerica') },
+    { id: '6', name: t('food.filters.subcategories.southAmerica') }
   ];
 
   // Detectar si es dispositivo móvil

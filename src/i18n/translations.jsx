@@ -324,19 +324,27 @@ export const translations = {
     food: {
       title: "Food Menu",
       description: "Discover authentic flavors from the Americas",
-      filters: "Filters",
-      search: "Search foods...",
-      searchPlaceholder: "Search by name...",
-      minPrice: "Minimum price",
-      maxPrice: "Maximum price",
-      sortBy: "Sort by",
-      sortOptions: {
-        nameAsc: "Name (A-Z)",
-        nameDesc: "Name (Z-A)",
-        priceAsc: "Price (low to high)",
-        priceDesc: "Price (high to low)"
+      filters: {
+        title: "Filters",
+        search: "Search foods...",
+        searchPlaceholder: "Search by name...",
+        minPrice: "Minimum price",
+        maxPrice: "Maximum price",
+        sortBy: "Sort by",
+        sortOptions: {
+          nameAsc: "Name (A-Z)",
+          nameDesc: "Name (Z-A)",
+          priceAsc: "Price (low to high)",
+          priceDesc: "Price (high to low)"
+        },
+        subcategory: "Region",
+        allSubcategories: "All regions",
+        subcategories: {
+          northAmerica: "North America",
+          centralAmerica: "Central America",
+          southAmerica: "South America"
+        }
       },
-      resetFilters: "Reset filters",
       noFood: "No food available",
       noFoodMessage: "No food items found matching the selected filters",
       lowStock: "Only a few units left!",
@@ -382,56 +390,30 @@ export const translations = {
     boutique: {
       title: "Boutique & Souvenirs",
       description: "Discover unique items and souvenirs from the Americas",
-      filters: "Filters",
-      search: "Search items...",
-      searchPlaceholder: "Search by name...",
-      minPrice: "Minimum price",
-      maxPrice: "Maximum price",
-      sortBy: "Sort by",
-      sortOptions: {
-        nameAsc: "Name (A-Z)",
-        nameDesc: "Name (Z-A)",
-        priceAsc: "Price (low to high)",
-        priceDesc: "Price (high to low)"
+      filters: {
+        title: "Filters",
+        search: "Search items...",
+        searchPlaceholder: "Search by name...",
+        minPrice: "Minimum price",
+        maxPrice: "Maximum price",
+        sortBy: "Sort by",
+        sortOptions: {
+          nameAsc: "Name (A-Z)",
+          nameDesc: "Name (Z-A)",
+          priceAsc: "Price (low to high)",
+          priceDesc: "Price (high to low)"
+        },
+        subcategory: "Category",
+        allSubcategories: "All categories",
+        subcategories: {
+          clothing: "Clothing",
+          accessories: "Accessories",
+          souvenirs: "Souvenirs"
+        }
       },
-      resetFilters: "Reset filters",
-      noItems: "No items available",
-      noItemsMessage: "No items found matching the selected filters",
-      lowStock: "Only a few units left!",
-      outOfStock: "Out of stock",
       addToCart: "Add to cart",
-      errorLoading: "Error loading items",
-      categories: {
-        all: "All items",
-        clothing: "Clothing",
-        accessories: "Accessories",
-        crafts: "Crafts",
-        souvenirs: "Souvenirs"
-      },
-      stock: {
-        available: "Available: {{stock}}",
-        lowStock: "Last units!",
-        outOfStock: "Out of stock"
-      },
-      collections: {
-        traditional: "Traditional",
-        modern: "Modern",
-        limited: "Limited edition"
-      },
-      materials: {
-        cotton: "Cotton",
-        wool: "Wool",
-        leather: "Leather",
-        wood: "Wood",
-        ceramic: "Ceramic"
-      },
-      subcategory: "Category",
-      allSubcategories: "All categories",
-      subcategories: {
-        clothing: "Clothing",
-        accessories: "Accessories",
-        souvenirs: "Souvenirs"
-      }
+      outOfStock: "Out of stock",
+      lowStock: "Low stock"
     },
     cart: {
       title: "Shopping Cart",
@@ -461,7 +443,49 @@ export const translations = {
       confirmRemove: "Are you sure you want to remove this product?",
       confirmClear: "Are you sure you want to clear your cart?",
       stockLimit: "Available stock: {{stock}}",
-      outOfStock: "Out of stock"
+      outOfStock: "Out of stock",
+      coupon: {
+        title: "Discount Coupon",
+        placeholder: "Enter coupon code",
+        apply: "Apply",
+        remove: "Remove",
+        applied: "Coupon applied successfully",
+        removed: "Coupon removed",
+        invalid: "Invalid or expired coupon",
+        expired: "Coupon has expired",
+        limitReached: "Coupon has reached its usage limit",
+        error: "Error applying coupon"
+      },
+      shipping: {
+        title: "Shipping",
+        calculating: "Calculating...",
+        free: "Free Shipping",
+        standard: "Standard Shipping",
+        express: "Express Shipping"
+      },
+      summary: {
+        title: "Order Summary",
+        subtotal: "Subtotal",
+        shipping: "Shipping",
+        discount: "Discount",
+        total: "Total"
+      },
+      checkout: {
+        title: "Checkout",
+        button: "Proceed to Checkout",
+        processing: "Processing...",
+        stockIssues: "Some products are out of stock",
+        loginRequired: "Please log in to checkout"
+      },
+      notifications: {
+        addedToCart: "Product added to cart",
+        removedFromCart: "Product removed from cart",
+        quantityIncreased: "Quantity increased",
+        quantityDecreased: "Quantity decreased",
+        stockLimit: "Maximum stock limit reached",
+        loginRequired: "Please log in to add products to cart",
+        error: "An error occurred. Please try again."
+      }
     },
     common: {
       featured: "Featured",
@@ -822,19 +846,27 @@ export const translations = {
     food: {
       title: "Menú de Comidas",
       description: "Descubre sabores auténticos de las Américas",
-      filters: "Filtros",
-      search: "Buscar comidas...",
-      searchPlaceholder: "Buscar por nombre...",
-      minPrice: "Precio mínimo",
-      maxPrice: "Precio máximo",
-      sortBy: "Ordenar por",
-      sortOptions: {
-        nameAsc: "Nombre (A-Z)",
-        nameDesc: "Nombre (Z-A)",
-        priceAsc: "Precio (menor a mayor)",
-        priceDesc: "Precio (mayor a menor)"
+      filters: {
+        title: "Filtros",
+        search: "Buscar comidas...",
+        searchPlaceholder: "Buscar por nombre...",
+        minPrice: "Precio mínimo",
+        maxPrice: "Precio máximo",
+        sortBy: "Ordenar por",
+        sortOptions: {
+          nameAsc: "Nombre (A-Z)",
+          nameDesc: "Nombre (Z-A)",
+          priceAsc: "Precio (menor a mayor)",
+          priceDesc: "Precio (mayor a menor)"
+        },
+        subcategory: "Región",
+        allSubcategories: "Todas las regiones",
+        subcategories: {
+          northAmerica: "Norte América",
+          centralAmerica: "Centro América",
+          southAmerica: "Sur América"
+        }
       },
-      resetFilters: "Restablecer filtros",
       noFood: "No hay comidas disponibles",
       noFoodMessage: "No se encontraron comidas que coincidan con los filtros seleccionados",
       lowStock: "¡Quedan pocas unidades!",
@@ -880,63 +912,37 @@ export const translations = {
     boutique: {
       title: "Boutique y Souvenirs",
       description: "Descubre artículos únicos y souvenirs de las Américas",
-      filters: "Filtros",
-      search: "Rechercher des articles...",
-      searchPlaceholder: "Rechercher par nom...",
-      minPrice: "Prix minimum",
-      maxPrice: "Prix maximum",
-      sortBy: "Trier par",
-      sortOptions: {
-        nameAsc: "Nom (A-Z)",
-        nameDesc: "Nom (Z-A)",
-        priceAsc: "Prix (croissant)",
-        priceDesc: "Prix (décroissant)"
+      filters: {
+        title: "Filtros",
+        search: "Buscar artículos...",
+        searchPlaceholder: "Buscar por nombre...",
+        minPrice: "Precio mínimo",
+        maxPrice: "Precio máximo",
+        sortBy: "Ordenar por",
+        sortOptions: {
+          nameAsc: "Nombre (A-Z)",
+          nameDesc: "Nombre (Z-A)",
+          priceAsc: "Precio (menor a mayor)",
+          priceDesc: "Precio (mayor a menor)"
+        },
+        subcategory: "Categoría",
+        allSubcategories: "Todas las categorías",
+        subcategories: {
+          clothing: "Ropa",
+          accessories: "Accesorios",
+          souvenirs: "Souvenirs"
+        }
       },
-      resetFilters: "Réinitialiser les filtres",
-      noItems: "Aucun article disponible",
-      noItemsMessage: "Aucun article ne correspond aux filtres sélectionnés",
-      lowStock: "Plus que quelques unités !",
-      outOfStock: "En rupture de stock",
-      addToCart: "Ajouter au panier",
-      errorLoading: "Erreur lors du chargement des articles",
-      categories: {
-        all: "Tous les articles",
-        clothing: "Vêtements",
-        accessories: "Accessoires",
-        crafts: "Artesanías",
-        souvenirs: "Souvenirs"
-      },
-      stock: {
-        available: "Disponibles : {{stock}}",
-        lowStock: "Dernières unités !",
-        outOfStock: "En rupture de stock"
-      },
-      collections: {
-        traditional: "Traditional",
-        modern: "Modern",
-        limited: "Limited edition"
-      },
-      materials: {
-        cotton: "Cotton",
-        wool: "Wool",
-        leather: "Leather",
-        wood: "Wood",
-        ceramic: "Ceramic"
-      },
-      subcategory: "Catégorie",
-      allSubcategories: "Toutes les catégories",
-      subcategories: {
-        clothing: "Vêtements",
-        accessories: "Accessoires",
-        souvenirs: "Souvenirs"
-      }
+      addToCart: "Agregar al carrito",
+      outOfStock: "Agotado",
+      lowStock: "Pocas unidades"
     },
     cart: {
       title: "Carrito de Compras",
       empty: "Tu carrito está vacío",
       emptyMessage: "Agrega algunos productos para comenzar a comprar",
       total: "Total",
-      checkout: "Finalizar Compra",
+      checkout: "Finalizar compra",
       continue: "Continuar comprando",
       remove: "Eliminar",
       clear: "Vaciar carrito",
@@ -954,12 +960,54 @@ export const translations = {
       errorRemoving: "Error al eliminar del carrito",
       errorClearing: "Error al vaciar el carrito",
       addMore: "Agregar más",
-      itemCount: "{{count}} articles",
-      itemCountSingular: "1 article",
-      confirmRemove: "¿Estás seguro que deseas eliminar este producto?",
-      confirmClear: "¿Estás seguro que deseas vaciar el carrito?",
-      stockLimit: "Stock disponible : {{stock}}",
-      outOfStock: "En ruptura de stock"
+      itemCount: "{{count}} artículos",
+      itemCountSingular: "1 artículo",
+      confirmRemove: "¿Estás seguro de que deseas eliminar este producto?",
+      confirmClear: "¿Estás seguro de que deseas vaciar el carrito?",
+      stockLimit: "Stock disponible: {{stock}}",
+      outOfStock: "Agotado",
+      coupon: {
+        title: "Cupón de Descuento",
+        placeholder: "Ingresa el código del cupón",
+        apply: "Aplicar",
+        remove: "Eliminar",
+        applied: "Cupón aplicado exitosamente",
+        removed: "Cupón eliminado",
+        invalid: "Cupón no válido o expirado",
+        expired: "El cupón ha expirado",
+        limitReached: "El cupón ha alcanzado su límite de uso",
+        error: "Error al aplicar el cupón"
+      },
+      shipping: {
+        title: "Envío",
+        calculating: "Calculando...",
+        free: "Envío Gratis",
+        standard: "Envío Estándar",
+        express: "Envío Express"
+      },
+      summary: {
+        title: "Resumen del Pedido",
+        subtotal: "Subtotal",
+        shipping: "Envío",
+        discount: "Descuento",
+        total: "Total"
+      },
+      checkout: {
+        title: "Finalizar Compra",
+        button: "Proceder al Pago",
+        processing: "Procesando...",
+        stockIssues: "Algunos productos están agotados",
+        loginRequired: "Por favor inicia sesión para finalizar la compra"
+      },
+      notifications: {
+        addedToCart: "Product added to cart",
+        removedFromCart: "Product removed from cart",
+        quantityIncreased: "Quantity increased",
+        quantityDecreased: "Quantity decreased",
+        stockLimit: "Maximum stock limit reached",
+        loginRequired: "Please log in to add products to cart",
+        error: "An error occurred. Please try again."
+      }
     },
     common: {
       featured: "Destacado",
@@ -1320,19 +1368,27 @@ export const translations = {
     food: {
       title: "Menu de Nourriture",
       description: "Découvrez les saveurs authentiques des Amériques",
-      filters: "Filtres",
-      search: "Rechercher des plats...",
-      searchPlaceholder: "Rechercher par nom...",
-      minPrice: "Prix minimum",
-      maxPrice: "Prix maximum",
-      sortBy: "Trier par",
-      sortOptions: {
-        nameAsc: "Nom (A-Z)",
-        nameDesc: "Nom (Z-A)",
-        priceAsc: "Prix (croissant)",
-        priceDesc: "Prix (décroissant)"
+      filters: {
+        title: "Filtres",
+        search: "Rechercher des plats...",
+        searchPlaceholder: "Rechercher par nom...",
+        minPrice: "Prix minimum",
+        maxPrice: "Prix maximum",
+        sortBy: "Trier par",
+        sortOptions: {
+          nameAsc: "Nom (A-Z)",
+          nameDesc: "Nom (Z-A)",
+          priceAsc: "Prix (croissant)",
+          priceDesc: "Prix (décroissant)"
+        },
+        subcategory: "Région",
+        allSubcategories: "Toutes les régions",
+        subcategories: {
+          northAmerica: "Amérique du Nord",
+          centralAmerica: "Amérique Centrale",
+          southAmerica: "Amérique du Sud"
+        }
       },
-      resetFilters: "Réinitialiser les filtres",
       noFood: "Aucun plat disponible",
       noFoodMessage: "Aucun plat ne correspond aux filtres sélectionnés",
       lowStock: "Plus que quelques unités !",
@@ -1378,56 +1434,30 @@ export const translations = {
     boutique: {
       title: "Boutique et Souvenirs",
       description: "Découvrez des articles uniques et des souvenirs des Amériques",
-      filters: "Filtres",
-      search: "Rechercher des articles...",
-      searchPlaceholder: "Rechercher par nom...",
-      minPrice: "Prix minimum",
-      maxPrice: "Prix maximum",
-      sortBy: "Trier par",
-      sortOptions: {
-        nameAsc: "Nom (A-Z)",
-        nameDesc: "Nom (Z-A)",
-        priceAsc: "Prix (croissant)",
-        priceDesc: "Prix (décroissant)"
+      filters: {
+        title: "Filtres",
+        search: "Rechercher des articles...",
+        searchPlaceholder: "Rechercher par nom...",
+        minPrice: "Prix minimum",
+        maxPrice: "Prix maximum",
+        sortBy: "Trier par",
+        sortOptions: {
+          nameAsc: "Nom (A-Z)",
+          nameDesc: "Nom (Z-A)",
+          priceAsc: "Prix (croissant)",
+          priceDesc: "Prix (décroissant)"
+        },
+        subcategory: "Categoría",
+        allSubcategories: "Todas las categorías",
+        subcategories: {
+          clothing: "Ropa",
+          accessories: "Accessoires",
+          souvenirs: "Souvenirs"
+        }
       },
-      resetFilters: "Réinitialiser les filtres",
-      noItems: "Aucun article disponible",
-      noItemsMessage: "Aucun article ne correspond aux filtres sélectionnés",
-      lowStock: "Plus que quelques unités !",
-      outOfStock: "En rupture de stock",
       addToCart: "Ajouter au panier",
-      errorLoading: "Erreur lors du chargement des articles",
-      categories: {
-        all: "Tous les articles",
-        clothing: "Vêtements",
-        accessories: "Accessoires",
-        crafts: "Artisanat",
-        souvenirs: "Souvenirs"
-      },
-      stock: {
-        available: "Disponibles : {{stock}}",
-        lowStock: "Dernières unités !",
-        outOfStock: "En rupture de stock"
-      },
-      collections: {
-        traditional: "Traditional",
-        modern: "Modern",
-        limited: "Limited edition"
-      },
-      materials: {
-        cotton: "Cotton",
-        wool: "Wool",
-        leather: "Leather",
-        wood: "Wood",
-        ceramic: "Ceramic"
-      },
-      subcategory: "Catégorie",
-      allSubcategories: "Toutes les catégories",
-      subcategories: {
-        clothing: "Vêtements",
-        accessories: "Accessoires",
-        souvenirs: "Souvenirs"
-      }
+      outOfStock: "En rupture de stock",
+      lowStock: "Stock limité"
     },
     cart: {
       title: "Panier",
@@ -1457,7 +1487,49 @@ export const translations = {
       confirmRemove: "Êtes-vous sûr de vouloir retirer ce produit ?",
       confirmClear: "Êtes-vous sûr de vouloir vider votre panier ?",
       stockLimit: "Stock disponible : {{stock}}",
-      outOfStock: "En rupture de stock"
+      outOfStock: "Agotado",
+      coupon: {
+        title: "Cupón de Descuento",
+        placeholder: "Ingresa el código del cupón",
+        apply: "Aplicar",
+        remove: "Eliminar",
+        applied: "Cupón aplicado exitosamente",
+        removed: "Cupón eliminado",
+        invalid: "Cupón no válido o expirado",
+        expired: "El cupón ha expirado",
+        limitReached: "El cupón ha alcanzado su límite de uso",
+        error: "Error al aplicar el cupón"
+      },
+      shipping: {
+        title: "Envío",
+        calculating: "Calculando...",
+        free: "Envío Gratis",
+        standard: "Envío Estándar",
+        express: "Envío Express"
+      },
+      summary: {
+        title: "Resumen del Pedido",
+        subtotal: "Subtotal",
+        shipping: "Envío",
+        discount: "Descuento",
+        total: "Total"
+      },
+      checkout: {
+        title: "Finalizar Compra",
+        button: "Proceder al Pago",
+        processing: "Procesando...",
+        stockIssues: "Algunos productos están agotados",
+        loginRequired: "Por favor inicia sesión para finalizar la compra"
+      },
+      notifications: {
+        addedToCart: "Product added to cart",
+        removedFromCart: "Product removed from cart",
+        quantityIncreased: "Quantity increased",
+        quantityDecreased: "Quantity decreased",
+        stockLimit: "Maximum stock limit reached",
+        loginRequired: "Please log in to add products to cart",
+        error: "An error occurred. Please try again."
+      }
     },
     common: {
       featured: "En vedette",

@@ -1,7 +1,26 @@
 import { supabase } from '../config/supabase';
 import { checkStock, updateStock } from './productService';
 
-// Cargar el carrito del usuario
+// Cache para URLs de imágenes
+const imageUrlCache = new Map();
+
+// Función para obtener URL de imagen con caché
+const getImageUrl = async (imagePath) => {
+  if (!imagePath) return null;
+  
+  if (imageUrlCache.has(imagePath)) {
+    return imageUrlCache.get(imagePath);
+  }
+
+  const { data } = supabase.storage
+    .from('productos')
+    .getPublicUrl(imagePath);
+
+  imageUrlCache.set(imagePath, data.publicUrl);
+  return data.publicUrl;
+};
+
+// Cargar el carrito del usuario con información completa
 export const loadCart = async (userId) => {
   try {
     const { data, error } = await supabase
@@ -16,8 +35,12 @@ export const loadCart = async (userId) => {
           descripcion,
           precio,
           stock,
-          imagen_url,
+          imagen_principal,
           categorias (
+            id,
+            nombre
+          ),
+          subcategorias (
             id,
             nombre
           )
@@ -27,17 +50,26 @@ export const loadCart = async (userId) => {
 
     if (error) throw error;
 
-    return {
-      data: data.map(item => ({
+    // Procesar y formatear los datos del carrito
+    const formattedCartItems = await Promise.all(data.map(async item => {
+      const imageUrl = await getImageUrl(item.productos.imagen_principal);
+      
+      return {
         id: item.id,
         producto_id: item.producto_id,
         cantidad: item.cantidad,
         producto: {
           ...item.productos,
           precio: parseFloat(item.productos.precio),
-          categoria: item.productos.categorias?.nombre || null
+          categoria: item.productos.categorias?.nombre || null,
+          subcategoria: item.productos.subcategorias?.nombre || null,
+          imagen_url: imageUrl
         }
-      })),
+      };
+    }));
+
+    return {
+      data: formattedCartItems,
       error: null
     };
   } catch (error) {
@@ -49,11 +81,16 @@ export const loadCart = async (userId) => {
   }
 };
 
-// Agregar producto al carrito
-export const addToCart = async (userId, productId, quantity = 1, table = 'productos') => {
+// Agregar producto al carrito con validaciones
+export const addToCart = async (userId, productId, quantity = 1) => {
   try {
+    // Validar cantidad
+    if (quantity <= 0) {
+      throw new Error('La cantidad debe ser mayor a 0');
+    }
+
     // Verificar stock disponible
-    const { available, currentStock, error: stockError } = await checkStock(productId, quantity, table);
+    const { available, currentStock, error: stockError } = await checkStock(productId, quantity);
     
     if (stockError) throw new Error(stockError);
     if (!available) throw new Error('Stock no disponible');
@@ -98,8 +135,30 @@ export const addToCart = async (userId, productId, quantity = 1, table = 'produc
 
     if (result.error) throw result.error;
 
+    // Obtener información completa del producto
+    const { data: productData } = await supabase
+      .from('productos')
+      .select(`
+        *,
+        categorias (nombre),
+        subcategorias (nombre)
+      `)
+      .eq('id', productId)
+      .single();
+
+    const imageUrl = await getImageUrl(productData.imagen_principal);
+
     return {
-      data: result.data,
+      data: {
+        ...result.data,
+        producto: {
+          ...productData,
+          precio: parseFloat(productData.precio),
+          categoria: productData.categorias?.nombre || null,
+          subcategoria: productData.subcategorias?.nombre || null,
+          imagen_url: imageUrl
+        }
+      },
       error: null
     };
   } catch (error) {
@@ -111,21 +170,31 @@ export const addToCart = async (userId, productId, quantity = 1, table = 'produc
   }
 };
 
-// Actualizar cantidad en el carrito
-export const updateCartItem = async (userId, cartItemId, newQuantity, table = 'productos') => {
+// Actualizar cantidad en el carrito con validaciones
+export const updateCartItem = async (userId, cartItemId, newQuantity) => {
   try {
+    // Validar cantidad
+    if (newQuantity < 0) {
+      throw new Error('La cantidad no puede ser negativa');
+    }
+
     // Obtener información del item del carrito
     const { data: cartItem, error: cartError } = await supabase
       .from('carrito')
-      .select('producto_id')
+      .select('producto_id, cantidad')
       .eq('id', cartItemId)
       .eq('usuario_id', userId)
       .single();
 
     if (cartError) throw cartError;
 
+    // Si la cantidad es 0, eliminar el item
+    if (newQuantity === 0) {
+      return await removeFromCart(userId, cartItemId);
+    }
+
     // Verificar stock disponible
-    const { available, error: stockError } = await checkStock(cartItem.producto_id, newQuantity, table);
+    const { available, error: stockError } = await checkStock(cartItem.producto_id, newQuantity);
     
     if (stockError) throw new Error(stockError);
     if (!available) throw new Error('Stock no disponible');
@@ -189,32 +258,56 @@ export const clearCart = async (userId) => {
   }
 };
 
-// Calcular total del carrito
-export const calculateCartTotal = async (userId) => {
+// Calcular total del carrito con descuentos
+export const calculateCartTotal = async (userId, couponCode = null) => {
   try {
+    // Obtener items del carrito
     const { data: cartItems, error } = await supabase
       .from('carrito')
       .select(`
         cantidad,
         productos (
-          precio
+          precio,
+          stock
         )
       `)
       .eq('usuario_id', userId);
 
     if (error) throw error;
 
-    const total = cartItems.reduce((sum, item) => {
+    // Calcular subtotal
+    const subtotal = cartItems.reduce((sum, item) => {
       return sum + (parseFloat(item.productos.precio) * item.cantidad);
     }, 0);
 
+    // Aplicar descuento si hay cupón
+    let discount = 0;
+    if (couponCode) {
+      const { data: coupon } = await supabase
+        .from('cupones')
+        .select('descuento')
+        .eq('codigo', couponCode)
+        .single();
+
+      if (coupon) {
+        discount = (subtotal * coupon.descuento) / 100;
+      }
+    }
+
+    // Calcular total final
+    const total = subtotal - discount;
+
     return {
+      subtotal,
+      discount,
       total,
       error: null
     };
   } catch (error) {
     console.error('Error calculando total:', error);
     return {
+      subtotal: 0,
+      discount: 0,
       total: 0,
       error: error.message
     };
@@ -249,6 +342,81 @@ export const prepareCartForStripe = async (userId) => {
     console.error('Error preparando carrito para Stripe:', error);
     return {
       lineItems: [],
+      error: error.message
+    };
+  }
+};
+
+// Verificar disponibilidad de stock para todos los items
+export const verifyStockAvailability = async (userId) => {
+  try {
+    const { data: cartItems, error } = await loadCart(userId);
+    
+    if (error) throw error;
+
+    const stockIssues = [];
+
+    for (const item of cartItems) {
+      if (item.cantidad > item.producto.stock) {
+        stockIssues.push({
+          producto_id: item.producto_id,
+          nombre: item.producto.nombre,
+          stock_disponible: item.producto.stock,
+          cantidad_solicitada: item.cantidad
+        });
+      }
+    }
+
+    return {
+      available: stockIssues.length === 0,
+      issues: stockIssues,
+      error: null
+    };
+  } catch (error) {
+    console.error('Error verificando stock:', error);
+    return {
+      available: false,
+      issues: [],
+      error: error.message
+    };
+  }
+};
+
+// Validar cupón de descuento
+export const validateCoupon = async (couponCode) => {
+  try {
+    // Verificar si el cupón existe y está activo
+    const { data, error } = await supabase
+      .from('cupones')
+      .select('*')
+      .eq('codigo', couponCode)
+      .eq('activo', true)
+      .single();
+
+    if (error) throw error;
+
+    if (!data) {
+      throw new Error('Cupón no válido o expirado');
+    }
+
+    // Verificar si el cupón ha expirado
+    if (data.fecha_expiracion && new Date(data.fecha_expiracion) < new Date()) {
+      throw new Error('Cupón expirado');
+    }
+
+    // Verificar si el cupón ha alcanzado su límite de uso
+    if (data.limite_uso && data.usos >= data.limite_uso) {
+      throw new Error('Cupón ha alcanzado su límite de uso');
+    }
+
+    return {
+      data,
+      error: null
+    };
+  } catch (error) {
+    console.error('Error validando cupón:', error);
+    return {
+      data: null,
       error: error.message
     };
   }

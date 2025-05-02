@@ -1,12 +1,17 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { ShoppingCart, Star, AlertTriangle } from 'lucide-react';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ShoppingCart, Star, AlertTriangle, Plus, Minus, Check } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useCart } from '../contexts/CartContext';
+import { useAuth } from '../contexts/AuthContext';
+import { toast } from 'react-hot-toast';
 
 const ProductCard = ({ product, type = 'product' }) => {
   const { t } = useLanguage();
-  const { addToCart, isInCart, getItemQuantity } = useCart();
+  const { user } = useAuth();
+  const { addToCart, updateQuantity, isInCart, getItemQuantity } = useCart();
+  const [isLoading, setIsLoading] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   // Configuración de colores y traducciones según el tipo de producto
   const typeConfig = {
@@ -16,9 +21,9 @@ const ProductCard = ({ product, type = 'product' }) => {
       button: 'indigo',
       gradient: 'from-indigo-50 to-blue-50',
       translations: {
-        addToCart: 'product.addToCart',
-        outOfStock: 'product.outOfStock',
-        lowStock: 'product.lowStock'
+        addToCart: 'products.addToCart',
+        outOfStock: 'products.outOfStock',
+        lowStock: 'products.lowStock'
       }
     },
     food: {
@@ -48,12 +53,123 @@ const ProductCard = ({ product, type = 'product' }) => {
   const config = typeConfig[type];
 
   const handleAddToCart = async () => {
+    if (!user) {
+      toast.error(t('cart.loginRequired'));
+      return;
+    }
+
     try {
-      await addToCart(product);
+      setIsLoading(true);
+      const { error } = await addToCart(product.id);
+      
+      if (error) {
+        if (error === 'login_required') {
+          toast.error(t('cart.loginRequired'));
+        } else {
+          throw new Error(error);
+        }
+        return;
+      }
+
+      // Mostrar animación de éxito
+      setShowSuccess(true);
+      setTimeout(() => setShowSuccess(false), 1500);
+
+      // Mostrar notificación
+      toast.custom((t) => (
+        <div className="bg-white rounded-lg shadow-lg p-4 flex items-center gap-3">
+          <div className="flex-shrink-0 bg-green-100 rounded-full p-2">
+            <Check className="h-4 w-4 text-green-600" />
+          </div>
+          <div>
+            <p className="font-medium text-gray-900">{product.nombre}</p>
+            <p className="text-sm text-gray-500">{t('cart.addedToCart')}</p>
+          </div>
+        </div>
+      ), {
+        duration: 2000,
+        position: 'bottom-right',
+      });
     } catch (error) {
       console.error('Error adding to cart:', error);
+      toast.error(error.message || t('cart.errorAdding'));
+    } finally {
+      setIsLoading(false);
     }
   };
+
+  const handleUpdateQuantity = async (change) => {
+    if (!user) {
+      toast.error(t('cart.loginRequired'));
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      const currentQuantity = getItemQuantity(product.id);
+      const newQuantity = Math.max(0, currentQuantity + change);
+
+      // Si la nueva cantidad excede el stock, mostrar error
+      if (newQuantity > product.stock) {
+        toast.error(t('cart.stockLimit', { stock: product.stock }));
+        return;
+      }
+
+      const { error } = await updateQuantity(product.id, newQuantity);
+      
+      if (error) {
+        if (error === 'login_required') {
+          toast.error(t('cart.loginRequired'));
+        } else {
+          throw new Error(error);
+        }
+        return;
+      }
+
+      // Mostrar notificación según la acción
+      if (newQuantity === 0) {
+        toast.custom((t) => (
+          <div className="bg-white rounded-lg shadow-lg p-4 flex items-center gap-3">
+            <div className="flex-shrink-0 bg-red-100 rounded-full p-2">
+              <Minus className="h-4 w-4 text-red-600" />
+            </div>
+            <div>
+              <p className="font-medium text-gray-900">{product.nombre}</p>
+              <p className="text-sm text-gray-500">{t('cart.removed')}</p>
+            </div>
+          </div>
+        ), {
+          duration: 2000,
+          position: 'bottom-right',
+        });
+      } else {
+        toast.custom((t) => (
+          <div className="bg-white rounded-lg shadow-lg p-4 flex items-center gap-3">
+            <div className="flex-shrink-0 bg-blue-100 rounded-full p-2">
+              <Check className="h-4 w-4 text-blue-600" />
+            </div>
+            <div>
+              <p className="font-medium text-gray-900">{product.nombre}</p>
+              <p className="text-sm text-gray-500">
+                {change > 0 ? t('cart.quantityIncreased') : t('cart.quantityDecreased')}
+              </p>
+            </div>
+          </div>
+        ), {
+          duration: 2000,
+          position: 'bottom-right',
+        });
+      }
+    } catch (error) {
+      console.error('Error updating quantity:', error);
+      toast.error(error.message || t('cart.errorUpdating'));
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const productInCart = isInCart(product.id);
+  const quantity = getItemQuantity(product.id);
 
   return (
     <motion.div
@@ -61,12 +177,28 @@ const ProductCard = ({ product, type = 'product' }) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 20 }}
-      className={`bg-white rounded-xl shadow-sm overflow-hidden group hover:shadow-lg transition-all duration-300 border border-${config.accent}-100 hover:border-${config.accent}-300 h-full flex flex-col`}
+      className={`bg-white rounded-xl shadow-sm overflow-hidden group hover:shadow-lg transition-all duration-300 border border-${config.accent}-100 hover:border-${config.accent}-300 h-full flex flex-col relative`}
       style={{ 
         minHeight: '400px',
         height: '100%'
       }}
     >
+      {/* Animación de éxito al agregar al carrito */}
+      <AnimatePresence>
+        {showSuccess && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.5 }}
+            className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-10"
+          >
+            <div className="bg-white rounded-full p-4">
+              <Check className="h-8 w-8 text-green-500" />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Contenedor de imagen con aspect ratio fijo */}
       <div 
         className="relative overflow-hidden bg-gray-100"
@@ -103,6 +235,13 @@ const ProductCard = ({ product, type = 'product' }) => {
             {t('common.featured')}
           </div>
         )}
+
+        {product.stock < 30 && (
+          <div className="absolute bottom-1 left-1 sm:bottom-2 sm:left-2 bg-red-500 text-white px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium flex items-center gap-0.5">
+            <AlertTriangle className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+            {t('common.lowStock')}
+          </div>
+        )}
       </div>
       
       {/* Contenido del card con altura fija y dimensiones reservadas */}
@@ -126,15 +265,6 @@ const ProductCard = ({ product, type = 'product' }) => {
           {product.descripcion}
         </p>
         
-        {product.stock < 30 && (
-          <div className={`flex items-center justify-center gap-0.5 sm:gap-1 text-${config.accent}-600 bg-${config.accent}-50 px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-lg mb-2 sm:mb-3 text-[10px] sm:text-xs`}>
-            <AlertTriangle className="h-2.5 w-2.5 sm:h-3 sm:w-3 flex-shrink-0" />
-            <span className="font-medium">
-              {t(config.translations.lowStock, { stock: product.stock })}
-            </span>
-          </div>
-        )}
-        
         {/* Footer del card con precio y botón */}
         <div className="flex flex-col sm:flex-row items-center sm:items-center justify-center pt-2 sm:pt-3 border-t border-gray-100 mt-auto gap-2">
           <div className="flex flex-col">
@@ -148,30 +278,63 @@ const ProductCard = ({ product, type = 'product' }) => {
             </span>
           </div>
           
-          {isInCart(product.id) ? (
-            <div className="flex items-center gap-1 w-full sm:w-auto">
-              <span className="text-[10px] sm:text-xs text-gray-600 font-medium">
-                {getItemQuantity(product.id)}x
-              </span>
-              <button
-                onClick={handleAddToCart}
-                className="flex flex-col items-center justify-center gap-0.5 bg-green-600 text-white px-3 py-1.5 rounded-lg hover:bg-green-700 transition-colors text-[11px] sm:text-xs font-medium disabled:bg-gray-400 disabled:cursor-not-allowed w-full sm:w-auto whitespace-nowrap"
-                disabled={product.stock === 0}
-              >
-                <span>{t('cart.addMore')}</span>
-              </button>
+          {productInCart ? (
+            <div className="flex items-center gap-2 w-full sm:w-auto">
+              <div className="flex items-center border border-gray-300 rounded-lg">
+                <motion.button
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={() => handleUpdateQuantity(-1)}
+                  className="p-1.5 hover:bg-gray-100 transition-colors disabled:opacity-50"
+                  disabled={isLoading || product.stock === 0}
+                >
+                  <Minus className="h-3 w-3 sm:h-4 sm:w-4 text-gray-600" />
+                </motion.button>
+                <span className="px-2 py-1 text-xs sm:text-sm text-gray-900 min-w-[2rem] text-center">
+                  {quantity}
+                </span>
+                <motion.button
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={() => handleUpdateQuantity(1)}
+                  className="p-1.5 hover:bg-gray-100 transition-colors disabled:opacity-50"
+                  disabled={isLoading || quantity >= product.stock}
+                >
+                  <Plus className="h-3 w-3 sm:h-4 sm:w-4 text-gray-600" />
+                </motion.button>
+              </div>
             </div>
           ) : (
             <button
               onClick={handleAddToCart}
-              className={`flex flex-col items-center justify-center gap-0.5 bg-${config.button}-600 text-white px-3 py-1.5 rounded-lg hover:bg-${config.button}-700 transition-all duration-300 text-[11px] sm:text-xs font-medium disabled:bg-gray-400 disabled:cursor-not-allowed w-full sm:w-auto whitespace-nowrap`}
-              disabled={product.stock === 0}
+              disabled={isLoading || product.stock === 0}
+              className={`
+                flex items-center justify-center gap-1.5 
+                px-3 py-1.5 
+                rounded-lg 
+                text-[11px] sm:text-xs 
+                font-medium 
+                w-full sm:w-auto 
+                whitespace-nowrap
+                transition-all duration-300
+                ${product.stock === 0 
+                  ? 'bg-gray-400 cursor-not-allowed' 
+                  : `bg-${config.button}-600 hover:bg-${config.button}-700 text-white`}
+                disabled:opacity-50 disabled:cursor-not-allowed
+              `}
             >
-              <span>
-                {product.stock === 0 
-                  ? t(config.translations.outOfStock)
-                  : t(config.translations.addToCart)}
-              </span>
+              {isLoading ? (
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              ) : (
+                <>
+                  <ShoppingCart className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                  <span>
+                    {product.stock === 0 
+                      ? t(config.translations.outOfStock)
+                      : t(config.translations.addToCart)}
+                  </span>
+                </>
+              )}
             </button>
           )}
         </div>

@@ -8,6 +8,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { signInWithEmail, signUp, signInWithGoogle } from '../services/authService';
 import { toast } from 'react-hot-toast';
 import AuthModal from './AuthModal';
+import { useCart } from '../contexts/CartContext';
 
 /**
  * Componente de navegación principal
@@ -20,6 +21,7 @@ import AuthModal from './AuthModal';
 const Navbar = ({ scrollToRef, homeRef, currentSection = 'home', setCurrentSection }) => {
   const { t, language, setLanguage } = useLanguage();
   const { user, signOut } = useAuth();
+  const { itemCount } = useCart();
   const location = useLocation();
   const navigate = useNavigate();
   const [isScrolled, setIsScrolled] = useState(false);
@@ -403,6 +405,13 @@ const Navbar = ({ scrollToRef, homeRef, currentSection = 'home', setCurrentSecti
     }
   };
 
+  const handleCartClick = () => {
+    navigate('/carrito');
+    setIsMobileMenuOpen(false);
+    // Scroll al inicio
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  };
+
   const renderUserMenu = () => (
     <div className="relative">
       <button
@@ -570,13 +579,20 @@ const Navbar = ({ scrollToRef, homeRef, currentSection = 'home', setCurrentSecti
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
+                  onClick={handleCartClick}
                   className="relative p-1.5 lg:p-2 text-gray-700 hover:text-indigo-600 transition-colors"
-                  aria-label="Carrito de compras"
+                  aria-label={t('cart.title')}
                 >
                   <ShoppingCart className="h-5 w-5 lg:h-6 lg:w-6" />
-                  <span className="absolute -top-1 -right-1 bg-indigo-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                    0
-                  </span>
+                  {itemCount > 0 && (
+                    <motion.span
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      className="absolute -top-1 -right-1 bg-indigo-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center"
+                    >
+                      {itemCount}
+                    </motion.span>
+                  )}
                 </motion.button>
 
                 {user && user.email ? (
@@ -634,13 +650,20 @@ const Navbar = ({ scrollToRef, homeRef, currentSection = 'home', setCurrentSecti
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
+                  onClick={handleCartClick}
                   className="relative p-1 text-gray-700 hover:text-indigo-600 transition-colors"
-                  aria-label="Carrito de compras"
+                  aria-label={t('cart.title')}
                 >
                   <ShoppingCart className="h-4 w-4" />
-                  <span className="absolute -top-1 -right-1 bg-indigo-600 text-white text-[8px] rounded-full h-3.5 w-3.5 flex items-center justify-center">
-                    0
-                  </span>
+                  {itemCount > 0 && (
+                    <motion.span
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      className="absolute -top-1 -right-1 bg-indigo-600 text-white text-[8px] rounded-full h-3.5 w-3.5 flex items-center justify-center"
+                    >
+                      {itemCount}
+                    </motion.span>
+                  )}
                 </motion.button>
 
                 <LanguageSelector isMobile={true} />
@@ -652,13 +675,20 @@ const Navbar = ({ scrollToRef, homeRef, currentSection = 'home', setCurrentSecti
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
+                onClick={handleCartClick}
                 className="relative p-1.5 text-gray-700 hover:text-indigo-600 transition-colors"
-                aria-label="Carrito de compras"
+                aria-label={t('cart.title')}
               >
                 <ShoppingCart className="h-5 w-5" />
-                <span className="absolute -top-1 -right-1 bg-indigo-600 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center text-[10px]">
-                  0
-                </span>
+                {itemCount > 0 && (
+                  <motion.span
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    className="absolute -top-1 -right-1 bg-indigo-600 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center text-[10px]"
+                  >
+                    {itemCount}
+                  </motion.span>
+                )}
               </motion.button>
 
               <LanguageSelector isMobile={true} />

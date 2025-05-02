@@ -23,9 +23,9 @@ const BoutiquePage = () => {
   });
 
   const subcategories = [
-    { id: '1', name: t('boutique.filters.subcategories.clothing') },
-    { id: '2', name: t('boutique.filters.subcategories.accessories') },
-    { id: '3', name: t('boutique.filters.subcategories.souvenirs') }
+    { id: '7', name: t('boutique.filters.subcategories.clothing') },
+    { id: '8', name: t('boutique.filters.subcategories.accessories') },
+    { id: '9', name: t('boutique.filters.subcategories.souvenirs') }
   ];
 
   // Detectar si es dispositivo móvil
